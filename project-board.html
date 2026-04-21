@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Board</title>
+<link rel="stylesheet" href="https://use.typekit.net/mfq1ynf.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;min-height:100vh;background:#f0ebe2;}
+body{font-family:"clarendon-text-pro",serif;}
+.topbar{background:#1a1a18;padding:12px 32px;display:flex;align-items:center;gap:20px;}
+.topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:36px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
+.topbar-title span{color:#C97B52;}
+.topbar-date{font-size:11px;color:#666;letter-spacing:0.12em;text-transform:uppercase;}
+.save-indicator{font-size:10px;color:#7A9A6A;letter-spacing:0.08em;text-transform:uppercase;opacity:0;transition:opacity 0.3s;margin-left:8px;}
+.save-indicator.show{opacity:1;}
+.topbar-btn{border:0.5px solid #555;color:#aaa;background:transparent;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-family:"clarendon-text-pro",serif;margin-left:auto;}
+.topbar-btn:hover{background:#2a2a28;color:#ddd;}
+.toolbar{padding:10px 32px;background:#1a1a18;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2a2a28;}
+.toolbar input[type=text]{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 12px;border-radius:4px;font-family:"clarendon-text-pro",serif;flex:1;min-width:180px;}
+.toolbar input::placeholder{color:#555;}
+.toolbar select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #555;color:#aaa;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
+.toolbar button:hover{background:#2a2a28;color:#ddd;}
+.board{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
+.projects-grid{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;width:100%;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;width:100%;text-align:center;gap:14px;}
+.empty-state-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:34px;letter-spacing:0.06em;text-transform:uppercase;color:#c0b8b0;}
+.empty-state-sub{font-size:13px;color:#b0a898;line-height:1.7;}
+.project-block{display:flex;flex-direction:column;}
+.project-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;}
+.project-meta{margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.project-total-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;}
+.project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:15px;color:#888;letter-spacing:0.04em;}
+.archive-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#bbb;cursor:pointer;background:none;border:0.5px solid #ccc;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
+.archive-btn-proj:hover{color:#444;border-color:#777;}
+.tiles-rect{display:grid;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.14);}
+.tile{display:flex;flex-direction:column;justify-content:space-between;padding:14px 16px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.08);transition:opacity 0.3s;overflow:hidden;user-select:none;}
+.tile.done{opacity:0.38;}
+.tile-name{font-family:"clarendon-text-pro",serif;font-weight:400;line-height:1.35;}
+.tile-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.tile-time{font-family:"clarendon-text-pro",serif;font-weight:400;letter-spacing:0.02em;}
+.tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tile-check.checked{background:rgba(0,0,0,0.12);}
+.tile-check svg{display:none;}
+.tile-check.checked svg{display:block;}
+.inline-edit{display:flex;flex-direction:column;gap:8px;background:#1a1a18;padding:14px 16px;border:0.5px solid rgba(0,0,0,0.1);}
+.inline-edit-label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#777;}
+.inline-edit-name{font-size:14px;color:#e8dcc8;font-weight:400;font-family:"clarendon-text-pro",serif;line-height:1.3;}
+.inline-edit select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:5px 8px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.inline-edit-btns{display:flex;gap:6px;}
+.inline-edit-btns button{font-size:12px;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:"clarendon-text-pro",serif;}
+.btn-save{background:#C97B52;color:#fff;border:none;}
+.btn-done-tog{background:#4A7A62;color:#fff;border:none;}
+.btn-cancel{background:transparent;color:#888;border:0.5px solid #444;}
+.ctx-menu{position:fixed;background:#1a1a18;border:0.5px solid #3a3a38;border-radius:5px;padding:5px 0;min-width:200px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.ctx-menu-title{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;padding:6px 16px 5px;font-family:"clarendon-text-pro",serif;border-bottom:0.5px solid #2a2a28;margin-bottom:3px;}
+.ctx-item{font-size:13px;padding:8px 16px;color:#ccc;cursor:pointer;font-family:"clarendon-text-pro",serif;display:flex;align-items:center;gap:10px;}
+.ctx-item:hover{background:#2a2a28;color:#fff;}
+.ctx-icon{width:16px;text-align:center;flex-shrink:0;}
+.ctx-sep{height:0.5px;background:#2a2a28;margin:4px 0;}
+.ctx-item.done-item{color:#7A9A6A;}
+.new-project-panel{background:#1a1a18;border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:12px;width:300px;}
+.new-project-panel label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#666;}
+.new-project-panel input{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:7px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;}
+.swatch.selected{border-color:#e8dcc8;}
+.archive-section{padding:16px 32px;background:#e8e3da;border-top:1px solid #d4cfc6;}
+.archive-toggle{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#888;cursor:pointer;background:none;border:none;font-family:"clarendon-text-pro",serif;}
+.archived-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+.archived-chip{display:flex;align-items:center;gap:8px;background:#ddd8cf;border-radius:20px;padding:5px 14px 5px 10px;font-size:12px;color:#555;font-family:"clarendon-text-pro",serif;}
+.restore-btn{font-size:10px;padding:2px 8px;margin-left:4px;cursor:pointer;background:none;border:0.5px solid #999;border-radius:10px;font-family:"clarendon-text-pro",serif;color:#555;}
+.restore-btn:hover{background:#ccc;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-title">PROJECT <span>BOARD</span></div>
+  <div class="topbar-date" id="today-date"></div>
+  <span class="save-indicator" id="save-indicator">Saved</span>
+  <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
+</div>
+<div class="toolbar">
+  <input type="text" id="new-task-input" placeholder="Task name..." />
+  <select id="new-task-days" style="width:140px;"></select>
+  <select id="new-task-project" style="min-width:160px;max-width:240px;"></select>
+  <button onclick="addTask()">+ Add task</button>
+</div>
+<div class="board">
+  <div class="projects-grid" id="projects-grid"></div>
+</div>
+<div id="archive-section" style="display:none;" class="archive-section">
+  <button class="archive-toggle" onclick="toggleArchiveView()" id="archive-toggle-btn"></button>
+  <div class="archived-list" id="archived-list" style="display:none;"></div>
+</div>
+<div id="ctx-menu" class="ctx-menu" style="display:none;"></div>
+<script>
+const PALETTE=[
+  {name:'Old Rose',base:'#A85B5B'},{name:'Jade',base:'#4A7A62'},
+  {name:'Warm Tan',base:'#8B6E3A'},{name:'Blue Tint',base:'#7AAAB8'},
+  {name:'Maize',base:'#C9A83C'},{name:'Salmon',base:'#C97B52'},
+  {name:'Delft',base:'#4A6878'},{name:'Orchid',base:'#9A7898'},
+  {name:'Green Tint',base:'#7A9A6A'},{name:'Henna',base:'#8A3A2A'},
+  {name:'Shell Pink',base:'#C8897A'},{name:'Lavender',base:'#8A88A8'},
+];
+
+function hexRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+
+function heatColor(base,days,maxDays){
+  const [r,g,b]=hexRgb(base);
+  const t=Math.min(days/Math.max(maxDays,1),1);
+  const bg=[240,235,226];
+  const lr=Math.round(bg[0]+(r-bg[0])*0.22),lg=Math.round(bg[1]+(g-bg[1])*0.22),lb=Math.round(bg[2]+(b-bg[2])*0.22);
+  const dr=Math.round(r*0.75),dg=Math.round(g*0.75),db=Math.round(b*0.75);
+  return `rgb(${Math.round(lr+(dr-lr)*t)},${Math.round(lg+(dg-lg)*t)},${Math.round(lb+(db-lb)*t)})`;
+}
+function txtColor(days,max){return(days/Math.max(max,1))<0.32?'rgba(30,22,14,0.82)':'rgba(255,255,255,0.94)';}
+function subColor(days,max){return(days/Math.max(max,1))<0.32?'rgba(30,22,14,0.48)':'rgba(255,255,255,0.56)';}
+
+function buildTimeOptions(){
+  const o=[];
+  o.push({v:0.5,l:'1/2 day'});
+  for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'1/2 days'});}
+  for(let w=1;w<=16;w++){o.push({v:w*7,l:w===1?'1 week':w+' weeks'});o.push({v:w*7+3.5,l:w+'1/2 weeks'});}
+  return o;
+}
+const TIME_OPTS=buildTimeOptions();
+function timeLabel(v){
+  const o=TIME_OPTS.find(x=>Math.abs(x.v-v)<0.01);
+  if(!o)return v+'d';
+  return o.l.replace('1/2','½');
+}
+function buildTimeSelect(id,sel){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML=TIME_OPTS.map(o=>`<option value="${o.v}"${Math.abs(o.v-(sel||1))<0.01?' selected':''}>${o.l.replace('1/2','½')}</option>`).join('');
+}
+function totalDays(tasks){return tasks.reduce((s,t)=>s+t.days,0);}
+function fmtTotal(d){
+  if(d<7){const w=Math.floor(d),h=d%1>0.1;if(w===0&&h)return '½ day';return w+(h?'½':'')+' day'+(w===1&&!h?'':'s');}
+  const wk=d/7,ww=Math.floor(wk),wh=wk%1>0.1;
+  return ww+(wh?'½':'')+' week'+(ww===1&&!wh?'':'s');
+}
+function tileHeight(days){
+  if(days<=7)return Math.round(90+days*34);
+  return Math.round(90+7*34+(days-7)*17);
+}
+
+const BASE_COLS=3,TILE_FS=22,TILE_TIME_FS=15,TITLE_FS=38;
+let nextId=1,editingTask=null,showNewProject=false,showArchived=false,selectedColorIdx=0,projects=[];
+
+function loadData(){
+  try{const r=localStorage.getItem('pb_v2');if(r){const d=JSON.parse(r);projects=d.projects||[];nextId=d.nextId||1;}}
+  catch(e){projects=[];}
+}
+function saveData(){
+  try{
+    localStorage.setItem('pb_v2',JSON.stringify({projects,nextId}));
+    const i=document.getElementById('save-indicator');
+    if(i){i.classList.add('show');setTimeout(()=>i.classList.remove('show'),1400);}
+  }catch(e){}
+}
+loadData();
+
+function getRectW(){
+  const el=document.getElementById('projects-grid');
+  const bw=el?el.offsetWidth:900;
+  return Math.floor(Math.min(bw,1600)/BASE_COLS)*BASE_COLS;
+}
+function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
+
+function renderProjects(){
+  const grid=document.getElementById('projects-grid');
+  grid.innerHTML='';
+  const rw=getRectW();
+  const active=projects.filter(p=>!p.archived);
+  const archived=projects.filter(p=>p.archived);
+
+  if(!active.length&&!showNewProject){
+    const es=document.createElement('div');
+    es.className='empty-state';
+    es.innerHTML='<div class="empty-state-title">No projects yet</div><div class="empty-state-sub">Click &ldquo;+ New project&rdquo; to get started,<br>then add tasks using the toolbar above.</div>';
+    grid.appendChild(es);
+  }
+
+  active.forEach(proj=>{
+    const pal=PALETTE[proj.colorIdx];
+    const n=proj.tasks.length;
+    const cols=Math.min(n||1,BASE_COLS);
+    const max=getMax(proj);
+
+    const block=document.createElement('div');
+    block.className='project-block';
+    block.style.width=rw+'px';
+
+    const hdr=document.createElement('div');
+    hdr.className='project-header';
+    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;">${proj.name}</span>
+      <div class="project-meta">
+        <span class="project-total-label">Total</span>
+        <span class="project-total-val">${fmtTotal(totalDays(proj.tasks))}</span>
+        <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
+      </div>`;
+    block.appendChild(hdr);
+
+    const rect=document.createElement('div');
+    rect.className='tiles-rect';
+    rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+    rect.style.width=rw+'px';
+
+    if(!n){
+      const emp=document.createElement('div');
+      emp.style.cssText=`height:120px;display:flex;align-items:center;justify-content:center;font-size:14px;color:${subColor(0.5,7)};background:${heatColor(pal.base,0.5,7)};grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
+      emp.textContent='No tasks yet';
+      rect.appendChild(emp);
+    } else {
+      const rem=n%cols;
+      proj.tasks.forEach((t,i)=>{
+        const editing=editingTask&&editingTask.projId===proj.id&&editingTask.taskId===t.id;
+        const h=tileHeight(t.days);
+        const span=(rem>0&&Math.floor(i/cols)===Math.floor((n-1)/cols))?Math.floor(cols/rem):1;
+        const bg=heatColor(pal.base,t.days,max);
+        const tc=txtColor(t.days,max);
+        const sc=subColor(t.days,max);
+
+        if(editing){
+          const cell=document.createElement('div');
+          cell.className='inline-edit';
+          if(span>1)cell.style.gridColumn=`span ${span}`;
+          cell.style.minHeight=h+'px';
+          cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
+            <div class="inline-edit-name">${t.name}</div>
+            <select id="ed-${t.id}"></select>
+            <div class="inline-edit-btns">
+              <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
+              <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
+              <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
+            </div>`;
+          rect.appendChild(cell);
+          setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
+        } else {
+          const tile=document.createElement('div');
+          tile.className='tile'+(t.done?' done':'');
+          tile.style.cssText=`background:${bg};height:${h}px;${span>1?'grid-column:span '+span+';':''}`;
+          tile.innerHTML=`<div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
+            <div class="tile-bottom">
+              <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:${sc};">${timeLabel(t.days)}</span>
+              <div class="tile-check${t.done?' checked':''}" style="border-color:${sc};">
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                  <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>`;
+          tile.addEventListener('click',()=>openEdit(proj.id,t.id));
+          tile.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
+          rect.appendChild(tile);
+        }
+      });
+    }
+    block.appendChild(rect);
+    grid.appendChild(block);
+  });
+
+  if(showNewProject){
+    const form=document.createElement('div');
+    form.className='new-project-panel';
+    form.innerHTML=`<label>Project name</label>
+      <input type="text" id="np-name" placeholder="Project name..." />
+      <label>Color</label>
+      <div class="color-swatches">${PALETTE.map((p,i)=>`<div class="swatch${i===selectedColorIdx?' selected':''}" style="background:${p.base}" onclick="selectColor(${i})"></div>`).join('')}</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="createProject()" style="flex:1;font-size:12px;padding:7px;background:#C97B52;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'clarendon-text-pro',serif;">Create</button>
+        <button onclick="toggleNewProject()" style="font-size:12px;padding:7px 10px;background:transparent;color:#888;border:0.5px solid #555;border-radius:4px;cursor:pointer;font-family:'clarendon-text-pro',serif;">Cancel</button>
+      </div>`;
+    grid.appendChild(form);
+  }
+
+  buildTimeSelect('new-task-days',1);
+  renderProjectSelect();
+  renderArchiveSection(archived);
+}
+
+function showCtxMenu(e,projId,taskId){
+  const proj=projects.find(p=>p.id===projId);
+  const t=proj&&proj.tasks.find(t=>t.id===taskId);
+  if(!t)return;
+  const menu=document.getElementById('ctx-menu');
+  const addOpts=TIME_OPTS.filter(o=>o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${o.v})"><span class="ctx-icon">+</span>Add ${o.l.replace('1/2','½')}</div>`).join('');
+  const subOpts=TIME_OPTS.filter(o=>o.v<=t.days&&o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${-o.v})"><span class="ctx-icon">&#x2212;</span>Remove ${o.l.replace('1/2','½')}</div>`).join('');
+  menu.innerHTML=`<div class="ctx-menu-title">${t.name}</div>
+    <div style="max-height:180px;overflow-y:auto;">${addOpts}</div>
+    ${subOpts?`<div class="ctx-sep"></div><div style="max-height:150px;overflow-y:auto;">${subOpts}</div>`:''}
+    <div class="ctx-sep"></div>
+    <div class="ctx-item done-item" onclick="markDoneCtx(${projId},${taskId})">${t.done?'&#x21A9; Reopen':'&#x2713; Mark done'}</div>`;
+  menu.style.display='block';
+  menu.style.left=e.clientX+'px';
+  menu.style.top=e.clientY+'px';
+}
+function adjustTime(pId,tId,delta){
+  const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
+  if(t)t.days=Math.max(0.5,Math.round((t.days+delta)*2)/2);
+  closeCtx();saveData();renderProjects();
+}
+function markDoneCtx(pId,tId){
+  const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
+  if(t)t.done=!t.done;
+  closeCtx();saveData();renderProjects();
+}
+function closeCtx(){document.getElementById('ctx-menu').style.display='none';}
+document.addEventListener('click',closeCtx);
+document.addEventListener('contextmenu',(e)=>{if(!e.target.closest('.tile'))closeCtx();});
+function openEdit(pId,tId){editingTask={projId:pId,taskId:tId};renderProjects();}
+function cancelEdit(){editingTask=null;renderProjects();}
+function saveTaskTime(pId,tId){
+  const el=document.getElementById(`ed-${tId}`);if(!el)return;
+  const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
+  if(t)t.days=parseFloat(el.value);
+  editingTask=null;saveData();renderProjects();
+}
+function markDone(pId,tId){
+  const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
+  if(t)t.done=!t.done;
+  editingTask=null;saveData();renderProjects();
+}
+function renderProjectSelect(){
+  const sel=document.getElementById('new-task-project');if(!sel)return;
+  const cur=sel.value;
+  const active=projects.filter(p=>!p.archived);
+  sel.innerHTML=active.length?active.map(p=>`<option value="${p.id}">${p.name}</option>`).join(''):'<option value="">— create a project first —</option>';
+  if(cur)sel.value=cur;
+}
+function renderArchiveSection(archived){
+  const sec=document.getElementById('archive-section');
+  const list=document.getElementById('archived-list');
+  const btn=document.getElementById('archive-toggle-btn');
+  if(!archived.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  btn.textContent=showArchived?'Hide archived':'Show archived ('+archived.length+')';
+  list.style.display=showArchived?'flex':'none';
+  list.innerHTML=archived.map(p=>{
+    const pal=PALETTE[p.colorIdx];
+    return `<div class="archived-chip">
+      <div style="width:10px;height:10px;border-radius:50%;background:${pal.base};flex-shrink:0;"></div>
+      <span>${p.name}</span>
+      <span style="color:#999;font-size:11px;">${fmtTotal(totalDays(p.tasks))} &middot; ${p.tasks.length} tasks</span>
+      <button class="restore-btn" onclick="restoreProject(${p.id})">Restore</button>
+    </div>`;
+  }).join('');
+}
+function addTask(){
+  const name=document.getElementById('new-task-input').value.trim();
+  const days=parseFloat(document.getElementById('new-task-days').value);
+  const projId=parseInt(document.getElementById('new-task-project').value);
+  if(!name||!days||!projId)return;
+  const proj=projects.find(p=>p.id===projId);if(!proj)return;
+  proj.tasks.push({id:nextId++,name,days,done:false});
+  document.getElementById('new-task-input').value='';
+  saveData();renderProjects();
+}
+function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
+function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').forEach((s,idx)=>s.classList.toggle('selected',idx===i));}
+function createProject(){
+  const el=document.getElementById('np-name');
+  const name=el?el.value.trim():'';if(!name)return;
+  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,tasks:[]});
+  showNewProject=false;saveData();renderProjects();
+}
+function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;saveData();renderProjects();}
+function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;saveData();renderProjects();}
+function toggleArchiveView(){showArchived=!showArchived;renderProjects();}
+
+document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+buildTimeSelect('new-task-days',1);
+renderProjects();
+window.addEventListener('resize',renderProjects);
+</script>
+</body>
+</html>
