@@ -105,10 +105,16 @@
           "name": "Setup zoom call",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 17,
+          "name": "confirm contractor",
+          "days": 1,
+          "done": false
         }
       ]
     }
   ],
-  "nextId": 17,
-  "lastSaved": "2026-04-22T14:21:01.346Z"
+  "nextId": 18,
+  "lastSaved": "2026-04-22T14:21:11.545Z"
 }
