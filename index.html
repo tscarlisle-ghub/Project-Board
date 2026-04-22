@@ -46,7 +46,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .gantt-page{padding:0 32px 28px;background:#f0ebe2;min-height:calc(100vh - 50px);}
 .gantt-page-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
 .gantt-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;}
-.gantt-wrap{overflow-x:auto;}
+.gantt-wrap{overflow-x:auto;overflow-y:visible;}
+.gantt-table thead tr th{position:sticky;top:0;z-index:10;}
 .gantt-table{border-collapse:collapse;width:100%;}
 .gantt-label-col{width:180px;min-width:180px;}
 .gantt-week-header-row th{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:#888;padding:4px 6px;text-align:left;border-bottom:1px solid #d4cfc6;white-space:nowrap;}
@@ -403,13 +404,9 @@ function fmtTotal(d){
   return ww+(wh?'½':'')+' week'+(ww===1&&!wh?'':'s');
 }
 function tileHeight(days){
-  // Fixed compact height — just tall enough for task name + time label + 25px breathing room
-  // TILE_FS(16) + TILE_TIME_FS(13) + line spacing (~6) + 25px padding = ~60px base
-  // Scale very slightly for longer tasks so multi-line names have room
-  if(days<=1)return 62;
-  if(days<=3)return 70;
-  if(days<=7)return 76;
-  return Math.round(76+(days-7)*4);
+  // Very compact — just enough for task name + time label with minimal padding
+  // TILE_FS(16px ~20px line) + TILE_TIME_FS(13px ~16px line) + 14px top+bottom padding = ~50px
+  return 50;
 }
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
@@ -782,28 +779,29 @@ function renderProjects(){
       const base=phaseBase(proj);
       const n=proj.tasks.length;
       const isAdding=addingToProject===proj.id;
-      const cols=Math.min(Math.max(n,1),BASE_COLS);
-      const max=getMax(proj);
-      const flatBg=projTileColor(base);
-      const flatTc=projTextColor(base);
-      const flatSc=projSubColor(base);
-      const doneBg=heatColor(base,0.5,7);
+      // Compute card background — very light tint of phase color
+      const [cr,cg,cb]=hexRgb(base);
+      const cardBg=`rgb(${Math.round(cr*0.12+255*0.88)},${Math.round(cg*0.12+255*0.88)},${Math.round(cb*0.12+255*0.88)})`;
+      const cardBorder=`rgb(${Math.round(cr*0.25+255*0.75)},${Math.round(cg*0.25+255*0.75)},${Math.round(cb*0.25+255*0.75)})`;
+      const accentColor=`rgb(${Math.round(cr*0.6)},${Math.round(cg*0.6)},${Math.round(cb*0.6)})`;
 
       const block=document.createElement('div');
       block.className='project-block';
-      block.style.width='100%';
+      block.style.cssText=`width:100%;background:${cardBg};border:1px solid ${cardBorder};border-radius:8px;padding:16px 18px;`;
 
+      // Header inside card
       const hdr=document.createElement('div');
       hdr.className='project-header';
-      hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:4px;">
-        <span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
+      hdr.style.marginBottom='10px';
+      hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:3px;">
+        <span class="project-name" style="font-size:${TITLE_FS}px;color:#1a1a18;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
         <span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>
-        <button class="add-task-below" onclick="openInlineAdd(${proj.id})">+ Add Task</button>
+        <button class="add-task-below" onclick="openInlineAdd(${proj.id})">+ Add task</button>
       </div>
-        <div class="project-meta">
-          <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
-          <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
-        </div>`;
+      <div class="project-meta">
+        <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
+        <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
+      </div>`;
       block.appendChild(hdr);
 
       // Progress bar
@@ -817,91 +815,114 @@ function renderProjects(){
           <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
           <span class="progress-pct">${pct}%</span>
         </div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width:${pct}%;background:${base};"></div>
+        <div class="progress-track" style="background:${cardBorder};">
+          <div class="progress-fill" style="width:${pct}%;background:${accentColor};"></div>
         </div>`;
       block.appendChild(prog);
 
-    const rect=document.createElement('div');
-    rect.className='tiles-rect';
-    rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
-    rect.style.gridAutoRows='1fr';
-    rect.style.width='100%';
+      // Task list
+      const taskList=document.createElement('div');
+      taskList.style.cssText='display:flex;flex-direction:column;margin-top:8px;';
 
-    if(!n && !isAdding){
-      const emp=document.createElement('div');
-      emp.style.cssText=`height:120px;display:flex;align-items:center;justify-content:center;font-size:14px;color:${flatSc};background:${flatBg};grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
-      emp.textContent='No tasks yet';
-      rect.appendChild(emp);
-    }
-
-    proj.tasks.forEach(t=>{
-      const editing=editingTask&&editingTask.projId===proj.id&&editingTask.taskId===t.id;
-      const h=tileHeight(t.days);
-      const bg=t.done?doneBg:flatBg;
-      const tc=t.done?'rgba(30,22,14,0.35)':flatTc;
-      const sc=t.done?'rgba(30,22,14,0.25)':flatSc;
-
-      if(editing){
-        const cell=document.createElement('div');
-        cell.className='inline-edit';
-        cell.style.minHeight=h+'px';
-        cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
-          <div class="inline-edit-name">${t.name}</div>
-          <select id="ed-${t.id}"></select>
-          <div class="inline-edit-btns">
-            <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
-            <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
-            <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
-          </div>`;
-        rect.appendChild(cell);
-        setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
-      } else {
-        const tile=document.createElement('div');
-        tile.className='tile'+(t.done?' done':'');
-        tile.style.cssText=`background:${bg};min-height:${h}px;border:1px solid #f0ebe2;`;
-        const delColor=flatTc==='rgba(255,255,255,0.94)'?'rgba(255,255,255,0.5)':'rgba(30,22,14,0.35)';
-        tile.innerHTML=`<button class="tile-delete" style="color:${delColor};" onclick="deleteTile(event,${proj.id},${t.id})">&#x2715;</button>
-          <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};cursor:text;" onclick="editTileName(event,${proj.id},${t.id},this)">${t.name}</div>
-          <div class="tile-bottom">
-            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);cursor:pointer;" onclick="openEdit(${proj.id},${t.id})">${timeLabel(t.days).toUpperCase()}</span>
-            <div class="tile-check${t.done?' checked':''}">
-              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>`;
-        tile.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
-        const chk=tile.querySelector('.tile-check');
-        if(chk)chk.addEventListener('click',(e)=>{e.stopPropagation();markDoneCtx(proj.id,t.id);});
-        rect.appendChild(tile);
+      if(!n && !isAdding){
+        const emp=document.createElement('div');
+        emp.style.cssText='padding:12px 0;font-size:13px;color:#aaa;font-family:"clarendon-text-pro",serif;font-style:italic;';
+        emp.textContent='No tasks yet';
+        taskList.appendChild(emp);
       }
-    });
 
-    // Inline add form appears as extra cell inside grid
-    if(isAdding){
-      const form=document.createElement('div');
-      form.className='new-task-form';
-      form.style.minHeight=tileHeight(1)+'px';
-      form.innerHTML=`<div class="ntf-label">New task</div>
-        <input type="text" id="ntf-name-${proj.id}" placeholder="Task name..." />
-        <select id="ntf-days-${proj.id}"></select>
-        <div class="new-task-form-btns">
-          <button class="btn-save" onclick="submitInlineTask(${proj.id})">Add</button>
-          <button class="btn-cancel" onclick="cancelInlineAdd()">&#x2715;</button>
-        </div>`;
-      rect.appendChild(form);
-      setTimeout(()=>{
-        buildTimeSelect(`ntf-days-${proj.id}`,1);
-        const inp=document.getElementById(`ntf-name-${proj.id}`);
-        if(inp)inp.focus();
-      },0);
-    }
+      proj.tasks.forEach(t=>{
+        const editing=editingTask&&editingTask.projId===proj.id&&editingTask.taskId===t.id;
 
-    block.appendChild(rect);
+        if(editing){
+          const cell=document.createElement('div');
+          cell.className='inline-edit';
+          cell.style.cssText='margin-bottom:4px;border-radius:4px;';
+          cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
+            <div class="inline-edit-name">${t.name}</div>
+            <select id="ed-${t.id}"></select>
+            <div class="inline-edit-btns">
+              <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
+              <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
+              <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
+            </div>`;
+          taskList.appendChild(cell);
+          setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
+        } else {
+          const row=document.createElement('div');
+          row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid ${cardBorder};${t.done?'opacity:0.45;':''}`;
 
+          // Checkbox
+          const chk=document.createElement('button');
+          chk.style.cssText=`width:16px;height:16px;border-radius:50%;border:1.5px solid ${accentColor};background:${t.done?accentColor:'transparent'};cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;padding:0;`;
+          chk.innerHTML=t.done?`<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:'';
+          chk.addEventListener('click',(e)=>{e.stopPropagation();markDoneCtx(proj.id,t.id);});
 
-    phaseGrid.appendChild(block);
+          // Task text block
+          const txt=document.createElement('div');
+          txt.style.cssText='flex:1;min-width:0;';
+          // Task name — editable, sentence case
+          const nameLine=document.createElement('div');
+          const displayName=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
+          nameLine.style.cssText=`font-family:"clarendon-text-pro",serif;font-size:14px;color:#2a2018;line-height:1.4;cursor:text;`;
+          nameLine.textContent=displayName;
+          nameLine.addEventListener('click',(e)=>{
+            e.stopPropagation();
+            const orig=t.name;
+            const inp=document.createElement('input');
+            inp.type='text';
+            inp.value=displayName;
+            inp.style.cssText='font-family:"clarendon-text-pro",serif;font-size:14px;color:#2a2018;background:transparent;border:none;border-bottom:1.5px solid '+accentColor+';outline:none;width:100%;padding:0;';
+            nameLine.replaceWith(inp);
+            inp.focus();inp.select();
+            const save=()=>{const v=inp.value.trim();if(v)t.name=v;scheduleSave();renderProjects();};
+            inp.addEventListener('blur',save);
+            inp.addEventListener('keydown',(ev)=>{if(ev.key==='Enter'){ev.preventDefault();inp.blur();}if(ev.key==='Escape'){t.name=orig;inp.blur();}});
+          });
+          // Time label
+          const timeLine=document.createElement('div');
+          timeLine.style.cssText=`font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${accentColor};margin-top:2px;cursor:pointer;`;
+          timeLine.textContent=timeLabel(t.days);
+          timeLine.addEventListener('click',(e)=>{e.stopPropagation();openEdit(proj.id,t.id);});
+          txt.appendChild(nameLine);
+          txt.appendChild(timeLine);
+
+          // Delete button
+          const del=document.createElement('button');
+          del.style.cssText='background:none;border:none;cursor:pointer;color:#cca0a0;font-size:12px;padding:0 2px;flex-shrink:0;opacity:0;transition:opacity 0.15s;margin-top:2px;';
+          del.innerHTML='&#x2715;';
+          del.addEventListener('click',(e)=>{e.stopPropagation();deleteTile(e,proj.id,t.id);});
+
+          row.appendChild(chk);
+          row.appendChild(txt);
+          row.appendChild(del);
+          row.addEventListener('mouseenter',()=>del.style.opacity='1');
+          row.addEventListener('mouseleave',()=>del.style.opacity='0');
+          row.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
+          taskList.appendChild(row);
+        }
+      });
+
+      // Inline add form
+      if(isAdding){
+        const form=document.createElement('div');
+        form.style.cssText='display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1px solid '+cardBorder+';margin-top:4px;';
+        form.innerHTML=`<input type="text" id="ntf-name-${proj.id}" placeholder="Task name..." style="font-family:'clarendon-text-pro',serif;font-size:14px;background:transparent;border:none;border-bottom:1.5px solid ${accentColor};outline:none;color:#2a2018;padding:2px 0;" />
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="ntf-days-${proj.id}" style="font-size:12px;background:transparent;border:0.5px solid ${cardBorder};color:#555;padding:3px 6px;border-radius:3px;font-family:'clarendon-text-pro',serif;"></select>
+            <button class="btn-save" onclick="submitInlineTask(${proj.id})" style="font-size:11px;padding:4px 10px;">Add</button>
+            <button class="btn-cancel" onclick="cancelInlineAdd()" style="font-size:11px;padding:4px 8px;">&#x2715;</button>
+          </div>`;
+        taskList.appendChild(form);
+        setTimeout(()=>{
+          buildTimeSelect(`ntf-days-${proj.id}`,1);
+          const inp=document.getElementById(`ntf-name-${proj.id}`);
+          if(inp)inp.focus();
+        },0);
+      }
+
+      block.appendChild(taskList);
+      phaseGrid.appendChild(block);
     }); // end projs.forEach
 
     section.appendChild(phaseGrid);
@@ -1228,7 +1249,7 @@ function renderGantt(){
   const todayOffset=(today-monday)/(1000*60*60*24*7);
 
   // Group projects by phase
-  const PHASE_ORDER=['new-construction','in-construction','renovation','prospect',''];
+  const PHASE_ORDER=['new-construction','renovation','in-construction','prospect',''];
   const PHASE_LABELS={
     'new-construction':'New Construction',
     'in-construction':'In Construction',
@@ -1245,10 +1266,10 @@ function renderGantt(){
 
   let html='<colgroup><col style="width:200px;min-width:160px;">';
   for(let i=0;i<WEEKS;i++)html+=`<col style="width:${CELL_W}px;min-width:${CELL_W}px;">`;
-  html+='</colgroup>';
+  html+='</colgroup><thead>';
 
   // Month header row
-  html+='<tr style="background:#e8e2d8;"><th style="border-bottom:1px solid #d0cbc2;"></th>';
+  html+='<tr style="background:#e8e2d8;"><th style="border-bottom:1px solid #d0cbc2;background:#e8e2d8;"></th>';
   let prevMonth=-1,spanCount=0,monthBuffer=[];
   weeks.forEach((d,i)=>{
     const m=d.getMonth();
@@ -1260,17 +1281,17 @@ function renderGantt(){
   });
   const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   monthBuffer.forEach(mb=>{
-    html+=`<th colspan="${mb.span}" style="text-align:left;padding:5px 8px 3px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:#777;border-bottom:1px solid #d0cbc2;border-left:1px dotted #ccc;">${monthNames[mb.month]} ${mb.year}</th>`;
+    html+=`<th colspan="${mb.span}" style="text-align:left;padding:5px 8px 3px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:#777;border-bottom:1px solid #d0cbc2;border-left:1px dotted #ccc;background:#e8e2d8;">${monthNames[mb.month]} ${mb.year}</th>`;
   });
   html+='</tr>';
 
   // Week date row
-  html+='<tr style="background:#ede7dc;"><th style="border-bottom:2px solid #c8c0b4;"></th>';
+  html+='<tr style="background:#ede7dc;"><th style="border-bottom:2px solid #c8c0b4;background:#ede7dc;"></th>';
   weeks.forEach((d,i)=>{
     const isTodayCol=i===Math.floor(todayOffset);
-    html+=`<th style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:11px;color:${isTodayCol?'#C97B52':'#aaa'};padding:2px 4px 6px;text-align:left;white-space:nowrap;border-left:1px dotted #ccc;border-bottom:2px solid #c8c0b4;font-weight:${isTodayCol?'bold':'300'};">${d.getMonth()+1}/${d.getDate()}</th>`;
+    html+=`<th style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:${isTodayCol?'bold':'300'};font-size:11px;color:${isTodayCol?'#C97B52':'#aaa'};padding:2px 4px 6px;text-align:left;white-space:nowrap;border-left:1px dotted #ccc;border-bottom:2px solid #c8c0b4;background:#ede7dc;">${d.getMonth()+1}/${d.getDate()}</th>`;
   });
-  html+='</tr>';
+  html+='</tr></thead><tbody>';
 
   let hasAny=false;
   PHASE_ORDER.forEach(phase=>{
@@ -1307,6 +1328,7 @@ function renderGantt(){
     html+=`<tr><td colspan="${WEEKS+1}" style="padding:40px 0;text-align:center;color:#aaa;font-family:'clarendon-text-pro',serif;font-size:13px;">No active projects</td></tr>`;
   }
 
+  html+='</tbody>';
   table.innerHTML=html;
 }
 
