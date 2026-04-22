@@ -1240,7 +1240,7 @@ function renderGantt(){
   html+='<tr style="background:#ede7dc;"><th style="border-bottom:2px solid #c8c0b4;"></th>';
   weeks.forEach((d,i)=>{
     const isTodayCol=i===Math.floor(todayOffset);
-    html+=`<th style="font-family:'clarendon-text-pro',serif;font-size:9px;color:${isTodayCol?'#C97B52':'#aaa'};padding:2px 4px 6px;text-align:left;white-space:nowrap;border-left:1px dotted #ccc;border-bottom:2px solid #c8c0b4;font-weight:${isTodayCol?'bold':'normal'};">${d.getMonth()+1}/${d.getDate()}</th>`;
+    html+=`<th style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:11px;color:${isTodayCol?'#C97B52':'#aaa'};padding:2px 4px 6px;text-align:left;white-space:nowrap;border-left:1px dotted #ccc;border-bottom:2px solid #c8c0b4;font-weight:${isTodayCol?'bold':'300'};">${d.getMonth()+1}/${d.getDate()}</th>`;
   });
   html+='</tr>';
 
@@ -1251,7 +1251,7 @@ function renderGantt(){
     hasAny=true;
 
     // Section header
-    html+=`<tr style="background:#ddd5c8;"><td colspan="${WEEKS+1}" style="padding:6px 10px 4px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:#5a4a3a;border-top:1.5px solid #c4bab0;border-bottom:0.5px solid #ccc5bb;">${PHASE_LABELS[phase]}</td></tr>`;
+    html+=`<tr style="background:#ddd5c8;"><td colspan="${WEEKS+1}" style="padding:6px 10px 4px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:19px;letter-spacing:0.08em;text-transform:uppercase;color:#5a4a3a;border-top:1.5px solid #c4bab0;border-bottom:0.5px solid #ccc5bb;">${PHASE_LABELS[phase]}</td></tr>`;
 
     projs.forEach(proj=>{
       const base=phaseBase(proj);
