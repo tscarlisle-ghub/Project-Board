@@ -104,7 +104,8 @@
           "done": false
         }
       ],
-      "type": "renovation"
+      "type": "renovation",
+      "staff": "Kat"
     },
     {
       "id": 10,
@@ -326,5 +327,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T16:29:19.712Z"
+  "lastSaved": "2026-04-22T16:29:29.084Z"
 }
