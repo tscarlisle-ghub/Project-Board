@@ -27,8 +27,8 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TOOLBAR ── */
 .toolbar{padding:10px 32px;background:#1a1a18;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2a2a28;}
-.toolbar input[type=text]{font-size:13px;background:#111;border:0.5px solid #333;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"clarendon-text-pro",serif;flex:1;min-width:180px;}
-.toolbar input::placeholder{color:#6a6a60;}
+.toolbar input[type=text]{font-size:18px;background:#111;border:0.5px solid #333;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
+.toolbar input::placeholder{color:#5a5a54;}
 .toolbar select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
 .toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #555;color:#aaa;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
 .toolbar button:hover{background:#2a2a28;color:#ddd;}
@@ -46,9 +46,10 @@ body{font-family:"clarendon-text-pro",serif;}
 .project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;cursor:pointer;border-bottom:1px solid transparent;transition:border-color 0.15s;}
 .project-name:hover{border-bottom-color:rgba(0,0,0,0.2);}
 .project-name-input{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;border:none;border-bottom:1.5px solid #C97B52;background:transparent;outline:none;padding:0;width:auto;min-width:120px;}
-.project-meta{margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0;}
-.project-total-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;}
-.project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:15px;color:#888;}
+.project-meta{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.project-total-stack{display:flex;flex-direction:column;align-items:flex-end;gap:0;}
+.project-total-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;font-family:"clarendon-text-pro",serif;line-height:1.2;}
+.project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;color:#888;letter-spacing:0.06em;text-transform:uppercase;line-height:1.2;}
 .archive-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#bbb;cursor:pointer;background:none;border:0.5px solid #ccc;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
 .archive-btn-proj:hover{color:#444;border-color:#777;}
 
@@ -58,9 +59,9 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile.done{opacity:0.38;}
 .tile-name{font-family:"clarendon-text-pro",serif;font-weight:400;line-height:1.35;}
 .tile-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
-.tile-time{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;letter-spacing:0.04em;}
-.tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.tile-check.checked{background:rgba(0,0,0,0.12);}
+.tile-time{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;}
+.tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.5);background:#f0ebe2;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tile-check.checked{background:rgba(0,0,0,0.18);border-color:rgba(255,255,255,0.9);}
 .tile-check svg{display:none;}
 .tile-check.checked svg{display:block;}
 .tile-delete{position:absolute;top:5px;right:6px;width:18px;height:18px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,background 0.15s;font-size:12px;color:rgba(255,255,255,0.7);padding:0;line-height:1;}
@@ -145,6 +146,7 @@ body{font-family:"clarendon-text-pro",serif;}
   <span class="sync-status" id="sync-status"></span>
   <div class="topbar-right">
     <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
+    <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
     <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
     <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
   </div>
@@ -161,12 +163,17 @@ body{font-family:"clarendon-text-pro",serif;}
   <div class="projects-grid" id="projects-grid"></div>
 </div>
 
-<div id="archive-section" style="display:none;" class="archive-section">
-  <div class="archive-header">
-    <button class="archive-toggle" onclick="toggleArchiveView()" id="archive-toggle-btn">Archived Projects</button>
-    <span class="archive-count" id="archive-count"></span>
+<div id="archive-page" style="display:none;">
+  <div class="board">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+      <span style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;">Archived Projects</span>
+      <span id="archive-count" style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;font-family:'clarendon-text-pro',serif;"></span>
+    </div>
+    <div class="projects-grid" id="archived-list"></div>
+    <div id="archive-empty" style="display:none;padding:60px 0;text-align:center;">
+      <div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#c0b8b0;">No archived projects</div>
+    </div>
   </div>
-  <div class="archived-list" id="archived-list" style="display:none;"></div>
 </div>
 
 <div id="ctx-menu" class="ctx-menu" style="display:none;"></div>
@@ -487,8 +494,10 @@ function renderProjects(){
     hdr.className='project-header';
     hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
       <div class="project-meta">
-        <span class="project-total-label">Total</span>
-        <span class="project-total-val">${fmtTotal(totalDays(proj.tasks))}</span>
+        <div class="project-total-stack">
+          <span class="project-total-label">Total</span>
+          <span class="project-total-val">${fmtTotal(totalDays(proj.tasks))}</span>
+        </div>
         <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
       </div>`;
     block.appendChild(hdr);
@@ -546,13 +555,13 @@ function renderProjects(){
       } else {
         const tile=document.createElement('div');
         tile.className='tile'+(t.done?' done':'');
-        tile.style.cssText=`background:${bg};min-height:${h}px;border:1px solid ${bg};`;
+        tile.style.cssText=`background:${bg};min-height:${h}px;border:1px solid #f0ebe2;`;
         const delColor=flatTc==='rgba(255,255,255,0.94)'?'rgba(255,255,255,0.5)':'rgba(30,22,14,0.35)';
         tile.innerHTML=`<button class="tile-delete" style="color:${delColor};" onclick="deleteTile(event,${proj.id},${t.id})">&#x2715;</button>
           <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
           <div class="tile-bottom">
-            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);">${timeLabel(t.days)}</span>
-            <div class="tile-check${t.done?' checked':''}" style="border-color:${sc};">
+            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);">${timeLabel(t.days).toUpperCase()}</span>
+            <div class="tile-check${t.done?' checked':''}">
               <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                 <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
@@ -614,7 +623,10 @@ function renderProjects(){
 
   buildTimeSelect('new-task-days',1);
   renderProjectSelect();
-  renderArchiveSection(archived);
+  // Update archive nav button count
+  const archivedCount=projects.filter(p=>p.archived).length;
+  const archBtn=document.getElementById('archive-nav-btn');
+  if(archBtn)archBtn.textContent=archivePageOpen?'\u2190 Board':'Archive'+(archivedCount?' ('+archivedCount+')':'');
 }
 
 /* ── INLINE ADD ── */
@@ -743,23 +755,38 @@ function createProject(){
   showNewProject=false;scheduleSave();renderProjects();
 }
 function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
-function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;scheduleSave();renderProjects();}
-function toggleArchiveView(){showArchived=!showArchived;renderProjects();}
+function restoreProject(id){
+  const p=projects.find(p=>p.id===id);
+  if(p)p.archived=false;
+  scheduleSave();
+  renderProjects();
+  // If archive page is open, refresh it or close if empty
+  if(archivePageOpen){
+    const remaining=projects.filter(p=>p.archived);
+    if(remaining.length===0){toggleArchivePage();}
+    else{renderArchiveSection(remaining);}
+  }
+}
+let archivePageOpen=false;
+function toggleArchivePage(){
+  archivePageOpen=!archivePageOpen;
+  document.getElementById('archive-page').style.display=archivePageOpen?'block':'none';
+  document.querySelector('.board').style.display=archivePageOpen?'none':'block';
+  document.querySelector('.toolbar').style.display=archivePageOpen?'none':'flex';
+  document.getElementById('archive-nav-btn').textContent=archivePageOpen?'\u2190 Board':'Archive';
+  if(archivePageOpen)renderArchiveSection(projects.filter(p=>p.archived));
+}
+function toggleArchiveView(){toggleArchivePage();}
 
-/* ── ARCHIVE SECTION ── */
+/* ── ARCHIVE PAGE ── */
 function renderArchiveSection(archived){
-  const sec=document.getElementById('archive-section');
   const list=document.getElementById('archived-list');
-  const btn=document.getElementById('archive-toggle-btn');
   const cnt=document.getElementById('archive-count');
-  if(!archived.length){sec.style.display='none';return;}
-  sec.style.display='block';
+  const empty=document.getElementById('archive-empty');
+  if(!list)return;
   cnt.textContent=archived.length+' project'+(archived.length===1?'':'s');
-  btn.textContent=(showArchived?'▲ ':'▼ ')+'Archived Projects';
-  list.style.display=showArchived?'flex':'none';
-  if(!showArchived){list.innerHTML='';return;}
-
-  // Render full project cards for archived projects
+  if(!archived.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
   list.innerHTML='';
   const rw=getRectW();
 
@@ -770,58 +797,52 @@ function renderArchiveSection(archived){
     const allDays=totalDays(proj.tasks);
     const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
     const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
+    const flatBg=projTileColor(pal.base);
+    const flatTc=projTextColor(pal.base);
 
     const block=document.createElement('div');
-    block.className='archived-project-block';
-    block.style.width=rw+'px';
+    block.className='project-block';
+    block.style.cssText='width:'+rw+'px;opacity:0.7;';
 
-    // Header
     const hdr=document.createElement('div');
-    hdr.className='archived-project-header';
-    hdr.innerHTML=`
-      <span class="archived-project-name" style="font-size:${TITLE_FS}px;">${proj.name}</span>
-      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;">
-        <span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;font-family:'clarendon-text-pro',serif;">${fmtTotal(allDays)} total</span>
+    hdr.className='project-header';
+    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;cursor:default;border-bottom:none;">${proj.name}</span>
+      <div class="project-meta">
+        <div class="project-total-stack">
+          <span class="project-total-label">Total</span>
+          <span class="project-total-val">${fmtTotal(allDays)}</span>
+        </div>
         <button class="restore-btn" onclick="restoreProject(${proj.id})">Restore</button>
       </div>`;
     block.appendChild(hdr);
 
-    // Progress bar
     const prog=document.createElement('div');
     prog.className='progress-wrap';
-    prog.innerHTML=`
-      <div class="progress-labels">
+    prog.innerHTML=`<div class="progress-labels">
         <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
         <span class="progress-pct">${pct}%</span>
       </div>
       <div class="progress-track">
-        <div class="progress-fill" style="width:${pct}%;background:${pal.base};opacity:0.5;"></div>
+        <div class="progress-fill" style="width:${pct}%;background:${pal.base};opacity:0.6;"></div>
       </div>`;
     block.appendChild(prog);
 
-    // Tile grid — same layout, muted colors
     const rect=document.createElement('div');
     rect.className='tiles-rect';
-    rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
-    rect.style.gridAutoRows='1fr';
-    rect.style.width=rw+'px';
-    rect.style.filter='grayscale(30%)';
+    rect.style.cssText='grid-template-columns:repeat('+cols+',1fr);grid-auto-rows:1fr;width:'+rw+'px;filter:grayscale(25%);';
 
     if(!n){
       const emp=document.createElement('div');
-      emp.style.cssText=`height:80px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;background:#ddd8cf;grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
+      emp.style.cssText='height:80px;display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,0.4);background:'+flatBg+';grid-column:1/-1;font-family:"clarendon-text-pro",serif;';
       emp.textContent='No tasks';
       rect.appendChild(emp);
     } else {
-      const flatBg=projTileColor(pal.base);
-      const flatTc=projTextColor(pal.base);
       proj.tasks.forEach(t=>{
         const h=tileHeight(t.days);
         const tile=document.createElement('div');
-        tile.style.cssText=`background:${flatBg};min-height:${h}px;border:1px solid ${flatBg};display:flex;flex-direction:column;justify-content:space-between;padding:10px 13px;overflow:hidden;`;
-        tile.innerHTML=`
-          <div style="font-family:'clarendon-text-pro',serif;font-weight:400;font-size:${TILE_FS}px;color:${flatTc};line-height:1.35;${t.done?'text-decoration:line-through;opacity:0.5;':''}">${t.name}</div>
-          <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.7);margin-top:6px;">${timeLabel(t.days)}</div>`;
+        tile.style.cssText='background:'+flatBg+';min-height:'+h+'px;border:1px solid #f0ebe2;display:flex;flex-direction:column;justify-content:space-between;padding:12px 14px;overflow:hidden;'+(t.done?'opacity:0.4;':'');
+        tile.innerHTML='<div style="font-family:\'clarendon-text-pro\',serif;font-weight:400;font-size:'+TILE_FS+'px;color:'+flatTc+';line-height:1.35;">'+t.name+'</div>'
+          +'<div style="font-family:\'trade-gothic-next-lt-pro\',sans-serif;font-weight:300;font-size:'+TILE_TIME_FS+'px;color:rgba(255,255,255,0.75);letter-spacing:0.08em;text-transform:uppercase;margin-top:6px;">'+timeLabel(t.days).toUpperCase()+'</div>';
         rect.appendChild(tile);
       });
     }
