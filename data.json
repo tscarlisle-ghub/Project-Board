@@ -116,7 +116,7 @@
           "id": 54,
           "name": "Check in with David Brush",
           "days": 1,
-          "done": false
+          "done": true
         },
         {
           "id": 55,
@@ -412,5 +412,5 @@
     }
   ],
   "nextId": 61,
-  "lastSaved": "2026-04-22T17:44:12.989Z"
+  "lastSaved": "2026-04-22T17:45:59.577Z"
 }
