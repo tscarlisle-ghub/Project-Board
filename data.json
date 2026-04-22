@@ -211,7 +211,14 @@
       "colorIdx": 9,
       "archived": false,
       "type": "new-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 56,
+          "name": "Start Interiors",
+          "days": 1,
+          "done": false
+        }
+      ],
       "staff": "Kathleen"
     },
     {
@@ -379,6 +386,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 56,
-  "lastSaved": "2026-04-22T17:39:02.440Z"
+  "nextId": 57,
+  "lastSaved": "2026-04-22T17:39:28.723Z"
 }
