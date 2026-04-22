@@ -35,10 +35,10 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── PROJECT TYPE TAG ── */
 .proj-tag{display:inline-block;font-family:"trade-gothic-next-compressed",sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:1px 6px;border-radius:3px;margin-left:10px;vertical-align:middle;line-height:1.5;background:none;}
-.proj-tag.new-construction{color:#1a2d48;border:0.5px solid #243f63;}
-.proj-tag.renovation{color:#3d2e22;border:0.5px solid #6b5344;}
-.proj-tag.in-construction{color:#1e3828;border:0.5px solid #3d6b58;}
-.proj-tag.prospect{color:#1e3d47;border:0.5px solid #4a8fa0;}
+.proj-tag.new-construction{color:#2e5a60;border:0.5px solid #4e7a80;}
+.proj-tag.renovation{color:#3a5a5e;border:0.5px solid #6a8f94;}
+.proj-tag.in-construction{color:#2a4a50;border:0.5px solid #5a7a84;}
+.proj-tag.prospect{color:#4a6e72;border:0.5px solid #8aabaf;}
 
 /* ── GANTT ── */
 /* ── GANTT TOPBAR ── */
@@ -61,7 +61,7 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#a09080;padding:0 0 6px;border-bottom:1px solid #d8d0c4;margin-bottom:16px;}
+.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;background:#dce8ea;border-radius:4px;margin-bottom:16px;border:none;}
 
 /* ── STAFF TAG ── */
 .staff-tag{display:inline-block;font-family:"trade-gothic-next-condensed",sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:1px 7px;border-radius:2px;background:#e8e2d8;color:#6a5a48;border:0.5px solid #c8bfb0;margin-top:3px;}
@@ -89,8 +89,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;color:#888;letter-spacing:0.06em;text-transform:uppercase;line-height:1.2;}
 .archive-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#bbb;cursor:pointer;background:none;border:0.5px solid #ccc;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
 .archive-btn-proj:hover{color:#444;border-color:#777;}
-.delete-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#c08080;cursor:pointer;background:none;border:0.5px solid #c08080;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
-.delete-btn-proj:hover{color:#8a2020;border-color:#8a2020;}
+.delete-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#c8a0a0;cursor:pointer;background:none;border:0.5px solid #c8a0a0;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
+.delete-btn-proj:hover{color:#a04040;border-color:#a04040;}
 
 /* ── TILES ── */
 .tiles-rect{display:grid;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.14);}
@@ -304,18 +304,18 @@ const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/$
 
 /* ── PALETTE & TIME OPTIONS ── */
 const PALETTE=[
-  {name:'Charcoal',    base:'#2e2b27'},
-  {name:'Walnut',      base:'#6b5344'},
-  {name:'Sand',        base:'#d4a882'},
-  {name:'Linen',       base:'#e2d4b8'},
-  {name:'Navy',        base:'#243f63'},
-  {name:'Slate',       base:'#5a6e72'},
-  {name:'Steel Blue',  base:'#4a8fa0'},
-  {name:'Khaki',       base:'#b8aa8a'},
-  {name:'Crimson',     base:'#b83248'},
-  {name:'Terracotta',  base:'#d4723a'},
-  {name:'Straw',       base:'#e0c85a'},
-  {name:'Forest',      base:'#3d6b58'},
+  {name:'Steel Grey',   base:'#8aabaf'},
+  {name:'Mist',         base:'#a4bfc2'},
+  {name:'Pale Steel',   base:'#bdd3d6'},
+  {name:'Ice',          base:'#d6e8ea'},
+  {name:'Frost',        base:'#edf4f5'},
+  {name:'Slate',        base:'#6a8f94'},
+  {name:'Deep Steel',   base:'#4e7a80'},
+  {name:'Dusk',         base:'#7a9a9e'},
+  {name:'Pewter',       base:'#8a9ea0'},
+  {name:'Cloud',        base:'#c8dfe1'},
+  {name:'Ash',          base:'#b0c4c8'},
+  {name:'Navy Mist',    base:'#5a7a84'},
 ];
 
 const TYPE_LABELS={
@@ -403,7 +403,7 @@ const BASE_COLS=2,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=33;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
-  {id:1,name:'Young Residence',colorIdx:4,archived:false,type:'renovation',staff:'Scott',tasks:[
+  {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',staff:'Scott',tasks:[
     {id:1,name:'QA drawing set review',days:1,done:false},
     {id:2,name:'Update site plan',days:0.5,done:true},
     {id:3,name:'Coordinate with MEP',days:1,done:false},
@@ -411,23 +411,23 @@ const SAMPLE_PROJECTS=[
     {id:5,name:'Detail stair section',days:2,done:false},
     {id:6,name:'Exterior elevation review',days:1,done:false},
   ]},
-  {id:2,name:'Philip & Breanna',colorIdx:11,archived:false,type:'new-construction',staff:'Scott',tasks:[
+  {id:2,name:'Philip & Breanna',colorIdx:5,archived:false,type:'new-construction',staff:'Scott',tasks:[
     {id:7,name:'Interior coord — Laurin',days:1,done:false},
     {id:8,name:'Builder mtg w/ Nikolaus',days:0.5,done:true},
     {id:9,name:'Finish material schedule',days:1.5,done:false},
     {id:10,name:'Window schedule',days:1,done:false},
   ]},
-  {id:3,name:'Wine Store – Vestavia',colorIdx:9,archived:false,type:'prospect',staff:'Scott',tasks:[
+  {id:3,name:'Wine Store – Vestavia',colorIdx:2,archived:false,type:'prospect',staff:'Scott',tasks:[
     {id:11,name:'Fee proposal revisions',days:0.5,done:true},
     {id:12,name:'Schematic floor plan',days:3,done:false},
     {id:13,name:'Client presentation',days:1,done:false},
   ]},
-  {id:4,name:'Ray Residence',colorIdx:5,archived:false,type:'in-construction',staff:'Scott',tasks:[
+  {id:4,name:'Ray Residence',colorIdx:6,archived:false,type:'in-construction',staff:'Scott',tasks:[
     {id:14,name:'Equalized bid comparison',days:1,done:true},
     {id:15,name:'Architect estimate review',days:1,done:false},
     {id:16,name:'Contract revisions',days:0.5,done:false},
   ]},
-  {id:5,name:'CMA Office Relocation',colorIdx:1,archived:false,type:'renovation',staff:'Scott',tasks:[
+  {id:5,name:'CMA Office Relocation',colorIdx:9,archived:false,type:'renovation',staff:'Scott',tasks:[
     {id:17,name:'Construction docs QA',days:3,done:false},
     {id:18,name:'Lease review',days:1,done:true},
     {id:19,name:'Contractor coordination',days:2,done:false},
