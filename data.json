@@ -117,6 +117,12 @@
           "name": "Check in with David Brush",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 55,
+          "name": "Update Billing",
+          "days": 1,
+          "done": false
         }
       ],
       "type": "new-construction",
@@ -373,6 +379,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 55,
-  "lastSaved": "2026-04-22T17:38:54.810Z"
+  "nextId": 56,
+  "lastSaved": "2026-04-22T17:39:02.440Z"
 }
