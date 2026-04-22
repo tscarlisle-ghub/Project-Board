@@ -61,7 +61,7 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;background:#dce8ea;border-radius:4px;margin-bottom:16px;border:none;}
+.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;border-radius:4px;margin-bottom:16px;border:none;}
 
 /* ── STAFF TAG ── */
 .staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#5a8088;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
@@ -403,15 +403,13 @@ function fmtTotal(d){
   return ww+(wh?'½':'')+' week'+(ww===1&&!wh?'':'s');
 }
 function tileHeight(days){
-  // Compact: tile height = line height of text * estimated lines + padding
-  // Base height for short tasks, grows moderately with days
-  if(days<=0.5)return 52;
-  if(days<=1)return 60;
-  if(days<=2)return 70;
-  if(days<=3)return 80;
-  if(days<=5)return 92;
-  if(days<=7)return 104;
-  return Math.round(104+(days-7)*6);
+  // Fixed compact height — just tall enough for task name + time label + 25px breathing room
+  // TILE_FS(16) + TILE_TIME_FS(13) + line spacing (~6) + 25px padding = ~60px base
+  // Scale very slightly for longer tasks so multi-line names have room
+  if(days<=1)return 62;
+  if(days<=3)return 70;
+  if(days<=7)return 76;
+  return Math.round(76+(days-7)*4);
 }
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
@@ -768,6 +766,18 @@ function renderProjects(){
     const sectionHdr=document.createElement('div');
     sectionHdr.className='phase-section-header';
     sectionHdr.textContent=BOARD_PHASE_LABELS[phase];
+    // Tinted background from phase color — blend toward white at 35% opacity
+    const phaseCol=PHASE_COLORS[phase]||PHASE_COLORS[''];
+    const [pr,pg,pb]=hexRgb(phaseCol);
+    const tintR=Math.round(pr*0.45+255*0.55);
+    const tintG=Math.round(pg*0.45+255*0.55);
+    const tintB=Math.round(pb*0.45+255*0.55);
+    sectionHdr.style.background=`rgb(${tintR},${tintG},${tintB})`;
+    // Text color: darker version of phase color
+    const txtR=Math.round(pr*0.5);
+    const txtG=Math.round(pg*0.5);
+    const txtB=Math.round(pb*0.5);
+    sectionHdr.style.color=`rgb(${txtR},${txtG},${txtB})`;
     section.appendChild(sectionHdr);
 
     const phaseGrid=document.createElement('div');
