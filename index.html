@@ -322,6 +322,8 @@ function tagChip(type){
   if(!type||!TYPE_LABELS[type])return '';
   return `<span class="proj-tag ${type}">${TYPE_LABELS[type]}</span>`;
 }
+
+function buildTimeOptions(){
   const o=[];
   o.push({v:0.5,l:'½ day'});
   for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'½ days'});}
