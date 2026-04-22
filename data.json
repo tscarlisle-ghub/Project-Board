@@ -77,6 +77,12 @@
           "name": "get new survey",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 19,
+          "name": "build 3d model of exterior",
+          "days": 1,
+          "done": false
         }
       ]
     },
@@ -121,6 +127,6 @@
       ]
     }
   ],
-  "nextId": 19,
-  "lastSaved": "2026-04-22T15:18:43.241Z"
+  "nextId": 20,
+  "lastSaved": "2026-04-22T15:18:55.204Z"
 }
