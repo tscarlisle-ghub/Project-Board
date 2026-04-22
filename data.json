@@ -64,6 +64,12 @@
           "name": "finish construction drawings",
           "days": 63,
           "done": false
+        },
+        {
+          "id": 21,
+          "name": "building science details",
+          "days": 5,
+          "done": false
         }
       ]
     },
@@ -134,6 +140,6 @@
       ]
     }
   ],
-  "nextId": 21,
-  "lastSaved": "2026-04-22T15:19:34.852Z"
+  "nextId": 22,
+  "lastSaved": "2026-04-22T15:20:18.887Z"
 }
