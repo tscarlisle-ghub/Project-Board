@@ -215,7 +215,7 @@
         {
           "id": 56,
           "name": "Start Interiors",
-          "days": 1,
+          "days": 7,
           "done": false
         },
         {
@@ -393,5 +393,5 @@
     }
   ],
   "nextId": 58,
-  "lastSaved": "2026-04-22T17:39:37.579Z"
+  "lastSaved": "2026-04-22T17:39:50.276Z"
 }
