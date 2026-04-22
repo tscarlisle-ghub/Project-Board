@@ -184,7 +184,14 @@
       "colorIdx": 0,
       "archived": false,
       "type": "new-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 58,
+          "name": "New floor plans for various sites",
+          "days": 1,
+          "done": false
+        }
+      ],
       "staff": "Scott"
     },
     {
@@ -392,6 +399,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 58,
-  "lastSaved": "2026-04-22T17:39:50.276Z"
+  "nextId": 59,
+  "lastSaved": "2026-04-22T17:40:02.963Z"
 }
