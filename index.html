@@ -14,7 +14,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;position:sticky;top:0;z-index:100;}
 .topbar-left{display:flex;flex-direction:column;gap:4px;}
 .topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:43px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;line-height:1.0;}
-.topbar-date{font-size:11px;color:#a07858;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
+.topbar-date{font-size:13.75px;color:#7a5e44;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
 .topbar-actions{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
 .sync-status{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;transition:color 0.3s;font-family:"clarendon-text-pro",serif;}
 .sync-status.ok{color:#7A9A6A;}
@@ -24,8 +24,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 .topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
-.topbar-btn-large{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"trade-gothic-next-condensed",sans-serif;display:inline-block;letter-spacing:0.04em;}
-.topbar-btn-large:hover{background:#9a4e10;color:#f0ddb8;border-color:#c07840;}
+.topbar-btn-large{border:0.5px solid #3a6e3a;color:#d8f0d8;background:#3a6030;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"trade-gothic-next-condensed",sans-serif;display:inline-block;letter-spacing:0.04em;}
+.topbar-btn-large:hover{background:#4a7840;color:#e8f8e8;border-color:#5a9050;}
 
 /* ── BACK BAR ── */
 .back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;position:sticky;top:0;z-index:100;}
@@ -41,7 +41,9 @@ body{font-family:"clarendon-text-pro",serif;}
 .proj-tag.prospect{color:#1e3d47;border:0.5px solid #4a8fa0;}
 
 /* ── GANTT ── */
-.gantt-page{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
+/* ── GANTT TOPBAR ── */
+.gantt-topbar{background:#422107;padding:10px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:1px solid #2e1605;}
+.gantt-page{padding:0 32px 28px;background:#f0ebe2;min-height:calc(100vh - 50px);}
 .gantt-page-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
 .gantt-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;}
 .gantt-wrap{overflow-x:auto;}
@@ -59,7 +61,10 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#a09080;padding:0 0 6px;border-bottom:1px solid #d8d0c4;margin-bottom:16px;}
+.phase-section-header{font-family:"trade-gothic-next-condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#a09080;padding:0 0 6px;border-bottom:1px solid #d8d0c4;margin-bottom:16px;}
+
+/* ── STAFF TAG ── */
+.staff-tag{display:inline-block;font-family:"trade-gothic-next-condensed",sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:1px 7px;border-radius:2px;background:#e8e2d8;color:#6a5a48;border:0.5px solid #c8bfb0;margin-top:3px;}
 .phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
 @media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
 .board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
@@ -103,8 +108,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile-delete:hover{background:rgba(0,0,0,0.28)!important;color:#fff;}
 
 /* ── ADD TASK BUTTON (below rectangle) ── */
-.add-task-below{display:inline-flex;align-items:center;margin-top:7px;font-family:"clarendon-text-pro",serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,0,0,0.55);background:none;border:none;cursor:pointer;padding:2px 0;}
-.add-task-below:hover{color:rgba(0,0,0,0.8);}
+.add-task-below{display:inline-flex;align-items:center;margin-top:7px;margin-left:50px;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#fff;background:#b8a890;border:none;border-radius:3px;cursor:pointer;padding:4px 12px;}
+.add-task-below:hover{background:#9a8a70;}
 
 /* ── PROGRESS BAR ── */
 .progress-wrap{width:100%;margin:6px 0 8px;display:flex;flex-direction:column;gap:3px;}
@@ -182,14 +187,14 @@ body{font-family:"clarendon-text-pro",serif;}
     <div class="topbar-actions">
       <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
       <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
-      <button class="topbar-btn" id="gantt-nav-btn" onclick="toggleGanttPage()">Gantt</button>
       <button class="topbar-btn" onclick="triggerImport()" title="Import projects from text file">&#8679; Import</button>
       <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">Settings</button>
       <span class="sync-status" id="sync-status"></span>
     </div>
     <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
-    <div style="margin-top:8px;">
+    <div style="margin-top:8px;display:flex;gap:10px;align-items:center;">
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ NEW PROJECT</button>
+      <button class="topbar-btn-large" id="gantt-nav-btn" onclick="toggleGanttPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">GANTT CHART</button>
     </div>
   </div>
 </div>
@@ -216,14 +221,12 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="gantt-page" style="display:none;">
-  <div class="back-bar">
+  <div class="gantt-topbar" id="gantt-topbar">
     <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
     <span class="back-page-title">/ Project Timeline</span>
+    <span class="sync-status" id="sync-status-gantt" style="margin-left:16px;"></span>
   </div>
   <div class="gantt-page">
-    <div class="gantt-page-header">
-      <div class="gantt-title">Project Timeline</div>
-    </div>
     <div class="gantt-wrap">
       <table class="gantt-table" id="gantt-table"></table>
     </div>
@@ -322,6 +325,8 @@ const TYPE_LABELS={
   'prospect':'Prospect',
   '':'',
 };
+const STAFF_MEMBERS=['Scott','Maddie','Kat','Kathleen'];
+const DEFAULT_STAFF='Scott';
 function tagChip(type){
   if(!type||!TYPE_LABELS[type])return '';
   return `<span class="proj-tag ${type}">${TYPE_LABELS[type]}</span>`;
@@ -394,11 +399,11 @@ function tileHeight(days){
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
 /* ── STATE ── */
-const BASE_COLS=2,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=29;
+const BASE_COLS=2,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=33;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
-  {id:1,name:'Young Residence',colorIdx:4,archived:false,type:'renovation',tasks:[
+  {id:1,name:'Young Residence',colorIdx:4,archived:false,type:'renovation',staff:'Scott',tasks:[
     {id:1,name:'QA drawing set review',days:1,done:false},
     {id:2,name:'Update site plan',days:0.5,done:true},
     {id:3,name:'Coordinate with MEP',days:1,done:false},
@@ -406,23 +411,23 @@ const SAMPLE_PROJECTS=[
     {id:5,name:'Detail stair section',days:2,done:false},
     {id:6,name:'Exterior elevation review',days:1,done:false},
   ]},
-  {id:2,name:'Philip & Breanna',colorIdx:11,archived:false,type:'new-construction',tasks:[
+  {id:2,name:'Philip & Breanna',colorIdx:11,archived:false,type:'new-construction',staff:'Scott',tasks:[
     {id:7,name:'Interior coord — Laurin',days:1,done:false},
     {id:8,name:'Builder mtg w/ Nikolaus',days:0.5,done:true},
     {id:9,name:'Finish material schedule',days:1.5,done:false},
     {id:10,name:'Window schedule',days:1,done:false},
   ]},
-  {id:3,name:'Wine Store – Vestavia',colorIdx:9,archived:false,type:'prospect',tasks:[
+  {id:3,name:'Wine Store – Vestavia',colorIdx:9,archived:false,type:'prospect',staff:'Scott',tasks:[
     {id:11,name:'Fee proposal revisions',days:0.5,done:true},
     {id:12,name:'Schematic floor plan',days:3,done:false},
     {id:13,name:'Client presentation',days:1,done:false},
   ]},
-  {id:4,name:'Ray Residence',colorIdx:5,archived:false,type:'in-construction',tasks:[
+  {id:4,name:'Ray Residence',colorIdx:5,archived:false,type:'in-construction',staff:'Scott',tasks:[
     {id:14,name:'Equalized bid comparison',days:1,done:true},
     {id:15,name:'Architect estimate review',days:1,done:false},
     {id:16,name:'Contract revisions',days:0.5,done:false},
   ]},
-  {id:5,name:'CMA Office Relocation',colorIdx:1,archived:false,type:'renovation',tasks:[
+  {id:5,name:'CMA Office Relocation',colorIdx:1,archived:false,type:'renovation',staff:'Scott',tasks:[
     {id:17,name:'Construction docs QA',days:3,done:false},
     {id:18,name:'Lease review',days:1,done:true},
     {id:19,name:'Contractor coordination',days:2,done:false},
@@ -562,6 +567,7 @@ function doImport(replace){
       colorIdx:getNextColor(),
       archived:false,
       type:p.type||'',
+      staff:DEFAULT_STAFF,
       tasks:p.tasks.map(t=>({id:nextId++,name:t.name,days:t.days,done:false}))
     };
     projects.push(proj);
@@ -719,7 +725,7 @@ function renderProjects(){
   }
 
   // Group by phase
-  const BOARD_PHASES=['new-construction','in-construction','renovation','prospect',''];
+  const BOARD_PHASES=['new-construction','renovation','in-construction','prospect',''];
   const BOARD_PHASE_LABELS={
     'new-construction':'New Construction',
     'in-construction':'In Construction',
@@ -767,10 +773,14 @@ function renderProjects(){
 
       const hdr=document.createElement('div');
       hdr.className='project-header';
-      hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
+      hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:3px;">
+        <span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
+        ${proj.staff?`<span class="staff-tag">${proj.staff}</span>`:''}
+      </div>
         <div class="project-meta">
           <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
           <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
+          <button class="add-task-below" style="margin-left:50px;margin-top:0;" onclick="openInlineAdd(${proj.id})">+ Add Task</button>
         </div>`;
       block.appendChild(hdr);
 
@@ -867,14 +877,6 @@ function renderProjects(){
 
     block.appendChild(rect);
 
-    // Add-task button sits below the rectangle, outside the grid
-    if(!isAdding){
-      const addBtn=document.createElement('button');
-      addBtn.className='add-task-below';
-      addBtn.innerHTML='+ Add task';
-      addBtn.addEventListener('click',()=>openInlineAdd(proj.id));
-      block.appendChild(addBtn);
-    }
 
     phaseGrid.appendChild(block);
     }); // end projs.forEach
@@ -1013,6 +1015,11 @@ function editProjectName(projId, el){
       ${['','new-construction','renovation','in-construction','prospect'].map(t=>`
         <button id="pep-type-${t||'none'}" onclick="setProjType('${t}')" style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:2px;cursor:pointer;border:1px solid ${(!proj.type&&!t)||(proj.type===t)?'#e8dcc8':'#444'};background:${(!proj.type&&!t)||(proj.type===t)?'rgba(255,255,255,0.12)':'transparent'};color:${(!proj.type&&!t)||(proj.type===t)?'#e8dcc8':'#888'};">${t?TYPE_LABELS[t]:'None'}</button>`).join('')}
     </div>
+    <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;font-family:'clarendon-text-pro',serif;">Staff</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      ${STAFF_MEMBERS.map(s=>`
+        <button id="pep-staff-${s}" onclick="setProjStaff('${s}')" style="font-family:'trade-gothic-next-condensed',sans-serif;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:2px;cursor:pointer;border:1px solid ${(proj.staff||DEFAULT_STAFF)===s?'#e8dcc8':'#444'};background:${(proj.staff||DEFAULT_STAFF)===s?'rgba(255,255,255,0.12)':'transparent'};color:${(proj.staff||DEFAULT_STAFF)===s?'#e8dcc8':'#888'};">${s}</button>`).join('')}
+    </div>
     <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;font-family:'clarendon-text-pro',serif;">Color</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       ${PALETTE.map((p,i)=>`<div onclick="setProjColor(${projId},${i})" style="width:28px;height:28px;border-radius:50%;background:${p.base};cursor:pointer;border:3px solid ${i===proj.colorIdx?'#e8dcc8':'transparent'};box-sizing:border-box;" id="pep-swatch-${i}"></div>`).join('')}
@@ -1031,6 +1038,17 @@ function editProjectName(projId, el){
   inp.addEventListener('keydown',(e)=>{
     if(e.key==='Enter'){e.preventDefault();saveProjEdit(projId);}
     if(e.key==='Escape'){closeProjEdit();}
+  });
+}
+function setProjStaff(staff){
+  window._pendingStaff=staff;
+  STAFF_MEMBERS.forEach(s=>{
+    const btn=document.getElementById(`pep-staff-${s}`);
+    if(!btn)return;
+    const active=staff===s;
+    btn.style.border=active?'1px solid #e8dcc8':'1px solid #444';
+    btn.style.background=active?'rgba(255,255,255,0.12)':'transparent';
+    btn.style.color=active?'#e8dcc8':'#888';
   });
 }
 function setProjType(type){
@@ -1064,6 +1082,10 @@ function saveProjEdit(projId){
     proj.type=window._pendingType;
     window._pendingType=undefined;
   }
+  if(window._pendingStaff!==undefined){
+    proj.staff=window._pendingStaff;
+    window._pendingStaff=undefined;
+  }
   closeProjEdit();
   scheduleSave();renderProjects();
 }
@@ -1087,7 +1109,7 @@ function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').
 function createProject(){
   const el=document.getElementById('np-name');
   const name=el?el.value.trim():'';if(!name)return;
-  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,type:'',tasks:[]});
+  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,type:'',staff:DEFAULT_STAFF,tasks:[]});
   showNewProject=false;scheduleSave();renderProjects();
 }
 function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
@@ -1117,10 +1139,12 @@ function showPage(page){
   document.querySelector('.board').style.display=page==='board'?'block':'none';
   document.getElementById('archive-page').style.display=page==='archive'?'block':'none';
   document.getElementById('gantt-page').style.display=page==='gantt'?'block':'none';
+  // Hide main topbar on gantt (has its own); show on board/archive
+  document.querySelector('.topbar').style.display=page==='gantt'?'none':'flex';
   archivePageOpen=page==='archive';
   ganttPageOpen=page==='gantt';
   document.getElementById('archive-nav-btn').textContent=page==='archive'?'\u2190 Board':'Archive';
-  document.getElementById('gantt-nav-btn').textContent=page==='gantt'?'\u2190 Board':'Gantt';
+  document.getElementById('gantt-nav-btn').textContent=page==='gantt'?'\u2190 Board':'GANTT CHART';
   if(page==='archive')renderArchiveSection(projects.filter(p=>p.archived));
   if(page==='gantt')renderGantt();
 }
