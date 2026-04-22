@@ -11,7 +11,7 @@ html,body{width:100%;min-height:100vh;background:#f0ebe2;}
 body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TOPBAR ── */
-.topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;}
+.topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;position:sticky;top:0;z-index:200;}
 .topbar-left{display:flex;flex-direction:column;gap:4px;}
 .topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:43px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;line-height:1.0;}
 .topbar-date{font-size:11px;color:#a07858;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
@@ -28,7 +28,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn-large:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 
 /* ── BACK BAR ── */
-.back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;}
+.back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;position:sticky;top:0;z-index:200;}
 .back-btn{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#c8a878;background:none;border:none;cursor:pointer;padding:0;}
 .back-btn:hover{color:#e8dcc8;}
 .back-page-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#7a5030;}
@@ -178,9 +178,11 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
       <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
       <button class="topbar-btn" id="gantt-nav-btn" onclick="toggleGanttPage()">Gantt</button>
+      <button class="topbar-btn" onclick="triggerImport()" title="Import projects from text file">&#8679; Import</button>
       <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
       <span class="sync-status" id="sync-status"></span>
     </div>
+    <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
     <div style="margin-top:8px;">
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ New project</button>
     </div>
@@ -231,6 +233,44 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="ctx-menu" class="ctx-menu" style="display:none;"></div>
+
+<!-- Import modal -->
+<div class="modal-overlay" id="import-modal" style="display:none;">
+  <div class="modal" style="width:560px;">
+    <div class="modal-title">Import Projects</div>
+    <div class="modal-sub">
+      Paste your project list below or upload a <code style="color:#C9A83C;">.txt</code> file.<br>
+      Use <code style="color:#C9A83C;">#</code> for projects and <code style="color:#C9A83C;">-</code> for tasks. Pipe <code style="color:#C9A83C;">|</code> separates names from type/duration.<br><br>
+      <strong style="color:#888;">Format example:</strong>
+    </div>
+    <pre style="background:#111;color:#9a9488;padding:12px;border-radius:4px;font-size:12px;line-height:1.7;overflow-x:auto;font-family:monospace;"># Young Residence | renovation
+- QA drawing set review | 1 day
+- Update site plan | 0.5 days
+- Coordinate with MEP | 1 day
+
+# Philip &amp; Breanna | new-construction
+- Builder meeting | 0.5 days
+- Material schedule | 1.5 days
+
+# Wine Store | prospect
+- Schematic floor plan | 3 days</pre>
+    <div style="font-size:9px;color:#555;letter-spacing:0.08em;text-transform:uppercase;margin-top:-4px;">
+      Types: renovation · new-construction · in-construction · prospect<br>
+      Durations: 0.5 days, 1 day, 2 days … 7 days, 1 week, 2 weeks … 16 weeks
+    </div>
+    <label>Paste or edit text</label>
+    <textarea id="import-text" rows="10" style="font-family:monospace;font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:8px 12px;border-radius:4px;resize:vertical;line-height:1.6;" placeholder="# Project Name | type&#10;- Task name | duration"></textarea>
+    <div id="import-preview" style="font-size:11px;color:#7A9A6A;min-height:16px;"></div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <label style="font-size:11px;color:#c8a878;cursor:pointer;border:0.5px solid #7a5030;padding:5px 12px;border-radius:4px;" onclick="triggerImport()">&#8679; Upload .txt file</label>
+      <div style="margin-left:auto;display:flex;gap:8px;">
+        <button class="btn-save" onclick="doImport(false)" style="font-size:12px;padding:7px 16px;">Add to board</button>
+        <button onclick="doImport(true)" style="font-size:12px;padding:7px 16px;background:#8A3A2A;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'clarendon-text-pro',serif;">Replace all</button>
+        <button class="btn-cancel" onclick="hideImport()" style="font-size:12px;padding:7px 14px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Setup / token modal -->
 <div class="modal-overlay" id="setup-modal" style="display:none;">
@@ -392,6 +432,131 @@ function setStatus(msg,type,duration=0){
 /* ── TOKEN / SETUP ── */
 function showSetup(){document.getElementById('setup-modal').style.display='flex';}
 function hideSetup(){document.getElementById('setup-modal').style.display='none';}
+
+/* ── IMPORT ── */
+function triggerImport(){
+  document.getElementById('import-modal').style.display='flex';
+  document.getElementById('import-file-input').value='';
+}
+function hideImport(){document.getElementById('import-modal').style.display='none';}
+
+function handleImportFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    document.getElementById('import-text').value=ev.target.result;
+    document.getElementById('import-modal').style.display='flex';
+    updateImportPreview();
+  };
+  reader.readAsText(file);
+}
+
+function parseDuration(str){
+  if(!str)return 1;
+  str=str.trim().toLowerCase();
+  // Weeks
+  const wm=str.match(/^([\d.]+)\s*(?:½|half)?\s*week/);
+  if(wm)return parseFloat(wm[1])*7;
+  const whm=str.match(/^(\d+)\s*½\s*week/);
+  if(whm)return (parseFloat(whm[1])+0.5)*7;
+  // Half day
+  if(str.match(/^0?\.5\s*day|^half\s*day|^½\s*day/))return 0.5;
+  // N½ days
+  const nhm=str.match(/^(\d+)\s*½/);
+  if(nhm)return parseFloat(nhm[1])+0.5;
+  // N days
+  const dm=str.match(/^([\d.]+)\s*day/);
+  if(dm)return parseFloat(dm[1]);
+  // Plain number
+  const nm=str.match(/^([\d.]+)/);
+  if(nm)return parseFloat(nm[1]);
+  return 1;
+}
+
+function parseType(str){
+  if(!str)return '';
+  str=str.trim().toLowerCase().replace(/\s+/g,'-');
+  const map={'renovation':'renovation','new-construction':'new-construction',
+    'in-construction':'in-construction','prospect':'prospect',
+    'new':'new-construction','reno':'renovation','construction':'in-construction'};
+  return map[str]||'';
+}
+
+function parseImportText(text){
+  const lines=text.split('\n');
+  const parsed=[];
+  let currentProj=null;
+  lines.forEach(rawLine=>{
+    const line=rawLine.trim();
+    if(!line)return;
+    if(line.startsWith('#')){
+      const parts=line.slice(1).split('|');
+      const name=parts[0].trim();
+      const type=parseType(parts[1]||'');
+      currentProj={name,type,tasks:[]};
+      parsed.push(currentProj);
+    } else if(line.startsWith('-')&&currentProj){
+      const parts=line.slice(1).split('|');
+      const name=parts[0].trim();
+      const days=parseDuration(parts[1]||'1');
+      currentProj.tasks.push({name,days});
+    }
+  });
+  return parsed;
+}
+
+function updateImportPreview(){
+  const text=document.getElementById('import-text').value;
+  const parsed=parseImportText(text);
+  const prev=document.getElementById('import-preview');
+  if(!parsed.length){prev.textContent='';return;}
+  const taskCount=parsed.reduce((s,p)=>s+p.tasks.length,0);
+  prev.textContent=`✓ Found ${parsed.length} project${parsed.length===1?'':'s'} with ${taskCount} task${taskCount===1?'':'s'}`;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const ta=document.getElementById('import-text');
+  if(ta)ta.addEventListener('input',updateImportPreview);
+});
+
+function doImport(replace){
+  const text=document.getElementById('import-text').value;
+  const parsed=parseImportText(text);
+  if(!parsed.length){
+    document.getElementById('import-preview').style.color='#C97B52';
+    document.getElementById('import-preview').textContent='No projects found — check your formatting.';
+    return;
+  }
+  // Pick colors round-robin from palette, avoiding duplicates
+  const usedColors=replace?[]:projects.filter(p=>!p.archived).map(p=>p.colorIdx);
+  let colorIdx=0;
+  const getNextColor=()=>{
+    let tries=0;
+    while(usedColors.includes(colorIdx)&&tries<PALETTE.length){colorIdx=(colorIdx+1)%PALETTE.length;tries++;}
+    const c=colorIdx;
+    usedColors.push(c);
+    colorIdx=(colorIdx+1)%PALETTE.length;
+    return c;
+  };
+  if(replace){
+    projects=projects.filter(p=>p.archived); // keep archived
+  }
+  parsed.forEach(p=>{
+    const proj={
+      id:nextId++,
+      name:p.name,
+      colorIdx:getNextColor(),
+      archived:false,
+      type:p.type||'',
+      tasks:p.tasks.map(t=>({id:nextId++,name:t.name,days:t.days,done:false}))
+    };
+    projects.push(proj);
+  });
+  hideImport();
+  scheduleSave();
+  renderProjects();
+}
 function saveToken(){
   const t=document.getElementById('token-input').value.trim();
   if(!t)return;
