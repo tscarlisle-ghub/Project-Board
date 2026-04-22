@@ -20,7 +20,7 @@
         },
         {
           "id": 11,
-          "name": "Check Ivy for interior look book",
+          "name": "Check with ivy for interior look book",
           "days": 1,
           "done": false
         }
@@ -355,5 +355,5 @@
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:36:38.112Z"
+  "lastSaved": "2026-04-22T17:37:37.708Z"
 }
