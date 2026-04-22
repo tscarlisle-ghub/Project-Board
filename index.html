@@ -64,7 +64,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;background:#dce8ea;border-radius:4px;margin-bottom:16px;border:none;}
 
 /* ── STAFF TAG ── */
-.staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#7a9a9e;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
+.staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#5a8088;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
 .phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
 @media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
 .board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
@@ -793,7 +793,7 @@ function renderProjects(){
       hdr.className='project-header';
       hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:3px;">
         <span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
-        ${proj.staff?`<span class="staff-tag">${proj.staff}</span>`:''}
+        ${`<span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>`}
       </div>
         <div class="project-meta">
           <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
