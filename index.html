@@ -11,27 +11,27 @@ html,body{width:100%;min-height:100vh;background:#f0ebe2;}
 body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TOPBAR ── */
-.topbar{background:#1a1a18;padding:12px 32px;display:flex;align-items:center;gap:20px;}
-.topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:36px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
-.topbar-title span{color:#C97B52;}
-.topbar-date{font-size:11px;color:#9a9488;letter-spacing:0.12em;text-transform:uppercase;}
+.topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;}
+.topbar-left{display:flex;flex-direction:column;gap:4px;}
+.topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:43px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;line-height:1.0;}
+.topbar-date{font-size:11px;color:#a07858;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
+.topbar-actions{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;}
 .sync-status{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;transition:color 0.3s;font-family:"clarendon-text-pro",serif;}
 .sync-status.ok{color:#7A9A6A;}
 .sync-status.err{color:#C97B52;}
 .sync-status.working{color:#C9A83C;}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
-.topbar-btn{border:0.5px solid #6a6a60;color:#9a9488;background:transparent;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-family:"clarendon-text-pro",serif;}
-.topbar-btn:hover{background:#2a2a28;color:#aaa;border-color:#555;}
+.topbar-btn{border:0.5px solid #7a5030;color:#c8a878;background:transparent;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:11px;font-family:"clarendon-text-pro",serif;}
+.topbar-btn:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 .topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
 
 /* ── TOOLBAR ── */
-.toolbar{padding:10px 32px;background:#1a1a18;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2a2a28;}
-.toolbar input[type=text]{font-size:18px;background:#111;border:0.5px solid #333;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
-.toolbar input::placeholder{color:#5a5a54;}
-.toolbar select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
-.toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #555;color:#aaa;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
-.toolbar button:hover{background:#2a2a28;color:#ddd;}
+.toolbar{padding:10px 32px;background:#2e1605;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #1a0c02;}
+.toolbar input[type=text]{font-size:18px;background:#1a0c02;border:0.5px solid #5a3010;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
+.toolbar input::placeholder{color:#5a4030;}
+.toolbar select{font-size:13px;background:#1a0c02;border:0.5px solid #5a3010;color:#c8b89a;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #7a5030;color:#c8b89a;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
+.toolbar button:hover{background:#3a1808;color:#e8d8c0;}
 
 /* ── BOARD ── */
 .board{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
@@ -42,11 +42,11 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── PROJECT ── */
 .project-block{display:flex;flex-direction:column;}
-.project-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.project-header{display:flex;align-items:center;gap:0;margin-bottom:8px;}
 .project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;cursor:pointer;border-bottom:1px solid transparent;transition:border-color 0.15s;}
 .project-name:hover{border-bottom-color:rgba(0,0,0,0.2);}
 .project-name-input{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;border:none;border-bottom:1.5px solid #C97B52;background:transparent;outline:none;padding:0;width:auto;min-width:120px;}
-.project-meta{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.project-meta{margin-left:30px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
 .project-total-stack{display:flex;flex-direction:column;align-items:flex-end;gap:0;}
 .project-total-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:#aaa;font-family:"clarendon-text-pro",serif;line-height:1.2;}
 .project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;color:#888;letter-spacing:0.06em;text-transform:uppercase;line-height:1.2;}
@@ -141,14 +141,16 @@ body{font-family:"clarendon-text-pro",serif;}
 <body>
 
 <div class="topbar">
-  <div class="topbar-title">PROJECT <span>BOARD</span></div>
-  <div class="topbar-date" id="today-date"></div>
-  <span class="sync-status" id="sync-status"></span>
-  <div class="topbar-right">
-    <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
-    <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
-    <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
-    <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
+  <div class="topbar-left">
+    <div class="topbar-title">PROJECT BOARD</div>
+    <div class="topbar-date" id="today-date"></div>
+    <div class="topbar-actions">
+      <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
+      <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
+      <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
+      <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
+      <span class="sync-status" id="sync-status"></span>
+    </div>
   </div>
 </div>
 
