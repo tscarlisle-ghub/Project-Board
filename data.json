@@ -111,7 +111,14 @@
       "name": "Visintainer",
       "colorIdx": 8,
       "archived": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": 22,
+          "name": "landscape architect",
+          "days": 1,
+          "done": false
+        }
+      ]
     },
     {
       "id": 14,
@@ -140,6 +147,6 @@
       ]
     }
   ],
-  "nextId": 22,
-  "lastSaved": "2026-04-22T15:20:18.887Z"
+  "nextId": 23,
+  "lastSaved": "2026-04-22T15:20:35.529Z"
 }
