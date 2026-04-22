@@ -117,6 +117,12 @@
           "name": "landscape architect",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 23,
+          "name": "Design exterior",
+          "days": 1,
+          "done": false
         }
       ]
     },
@@ -147,6 +153,6 @@
       ]
     }
   ],
-  "nextId": 23,
-  "lastSaved": "2026-04-22T15:20:35.529Z"
+  "nextId": 24,
+  "lastSaved": "2026-04-22T15:20:46.392Z"
 }
