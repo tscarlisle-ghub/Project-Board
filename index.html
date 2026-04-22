@@ -15,8 +15,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:36px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
 .topbar-title span{color:#C97B52;}
 .topbar-date{font-size:11px;color:#9a9488;letter-spacing:0.12em;text-transform:uppercase;}
-.sync-status{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;margin-left:8px;transition:opacity 0.3s;opacity:0;}
-.sync-status.show{opacity:1;}
+.sync-status{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;transition:color 0.3s;font-family:"clarendon-text-pro",serif;}
 .sync-status.ok{color:#7A9A6A;}
 .sync-status.err{color:#C97B52;}
 .sync-status.working{color:#C9A83C;}
@@ -137,6 +136,7 @@ body{font-family:"clarendon-text-pro",serif;}
   <div class="topbar-date" id="today-date"></div>
   <span class="sync-status" id="sync-status"></span>
   <div class="topbar-right">
+    <button class="topbar-btn" onclick="forceSave()" title="Force sync to GitHub">&#8645; Sync</button>
     <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
     <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
   </div>
@@ -300,11 +300,11 @@ let ghFileSha=''; // needed to update existing file on GitHub
 let saveTimer=null;
 
 /* ── SYNC STATUS ── */
-function setStatus(msg,type,duration=2500){
+function setStatus(msg,type,duration=0){
   const el=document.getElementById('sync-status');
   el.textContent=msg;
-  el.className='sync-status show '+type;
-  if(duration){setTimeout(()=>el.classList.remove('show'),duration);}
+  el.className='sync-status '+type;
+  if(duration){setTimeout(()=>{el.textContent='';el.className='sync-status';},duration);}
 }
 
 /* ── TOKEN / SETUP ── */
@@ -322,12 +322,11 @@ function saveToken(){
 /* ── GITHUB LOAD ── */
 async function loadFromGitHub(){
   if(!ghToken){
-    // Fall back to localStorage
     loadLocal();
-    setStatus('No token — using local storage only','err',4000);
+    setStatus('No token — local only','err');
     return;
   }
-  setStatus('Loading…','working',0);
+  setStatus('Loading…','working');
   try{
     const res=await fetch(GH_API+'?ref='+GH_BRANCH,{
       headers:{
@@ -335,9 +334,10 @@ async function loadFromGitHub(){
         'Accept':'application/vnd.github.v3+json'
       }
     });
+    if(res.status===401){setStatus('Token invalid — click ⚙','err');loadLocal();return;}
+    if(res.status===403){setStatus('Token needs repo scope — click ⚙','err');loadLocal();return;}
     if(res.status===404){
-      // File doesn't exist yet — start with samples and create it
-      setStatus('New repo — loading samples','ok');
+      setStatus('Creating data file…','working');
       projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));
       nextId=20;
       renderProjects();
@@ -351,28 +351,24 @@ async function loadFromGitHub(){
     const data=JSON.parse(decoded||'{}');
     projects=data.projects||[];
     nextId=data.nextId||1;
-    setStatus('Synced','ok');
+    setStatus('Synced ✓','ok',3000);
     renderProjects();
   }catch(e){
-    setStatus('Load failed — using local','err',4000);
+    setStatus('Load failed: '+e.message,'err');
     loadLocal();
   }
 }
 
 /* ── GITHUB SAVE ── */
 async function saveToGitHub(force=false){
-  if(!ghToken)return;
-  const payload={
-    projects,
-    nextId,
-    lastSaved:new Date().toISOString()
-  };
+  if(!ghToken){
+    setStatus('No token — click ⚙ to set up','err');
+    return;
+  }
+  setStatus('Saving…','working');
+  const payload={projects,nextId,lastSaved:new Date().toISOString()};
   const content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
-  const body={
-    message:'Update project board data',
-    content,
-    branch:GH_BRANCH,
-  };
+  const body={message:'Update project board data',content,branch:GH_BRANCH};
   if(ghFileSha)body.sha=ghFileSha;
   try{
     const res=await fetch(GH_API,{
@@ -386,23 +382,29 @@ async function saveToGitHub(force=false){
     });
     if(!res.ok){
       const err=await res.json();
-      // SHA conflict — re-fetch and retry once
       if(res.status===409||res.status===422){
         await refreshSha();
         await saveToGitHub();
         return;
       }
+      if(res.status===401){setStatus('Token invalid — click ⚙','err');return;}
+      if(res.status===403){setStatus('Token needs repo scope — click ⚙','err');return;}
+      if(res.status===404){setStatus('Repo or file not found','err');return;}
       throw new Error(err.message||'HTTP '+res.status);
     }
     const json=await res.json();
     ghFileSha=json.content.sha;
-    // Also save locally as backup
     saveLocal();
-    setStatus('Saved','ok');
+    setStatus('Saved ✓','ok',3000);
   }catch(e){
-    setStatus('Sync failed','err',4000);
-    saveLocal(); // at least save locally
+    setStatus('Sync failed: '+e.message,'err');
+    saveLocal();
   }
+}
+
+function forceSave(){
+  clearTimeout(saveTimer);
+  saveToGitHub();
 }
 
 async function refreshSha(){
