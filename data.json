@@ -191,14 +191,6 @@
       "tasks": []
     },
     {
-      "id": 29,
-      "name": "Ford (Knoxville)",
-      "colorIdx": 11,
-      "archived": false,
-      "type": "renovation",
-      "tasks": []
-    },
-    {
       "id": 30,
       "name": "Ouellette",
       "colorIdx": 0,
@@ -336,5 +328,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T15:36:40.628Z"
+  "lastSaved": "2026-04-22T15:36:59.674Z"
 }
