@@ -1,15 +1,6 @@
 {
   "projects": [
     {
-      "id": 1,
-      "name": "test",
-      "colorIdx": 4,
-      "archived": false,
-      "tasks": [],
-      "type": "",
-      "staff": "Scott"
-    },
-    {
       "id": 2,
       "name": "LaRussa",
       "colorIdx": 10,
@@ -364,5 +355,5 @@
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:36:20.277Z"
+  "lastSaved": "2026-04-22T17:36:31.356Z"
 }
