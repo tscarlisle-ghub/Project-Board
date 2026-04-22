@@ -183,14 +183,6 @@
       "tasks": []
     },
     {
-      "id": 27,
-      "name": "Davis, Chris and Benita",
-      "colorIdx": 5,
-      "archived": false,
-      "type": "new-construction",
-      "tasks": []
-    },
-    {
       "id": 28,
       "name": "Ray, Webster",
       "colorIdx": 9,
@@ -344,5 +336,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T15:36:24.049Z"
+  "lastSaved": "2026-04-22T15:36:40.628Z"
 }
