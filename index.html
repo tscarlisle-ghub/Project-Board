@@ -339,16 +339,15 @@ function tagChip(type){
 }
 
 const PHASE_COLORS={
-  'new-construction': 5,   // Slate  — medium steel blue-grey
-  'renovation':       0,   // Steel Grey — the mid tone from palette
-  'in-construction':  6,   // Deep Steel — darker blue-grey
-  'prospect':         9,   // Cloud — lightest blue-grey
-  '':                 7,   // Pewter — neutral mid
+  'new-construction': '#a8c5bc',  // soft celadon
+  'renovation':       '#e8d898',  // soft cornflower yellow
+  'in-construction':  '#a8c8a0',  // soft green
+  'prospect':         '#e8b888',  // soft orange
+  '':                 '#b8c8c8',  // neutral blue-grey
 };
-// Returns the palette base for a project based on its phase
+// Returns the phase base color for a project
 function phaseBase(proj){
-  const idx=PHASE_COLORS.hasOwnProperty(proj.type)?PHASE_COLORS[proj.type]:PHASE_COLORS[''];
-  return PALETTE[idx].base;
+  return PHASE_COLORS.hasOwnProperty(proj.type)?PHASE_COLORS[proj.type]:PHASE_COLORS[''];
 }
 function buildTimeOptions(){
   const o=[];
