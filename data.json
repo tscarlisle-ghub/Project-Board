@@ -8,7 +8,7 @@
       "tasks": [
         {
           "id": 3,
-          "name": "revise side elements",
+          "name": "Revise side elements",
           "days": 1,
           "done": false
         },
@@ -355,5 +355,5 @@
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:37:37.708Z"
+  "lastSaved": "2026-04-22T17:37:46.371Z"
 }
