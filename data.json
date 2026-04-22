@@ -308,7 +308,8 @@
       "colorIdx": 3,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Maddie"
     },
     {
       "id": 46,
@@ -328,5 +329,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T16:29:38.115Z"
+  "lastSaved": "2026-04-22T16:47:26.494Z"
 }
