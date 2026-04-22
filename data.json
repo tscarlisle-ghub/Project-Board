@@ -99,10 +99,16 @@
           "name": "construction drawings",
           "days": 14,
           "done": false
+        },
+        {
+          "id": 16,
+          "name": "Setup zoom call",
+          "days": 1,
+          "done": false
         }
       ]
     }
   ],
-  "nextId": 16,
-  "lastSaved": "2026-04-22T14:06:40.980Z"
+  "nextId": 17,
+  "lastSaved": "2026-04-22T14:21:01.346Z"
 }
