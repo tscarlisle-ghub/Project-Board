@@ -61,11 +61,11 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;border-radius:4px;margin-bottom:16px;border:none;}
+.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 0 8px;margin-bottom:16px;border:none;background:none!important;}
 
 /* ── STAFF TAG ── */
 .staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#5a8088;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
-.phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+.phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;}
 @media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
 .board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
 .projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;width:100%;}
@@ -108,7 +108,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile-delete:hover{background:rgba(0,0,0,0.28)!important;color:#fff;}
 
 /* ── ADD TASK BUTTON (below rectangle) ── */
-.add-task-below{display:inline-flex;align-items:center;margin-top:7px;margin-left:50px;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#fff;background:#b8a890;border:none;border-radius:3px;cursor:pointer;padding:4px 12px;}
+.add-task-below{display:inline-flex;align-items:center;margin-top:4px;margin-left:0;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#fff;background:#b8a890;border:none;border-radius:3px;cursor:pointer;padding:4px 12px;align-self:flex-start;}
 .add-task-below:hover{background:#9a8a70;}
 
 /* ── PROGRESS BAR ── */
@@ -766,17 +766,11 @@ function renderProjects(){
     const sectionHdr=document.createElement('div');
     sectionHdr.className='phase-section-header';
     sectionHdr.textContent=BOARD_PHASE_LABELS[phase];
-    // Tinted background from phase color — blend toward white at 35% opacity
     const phaseCol=PHASE_COLORS[phase]||PHASE_COLORS[''];
     const [pr,pg,pb]=hexRgb(phaseCol);
-    const tintR=Math.round(pr*0.45+255*0.55);
-    const tintG=Math.round(pg*0.45+255*0.55);
-    const tintB=Math.round(pb*0.45+255*0.55);
-    sectionHdr.style.background=`rgb(${tintR},${tintG},${tintB})`;
-    // Text color: darker version of phase color
-    const txtR=Math.round(pr*0.5);
-    const txtG=Math.round(pg*0.5);
-    const txtB=Math.round(pb*0.5);
+    const txtR=Math.round(pr*0.55);
+    const txtG=Math.round(pg*0.55);
+    const txtB=Math.round(pb*0.55);
     sectionHdr.style.color=`rgb(${txtR},${txtG},${txtB})`;
     section.appendChild(sectionHdr);
 
@@ -801,14 +795,14 @@ function renderProjects(){
 
       const hdr=document.createElement('div');
       hdr.className='project-header';
-      hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:3px;">
+      hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:4px;">
         <span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
-        ${`<span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>`}
+        <span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>
+        <button class="add-task-below" onclick="openInlineAdd(${proj.id})">+ Add Task</button>
       </div>
         <div class="project-meta">
           <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
           <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
-          <button class="add-task-below" style="margin-left:50px;margin-top:0;" onclick="openInlineAdd(${proj.id})">+ Add Task</button>
         </div>`;
       block.appendChild(hdr);
 
@@ -868,17 +862,18 @@ function renderProjects(){
         tile.style.cssText=`background:${bg};min-height:${h}px;border:1px solid #f0ebe2;`;
         const delColor=flatTc==='rgba(255,255,255,0.94)'?'rgba(255,255,255,0.5)':'rgba(30,22,14,0.35)';
         tile.innerHTML=`<button class="tile-delete" style="color:${delColor};" onclick="deleteTile(event,${proj.id},${t.id})">&#x2715;</button>
-          <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
+          <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};cursor:text;" onclick="editTileName(event,${proj.id},${t.id},this)">${t.name}</div>
           <div class="tile-bottom">
-            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);">${timeLabel(t.days).toUpperCase()}</span>
+            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);cursor:pointer;" onclick="openEdit(${proj.id},${t.id})">${timeLabel(t.days).toUpperCase()}</span>
             <div class="tile-check${t.done?' checked':''}">
               <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                 <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
           </div>`;
-        tile.addEventListener('click',()=>openEdit(proj.id,t.id));
         tile.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
+        const chk=tile.querySelector('.tile-check');
+        if(chk)chk.addEventListener('click',(e)=>{e.stopPropagation();markDoneCtx(proj.id,t.id);});
         rect.appendChild(tile);
       }
     });
@@ -977,6 +972,29 @@ function markDoneCtx(pId,tId){
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
   if(t)t.done=!t.done;
   closeCtx();scheduleSave();renderProjects();
+}
+function editTileName(e,projId,taskId,el){
+  e.stopPropagation();
+  const p=projects.find(p=>p.id===projId);
+  const t=p&&p.tasks.find(t=>t.id===taskId);
+  if(!t)return;
+  const orig=t.name;
+  const inp=document.createElement('input');
+  inp.type='text';
+  inp.value=orig;
+  inp.style.cssText='font-family:"clarendon-text-pro",serif;font-weight:400;font-size:'+el.style.fontSize+';color:'+el.style.color+';background:transparent;border:none;border-bottom:1.5px solid rgba(255,255,255,0.7);outline:none;width:100%;padding:0;line-height:1.35;';
+  el.replaceWith(inp);
+  inp.focus();inp.select();
+  function save(){
+    const name=inp.value.trim();
+    if(name)t.name=name;
+    scheduleSave();renderProjects();
+  }
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'){e.preventDefault();inp.blur();}
+    if(e.key==='Escape'){t.name=orig;inp.blur();}
+  });
 }
 function deleteTile(e,pId,tId){
   e.stopPropagation();
@@ -1268,35 +1286,21 @@ function renderGantt(){
       const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
       const totalW=totalD/7;
       const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
+      const todayX=todayOffset*CELL_W;
+      const totalCellW=WEEKS*CELL_W;
+
+      // Dotted week lines as repeating background on the bar cell
+      const weekLineStyle=`repeating-linear-gradient(to right, transparent 0px, transparent ${CELL_W-1}px, #cec8be ${CELL_W-1}px, #cec8be ${CELL_W}px)`;
 
       html+=`<tr style="background:#f0ebe2;">
         <td style="padding:0 12px 0 10px;white-space:nowrap;vertical-align:middle;height:${ROW_H}px;border-bottom:0.5px solid #e2dbd0;border-right:1px solid #d8d0c8;">
           <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:#2a2018;line-height:1;">${proj.name}</div>
-        </td>`;
-
-      weeks.forEach((w,wi)=>{
-        const cellLeft=wi*CELL_W;
-        const isTodayCol=wi===Math.floor(todayOffset);
-        const barEnd=barW;
-        const inBar=cellLeft<barEnd;
-        const barLeftInCell=Math.max(0-cellLeft,0);
-        const barRightInCell=Math.min(barEnd-cellLeft,CELL_W);
-        const barWidthInCell=Math.max(barRightInCell-barLeftInCell,0);
-        const isFirst=cellLeft<=0;
-        const isLast=(cellLeft+CELL_W)>=barEnd;
-
-        html+=`<td style="position:relative;height:${ROW_H}px;padding:0;border-bottom:0.5px solid #e2dbd0;border-left:1px dotted #cec8be;${isTodayCol?'background:rgba(201,123,82,0.07);':''}">`;
-        if(inBar&&barWidthInCell>0){
-          html+=`<div style="position:absolute;top:6px;left:${barLeftInCell}px;width:${barWidthInCell}px;height:${ROW_H-12}px;background:${base};${isFirst?'border-top-left-radius:3px;border-bottom-left-radius:3px;':''}${isLast?'border-top-right-radius:3px;border-bottom-right-radius:3px;':''}"></div>`;
-        }
-        if(isTodayCol){
-          const fracX=(todayOffset-Math.floor(todayOffset))*CELL_W;
-          html+=`<div style="position:absolute;top:0;bottom:0;left:${fracX}px;width:1.5px;background:#C97B52;opacity:0.85;z-index:3;"></div>`;
-        }
-        html+='</td>';
-      });
-      html+='</tr>';
-    });
+        </td>
+        <td colspan="${WEEKS}" style="position:relative;height:${ROW_H}px;padding:0;border-bottom:0.5px solid #e2dbd0;background-image:${weekLineStyle};background-size:${CELL_W}px 100%;">
+          <div style="position:absolute;top:6px;left:0;width:${barW}px;height:${ROW_H-12}px;background:${base};border-radius:3px;"></div>
+          <div style="position:absolute;top:0;bottom:0;left:${Math.min(todayX,totalCellW)}px;width:1.5px;background:#C97B52;opacity:0.85;z-index:3;"></div>
+        </td>
+      </tr>`;\n    });
   });
 
   if(!hasAny){
