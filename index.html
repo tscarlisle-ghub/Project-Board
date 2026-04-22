@@ -109,8 +109,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile-delete:hover{background:rgba(0,0,0,0.28)!important;color:#fff;}
 
 /* ── ADD TASK BUTTON (below rectangle) ── */
-.add-task-below{display:inline-flex;align-items:center;margin-top:4px;margin-left:0;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#fff;background:#b8a890;border:none;border-radius:3px;cursor:pointer;padding:4px 12px;align-self:flex-start;}
-.add-task-below:hover{background:#9a8a70;}
+.add-task-below{display:inline-flex;align-items:center;margin-top:4px;margin-left:0;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#fff;background:#7a9e7a;border:none;border-radius:3px;cursor:pointer;padding:4px 12px;align-self:flex-start;}
+.add-task-below:hover{background:#5a7e5a;}
 
 /* ── PROGRESS BAR ── */
 .progress-wrap{width:100%;margin:6px 0 8px;display:flex;flex-direction:column;gap:3px;}
@@ -193,9 +193,15 @@ body{font-family:"clarendon-text-pro",serif;}
       <span class="sync-status" id="sync-status"></span>
     </div>
     <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
-    <div style="margin-top:8px;display:flex;gap:10px;align-items:center;">
+    <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ NEW PROJECT</button>
       <button class="topbar-btn-large" id="gantt-nav-btn" onclick="toggleGanttPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">GANTT CHART</button>
+      <div id="staff-filter-btns" style="display:flex;gap:6px;align-items:center;margin-left:4px;">
+        <button class="topbar-btn" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;">All</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.5;">Maddie</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.5;">Kat</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.5;">Kathleen</button>
+      </div>
     </div>
   </div>
 </div>
@@ -727,7 +733,7 @@ function getRectW(){
 function renderProjects(){
   const grid=document.getElementById('projects-grid');
   grid.innerHTML='';
-  const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
+  const active=projects.filter(p=>!p.archived&&(!activeStaffFilter||(p.staff||DEFAULT_STAFF)===activeStaffFilter)).sort((a,b)=>a.name.localeCompare(b.name));
   const archived=projects.filter(p=>p.archived).sort((a,b)=>a.name.localeCompare(b.name));
 
   if(!active.length&&!showNewProject){
@@ -785,9 +791,9 @@ function renderProjects(){
       const isAdding=addingToProject===proj.id;
       // Compute card background — very light tint of phase color
       const [cr,cg,cb]=hexRgb(base);
-      const cardBg=`rgb(${Math.round(cr*0.12+255*0.88)},${Math.round(cg*0.12+255*0.88)},${Math.round(cb*0.12+255*0.88)})`;
-      const cardBorder=`rgb(${Math.round(cr*0.25+255*0.75)},${Math.round(cg*0.25+255*0.75)},${Math.round(cb*0.25+255*0.75)})`;
-      const accentColor=`rgb(${Math.round(cr*0.6)},${Math.round(cg*0.6)},${Math.round(cb*0.6)})`;
+      const cardBg=base;
+      const cardBorder=`rgb(${Math.round(cr*0.7)},${Math.round(cg*0.7)},${Math.round(cb*0.7)})`;
+      const accentColor=`rgb(${Math.round(cr*0.5)},${Math.round(cg*0.5)},${Math.round(cb*0.5)})`;
 
       const block=document.createElement('div');
       block.className='project-block';
@@ -801,10 +807,6 @@ function renderProjects(){
         <span class="project-name" style="font-size:${TITLE_FS}px;color:#1a1a18;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
         <span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>
         <button class="add-task-below" onclick="openInlineAdd(${proj.id})">+ Add task</button>
-      </div>
-      <div class="project-meta">
-        <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
-        <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
       </div>`;
       block.appendChild(hdr);
 
@@ -926,6 +928,13 @@ function renderProjects(){
       }
 
       block.appendChild(taskList);
+
+      // Card footer — archive & delete at bottom right
+      const footer=document.createElement('div');
+      footer.style.cssText='display:flex;justify-content:flex-end;gap:8px;margin-top:12px;padding-top:8px;border-top:1px solid '+cardBorder+';';
+      footer.innerHTML=`<button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
+        <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>`;
+      block.appendChild(footer);
       phaseGrid.appendChild(block);
     }); // end projs.forEach
 
@@ -1203,7 +1212,15 @@ function restoreProject(id){
     else{renderArchiveSection(remaining);}
   }
 }
-let archivePageOpen=false;
+let activeStaffFilter=null;
+function setStaffFilter(staff){
+  activeStaffFilter=staff;
+  ['all','Maddie','Kat','Kathleen'].forEach(s=>{
+    const btn=document.getElementById('sf-'+(s==='all'?'all':s));
+    if(btn)btn.style.opacity=(staff===null&&s==='all')||(staff===s)?'1':'0.5';
+  });
+  renderProjects();
+}
 let ganttPageOpen=false;
 function showPage(page){
   // page: 'board' | 'archive' | 'gantt'
@@ -1308,6 +1325,8 @@ function renderGantt(){
 
     projs.forEach(proj=>{
       const base=phaseBase(proj);
+      const [br,bg2,bb]=hexRgb(base);
+      const barColor=`rgb(${Math.round(br*0.6)},${Math.round(bg2*0.6)},${Math.round(bb*0.6)})`;
       const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
       const totalW=totalD/7;
       const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
@@ -1315,14 +1334,14 @@ function renderGantt(){
       const totalCellW=WEEKS*CELL_W;
 
       // Dotted week lines as repeating background on the bar cell
-      const weekLineStyle=`repeating-linear-gradient(to right, transparent 0px, transparent ${CELL_W-1}px, #cec8be ${CELL_W-1}px, #cec8be ${CELL_W}px)`;
+      const weekLineStyle=`repeating-linear-gradient(to right, transparent 0px, transparent ${CELL_W-1}px, #ddd8d0 ${CELL_W-1}px, #ddd8d0 ${CELL_W}px)`;
 
-      html+=`<tr style="background:#f0ebe2;">
+      html+=`<tr style="background:#f6f3ee;">
         <td style="padding:0 12px 0 10px;white-space:nowrap;vertical-align:middle;height:${ROW_H}px;border-bottom:0.5px solid #e2dbd0;border-right:1px solid #d8d0c8;">
           <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:#2a2018;line-height:1;">${proj.name}</div>
         </td>
         <td colspan="${WEEKS}" style="position:relative;height:${ROW_H}px;padding:0;border-bottom:0.5px solid #e2dbd0;background-image:${weekLineStyle};background-size:${CELL_W}px 100%;">
-          <div style="position:absolute;top:6px;left:0;width:${barW}px;height:${ROW_H-12}px;background:${base};border-radius:3px;"></div>
+          <div style="position:absolute;top:6px;left:0;width:${barW}px;height:${ROW_H-12}px;background:${barColor};border-radius:3px;"></div>
           <div style="position:absolute;top:0;bottom:0;left:${Math.min(todayX,totalCellW)}px;width:1.5px;background:#C97B52;opacity:0.85;z-index:3;"></div>
         </td>
       </tr>`;
@@ -1373,8 +1392,8 @@ function renderArchiveSection(archived){
     projs.forEach(proj=>{
       const base=phaseBase(proj);
       const [cr,cg,cb]=hexRgb(base);
-      const cardBg=`rgb(${Math.round(cr*0.12+255*0.88)},${Math.round(cg*0.12+255*0.88)},${Math.round(cb*0.12+255*0.88)})`;
-      const cardBorder=`rgb(${Math.round(cr*0.25+255*0.75)},${Math.round(cg*0.25+255*0.75)},${Math.round(cb*0.25+255*0.75)})`;
+      const cardBg=base;
+      const cardBorder=`rgb(${Math.round(cr*0.7)},${Math.round(cg*0.7)},${Math.round(cb*0.7)})`;
       const accentColor=`rgb(${Math.round(cr*0.6)},${Math.round(cg*0.6)},${Math.round(cb*0.6)})`;
       const allDays=totalDays(proj.tasks);
       const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
