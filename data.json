@@ -18,10 +18,16 @@
           "name": "revise side elements",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 4,
+          "name": "start interiors",
+          "days": 3,
+          "done": false
         }
       ]
     }
   ],
-  "nextId": 4,
-  "lastSaved": "2026-04-22T13:05:24.939Z"
+  "nextId": 5,
+  "lastSaved": "2026-04-22T13:05:35.707Z"
 }
