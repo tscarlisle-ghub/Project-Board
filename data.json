@@ -218,7 +218,7 @@
       "id": 31,
       "name": "Aultman",
       "colorIdx": 1,
-      "archived": false,
+      "archived": true,
       "type": "renovation",
       "tasks": []
     },
@@ -352,5 +352,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T15:28:12.406Z"
+  "lastSaved": "2026-04-22T15:29:07.942Z"
 }
