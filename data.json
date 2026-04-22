@@ -24,6 +24,12 @@
           "name": "start interiors",
           "days": 3,
           "done": false
+        },
+        {
+          "id": 11,
+          "name": "Check Ivy for interior look book",
+          "days": 1,
+          "done": false
         }
       ]
     },
@@ -69,6 +75,6 @@
       "tasks": []
     }
   ],
-  "nextId": 11,
-  "lastSaved": "2026-04-22T13:56:37.802Z"
+  "nextId": 12,
+  "lastSaved": "2026-04-22T13:57:33.255Z"
 }
