@@ -12,9 +12,16 @@
       "name": "LaRussa",
       "colorIdx": 10,
       "archived": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": 3,
+          "name": "revise side elements",
+          "days": 1,
+          "done": false
+        }
+      ]
     }
   ],
-  "nextId": 3,
-  "lastSaved": "2026-04-22T13:05:13.105Z"
+  "nextId": 4,
+  "lastSaved": "2026-04-22T13:05:24.939Z"
 }
