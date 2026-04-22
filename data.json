@@ -335,7 +335,14 @@
       "colorIdx": 9,
       "archived": false,
       "type": "in-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 61,
+          "name": "review brick",
+          "days": 1,
+          "done": false
+        }
+      ],
       "staff": "Scott"
     },
     {
@@ -411,6 +418,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 61,
-  "lastSaved": "2026-04-22T17:46:07.611Z"
+  "nextId": 62,
+  "lastSaved": "2026-04-22T17:48:33.198Z"
 }
