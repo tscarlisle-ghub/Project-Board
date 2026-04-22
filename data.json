@@ -71,6 +71,12 @@
           "name": "Draw new floor plan",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 18,
+          "name": "get new survey",
+          "days": 1,
+          "done": false
         }
       ]
     },
@@ -115,6 +121,6 @@
       ]
     }
   ],
-  "nextId": 18,
-  "lastSaved": "2026-04-22T14:21:11.545Z"
+  "nextId": 19,
+  "lastSaved": "2026-04-22T15:18:43.241Z"
 }
