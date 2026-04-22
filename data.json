@@ -106,7 +106,8 @@
       "name": "Davis Winfield",
       "colorIdx": 4,
       "archived": false,
-      "tasks": []
+      "tasks": [],
+      "type": "new-construction"
     },
     {
       "id": 13,
@@ -156,5 +157,5 @@
     }
   ],
   "nextId": 24,
-  "lastSaved": "2026-04-22T15:21:23.858Z"
+  "lastSaved": "2026-04-22T15:21:29.281Z"
 }
