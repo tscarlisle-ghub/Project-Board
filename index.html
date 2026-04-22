@@ -198,9 +198,9 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn-large" id="gantt-nav-btn" onclick="toggleGanttPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">GANTT CHART</button>
       <div id="staff-filter-btns" style="display:flex;gap:6px;align-items:center;margin-left:4px;">
         <button class="topbar-btn" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;">All</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.5;">Maddie</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.5;">Kat</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.5;">Kathleen</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;">Maddie</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.75;">Kat</button>
+        <button class="topbar-btn" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.75;">Kathleen</button>
       </div>
     </div>
   </div>
@@ -856,7 +856,7 @@ function renderProjects(){
           setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
         } else {
           const row=document.createElement('div');
-          row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid ${cardBorder};${t.done?'opacity:0.45;':''}`;
+          row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:6px 0;${t.done?'opacity:0.45;':''}`;
 
           // Checkbox
           const chk=document.createElement('button');
@@ -1217,7 +1217,7 @@ function setStaffFilter(staff){
   activeStaffFilter=staff;
   ['all','Maddie','Kat','Kathleen'].forEach(s=>{
     const btn=document.getElementById('sf-'+(s==='all'?'all':s));
-    if(btn)btn.style.opacity=(staff===null&&s==='all')||(staff===s)?'1':'0.5';
+    if(btn)btn.style.opacity=(staff===null&&s==='all')||(staff===s)?'1':'0.75';
   });
   renderProjects();
 }
@@ -1435,7 +1435,7 @@ function renderArchiveSection(archived){
       }
       proj.tasks.forEach(t=>{
         const row=document.createElement('div');
-        row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid ${cardBorder};${t.done?'opacity:0.45;':''}`;
+        row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:6px 0;${t.done?'opacity:0.45;':''}`;
         const chk=document.createElement('div');
         chk.style.cssText=`width:16px;height:16px;border-radius:50%;border:1.5px solid ${accentColor};background:${t.done?accentColor:'transparent'};flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;`;
         chk.innerHTML=t.done?'<svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
