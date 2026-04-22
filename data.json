@@ -5,7 +5,9 @@
       "name": "test",
       "colorIdx": 4,
       "archived": true,
-      "tasks": []
+      "tasks": [],
+      "type": "",
+      "staff": "Scott"
     },
     {
       "id": 2,
@@ -65,7 +67,7 @@
       "tasks": [
         {
           "id": 51,
-          "name": "Construction Drawings",
+          "name": "Construction drawings",
           "days": 56,
           "done": false
         }
@@ -129,7 +131,8 @@
           "done": false
         }
       ],
-      "type": "new-construction"
+      "type": "new-construction",
+      "staff": "Scott"
     },
     {
       "id": 14,
@@ -156,7 +159,8 @@
           "done": false
         }
       ],
-      "type": "renovation"
+      "type": "renovation",
+      "staff": "Scott"
     },
     {
       "id": 24,
@@ -164,7 +168,8 @@
       "colorIdx": 0,
       "archived": false,
       "type": "new-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 25,
@@ -172,7 +177,8 @@
       "colorIdx": 2,
       "archived": false,
       "type": "new-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 26,
@@ -180,7 +186,8 @@
       "colorIdx": 3,
       "archived": false,
       "type": "new-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 28,
@@ -206,7 +213,8 @@
       "colorIdx": 1,
       "archived": true,
       "type": "renovation",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 33,
@@ -227,7 +235,8 @@
           "days": 3,
           "done": false
         }
-      ]
+      ],
+      "staff": "Scott"
     },
     {
       "id": 34,
@@ -235,7 +244,8 @@
       "colorIdx": 4,
       "archived": false,
       "type": "renovation",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 35,
@@ -243,7 +253,8 @@
       "colorIdx": 5,
       "archived": false,
       "type": "renovation",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 37,
@@ -251,7 +262,8 @@
       "colorIdx": 7,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 38,
@@ -266,7 +278,8 @@
           "days": 1,
           "done": false
         }
-      ]
+      ],
+      "staff": "Scott"
     },
     {
       "id": 39,
@@ -274,7 +287,8 @@
       "colorIdx": 9,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 40,
@@ -282,7 +296,8 @@
       "colorIdx": 10,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 41,
@@ -290,7 +305,8 @@
       "colorIdx": 11,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 42,
@@ -298,7 +314,8 @@
       "colorIdx": 0,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 43,
@@ -306,7 +323,8 @@
       "colorIdx": 1,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 44,
@@ -332,7 +350,8 @@
       "colorIdx": 4,
       "archived": false,
       "type": "prospect",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     },
     {
       "id": 47,
@@ -340,9 +359,10 @@
       "colorIdx": 5,
       "archived": false,
       "type": "prospect",
-      "tasks": []
+      "tasks": [],
+      "staff": "Scott"
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:18:16.677Z"
+  "lastSaved": "2026-04-22T17:36:09.845Z"
 }
