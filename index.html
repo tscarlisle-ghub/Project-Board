@@ -1087,74 +1087,112 @@ function getMonday(d){
 function renderGantt(){
   const table=document.getElementById('gantt-table');
   if(!table)return;
-  const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
+  const allActive=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
   const WEEKS=16;
-  const CELL_W=40;
+  const CELL_W=42;
+  const ROW_H=32;
   const monday=getMonday(new Date());
+  const today=new Date();today.setHours(0,0,0,0);
 
-  // Build week date array
   const weeks=[];
   for(let i=0;i<WEEKS;i++){
     const d=new Date(monday);
     d.setDate(d.getDate()+i*7);
     weeks.push(d);
   }
+  const todayOffset=(today-monday)/(1000*60*60*24*7);
 
-  // Calculate project start offsets — use today as start for all (position 0)
-  // Each project bar length = totalDays / 7 weeks
-  const today=new Date();today.setHours(0,0,0,0);
+  // Group projects by phase
+  const PHASE_ORDER=['new-construction','in-construction','renovation','prospect',''];
+  const PHASE_LABELS={
+    'new-construction':'New Construction',
+    'in-construction':'In Construction',
+    'renovation':'Renovation',
+    'prospect':'Prospect',
+    '':'Unassigned',
+  };
+  const groups={};
+  PHASE_ORDER.forEach(k=>{groups[k]=[];});
+  allActive.forEach(p=>{
+    const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
+    groups[k].push(p);
+  });
 
-  let html='<colgroup><col class="gantt-label-col">';
+  let html='<colgroup><col style="width:200px;min-width:160px;">';
   for(let i=0;i<WEEKS;i++)html+=`<col style="width:${CELL_W}px;min-width:${CELL_W}px;">`;
   html+='</colgroup>';
 
-  // Row 1: Month labels spanning weeks
-  html+='<tr class="gantt-week-header-row"><th></th>';
-  let prevMonth=-1, spanCount=0, monthBuffer=[];
+  // Month header row
+  html+='<tr style="background:#e8e2d8;"><th style="border-bottom:1px solid #d0cbc2;"></th>';
+  let prevMonth=-1,spanCount=0,monthBuffer=[];
   weeks.forEach((d,i)=>{
     const m=d.getMonth();
     if(m!==prevMonth){
-      if(prevMonth!==-1)monthBuffer.push({month:prevMonth,year:d.getFullYear()-( m<prevMonth?0:0),span:spanCount});
+      if(prevMonth!==-1)monthBuffer.push({month:prevMonth,year:d.getFullYear(),span:spanCount});
       prevMonth=m;spanCount=1;
     } else {spanCount++;}
     if(i===WEEKS-1)monthBuffer.push({month:m,year:d.getFullYear(),span:spanCount});
   });
   const monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   monthBuffer.forEach(mb=>{
-    html+=`<th colspan="${mb.span}" style="text-align:left;padding:4px 6px 2px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;color:#888;border-bottom:none;">${monthNames[mb.month]} ${mb.year}</th>`;
+    html+=`<th colspan="${mb.span}" style="text-align:left;padding:5px 8px 3px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;color:#777;border-bottom:1px solid #d0cbc2;border-left:1px dotted #ccc;">${monthNames[mb.month]} ${mb.year}</th>`;
   });
   html+='</tr>';
 
-  // Row 2: Week date labels (Mon date)
-  html+='<tr class="gantt-date-row"><th></th>';
-  weeks.forEach(d=>{
-    html+=`<th style="font-family:'clarendon-text-pro',serif;font-size:10px;color:#aaa;padding:0 6px 8px;text-align:left;white-space:nowrap;">${d.getMonth()+1}/${d.getDate()}</th>`;
+  // Week date row
+  html+='<tr style="background:#ede7dc;"><th style="border-bottom:2px solid #c8c0b4;"></th>';
+  weeks.forEach((d,i)=>{
+    const isTodayCol=i===Math.floor(todayOffset);
+    html+=`<th style="font-family:'clarendon-text-pro',serif;font-size:9px;color:${isTodayCol?'#C97B52':'#aaa'};padding:2px 4px 6px;text-align:left;white-space:nowrap;border-left:1px dotted #ccc;border-bottom:2px solid #c8c0b4;font-weight:${isTodayCol?'bold':'normal'};">${d.getMonth()+1}/${d.getDate()}</th>`;
   });
   html+='</tr>';
 
-  // Today position
-  const todayOffset=(today-monday)/(1000*60*60*24*7); // fractional weeks from monday
+  let hasAny=false;
+  PHASE_ORDER.forEach(phase=>{
+    const projs=groups[phase];
+    if(!projs||!projs.length)return;
+    hasAny=true;
 
-  // Project rows
-  active.forEach(proj=>{
-    const pal=PALETTE[proj.colorIdx];
-    const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
-    const totalW=totalD/7;
-    const barW=Math.max(totalW*CELL_W,CELL_W*0.5);
-    html+=`<tr class="gantt-row">
-      <td style="padding-right:16px;white-space:nowrap;vertical-align:middle;">
-        <div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#1a1a18;">${proj.name}</div>
-        ${proj.type?`<div style="margin-top:2px;">${tagChip(proj.type)}</div>`:''}
-      </td>
-      <td colspan="${WEEKS}" style="position:relative;height:${proj.type?48:34}px;vertical-align:middle;">
-        <div style="position:absolute;top:${proj.type?14:7}px;left:0;height:20px;width:${barW}px;background:${pal.base};border-radius:3px;max-width:${WEEKS*CELL_W}px;"></div>
-        <div style="position:absolute;top:0;bottom:0;left:${todayOffset*CELL_W}px;width:1.5px;background:#C97B52;opacity:0.7;z-index:2;"></div>
-        ${totalW>0.3?`<div style="position:absolute;top:${proj.type?17:10}px;left:${Math.min(barW+4,WEEKS*CELL_W-60)}px;font-family:'clarendon-text-pro',serif;font-size:10px;color:#888;white-space:nowrap;">${totalW>=1?Math.round(totalW*2)/2+'w':totalD+'d'}</div>`:''}
-      </td>
-    </tr>`;
+    // Section header
+    html+=`<tr style="background:#ddd5c8;"><td colspan="${WEEKS+1}" style="padding:6px 10px 4px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:#5a4a3a;border-top:1.5px solid #c4bab0;border-bottom:0.5px solid #ccc5bb;">${PHASE_LABELS[phase]}</td></tr>`;
+
+    projs.forEach(proj=>{
+      const pal=PALETTE[proj.colorIdx];
+      const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
+      const totalW=totalD/7;
+      const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
+
+      html+=`<tr style="background:#f0ebe2;">
+        <td style="padding:0 12px 0 10px;white-space:nowrap;vertical-align:middle;height:${ROW_H}px;border-bottom:0.5px solid #e2dbd0;border-right:1px solid #d8d0c8;">
+          <div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:#2a2018;line-height:1;">${proj.name}</div>
+        </td>`;
+
+      weeks.forEach((w,wi)=>{
+        const cellLeft=wi*CELL_W;
+        const isTodayCol=wi===Math.floor(todayOffset);
+        const barEnd=barW;
+        const inBar=cellLeft<barEnd;
+        const barLeftInCell=Math.max(0-cellLeft,0);
+        const barRightInCell=Math.min(barEnd-cellLeft,CELL_W);
+        const barWidthInCell=Math.max(barRightInCell-barLeftInCell,0);
+        const isFirst=cellLeft<=0;
+        const isLast=(cellLeft+CELL_W)>=barEnd;
+
+        html+=`<td style="position:relative;height:${ROW_H}px;padding:0;border-bottom:0.5px solid #e2dbd0;border-left:1px dotted #cec8be;${isTodayCol?'background:rgba(201,123,82,0.07);':''}">`;
+        if(inBar&&barWidthInCell>0){
+          html+=`<div style="position:absolute;top:6px;left:${barLeftInCell}px;width:${barWidthInCell}px;height:${ROW_H-12}px;background:${pal.base};${isFirst?'border-top-left-radius:3px;border-bottom-left-radius:3px;':''}${isLast?'border-top-right-radius:3px;border-bottom-right-radius:3px;':''}"></div>`;
+        }
+        if(isTodayCol){
+          const fracX=(todayOffset-Math.floor(todayOffset))*CELL_W;
+          html+=`<div style="position:absolute;top:0;bottom:0;left:${fracX}px;width:1.5px;background:#C97B52;opacity:0.85;z-index:3;"></div>`;
+        }
+        html+='</td>';
+      });
+      html+='</tr>';
+    });
   });
 
-  if(!active.length){
+  if(!hasAny){
     html+=`<tr><td colspan="${WEEKS+1}" style="padding:40px 0;text-align:center;color:#aaa;font-family:'clarendon-text-pro',serif;font-size:13px;">No active projects</td></tr>`;
   }
 
