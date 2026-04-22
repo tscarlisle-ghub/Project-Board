@@ -226,6 +226,12 @@
           "name": "revise kitchen layout",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 50,
+          "name": "start 3D model of exterior",
+          "days": 3,
+          "done": false
         }
       ]
     },
@@ -343,6 +349,6 @@
       "tasks": []
     }
   ],
-  "nextId": 50,
-  "lastSaved": "2026-04-22T17:09:40.616Z"
+  "nextId": 51,
+  "lastSaved": "2026-04-22T17:13:11.340Z"
 }
