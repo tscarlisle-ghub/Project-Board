@@ -11,7 +11,7 @@ html,body{width:100%;min-height:100vh;background:#f0ebe2;}
 body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TOPBAR ── */
-.topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;position:sticky;top:0;z-index:200;}
+.topbar{background:#422107;padding:16px 32px 14px;display:flex;align-items:flex-start;gap:32px;position:sticky;top:0;z-index:100;}
 .topbar-left{display:flex;flex-direction:column;gap:4px;}
 .topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:43px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;line-height:1.0;}
 .topbar-date{font-size:11px;color:#a07858;letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
@@ -28,7 +28,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn-large:hover{background:#9a4e10;color:#f0ddb8;border-color:#c07840;}
 
 /* ── BACK BAR ── */
-.back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;position:sticky;top:0;z-index:200;}
+.back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;position:sticky;top:0;z-index:100;}
 .back-btn{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#c8a878;background:none;border:none;cursor:pointer;padding:0;}
 .back-btn:hover{color:#e8dcc8;}
 .back-page-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#7a5030;}
@@ -156,7 +156,7 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── SETUP MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;}
-.modal{background:#1a1a18;border-radius:8px;padding:32px;width:460px;max-width:90vw;display:flex;flex-direction:column;gap:16px;border:0.5px solid #3a3a38;}
+.modal{background:#1a1a18;border-radius:8px;padding:32px;width:460px;max-width:90vw;display:flex;flex-direction:column;gap:16px;border:0.5px solid #3a3a38;position:relative;z-index:10001;}
 .modal-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
 .modal-sub{font-size:12px;color:#666;line-height:1.7;}
 .modal-sub a{color:#C97B52;text-decoration:none;}
@@ -1027,13 +1027,16 @@ function closeProjEdit(){
   if(p)p.remove();
   window._pendingColor=null;
 }
-// Close popup on outside click
+// Close popup on outside click - don't intercept modal/button clicks
 document.addEventListener('click',(e)=>{
   const popup=document.getElementById('proj-edit-popup');
-  if(popup&&!popup.contains(e.target)&&!e.target.closest('.project-name')){
-    closeProjEdit();
-  }
-},{capture:true});
+  if(!popup)return;
+  if(popup.contains(e.target))return;
+  if(e.target.closest('.project-name'))return;
+  if(e.target.closest('.modal-overlay'))return;
+  if(e.target.closest('.topbar-btn'))return;
+  closeProjEdit();
+});
 function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
 function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').forEach((s,idx)=>s.classList.toggle('selected',idx===i));}
 function createProject(){
