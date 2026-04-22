@@ -67,6 +67,12 @@
           "name": "Check in with Landscape Architect on HOA submittal",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 53,
+          "name": "HOA Submittal",
+          "days": 1,
+          "done": false
         }
       ],
       "type": "new-construction",
@@ -360,6 +366,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 53,
-  "lastSaved": "2026-04-22T17:38:29.675Z"
+  "nextId": 54,
+  "lastSaved": "2026-04-22T17:38:37.276Z"
 }
