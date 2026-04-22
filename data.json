@@ -252,7 +252,14 @@
       "colorIdx": 8,
       "archived": false,
       "type": "in-construction",
-      "tasks": []
+      "tasks": [
+        {
+          "id": 48,
+          "name": "Site Visit May 5th",
+          "days": 1,
+          "done": false
+        }
+      ]
     },
     {
       "id": 39,
@@ -329,6 +336,6 @@
       "tasks": []
     }
   ],
-  "nextId": 48,
-  "lastSaved": "2026-04-22T16:47:34.671Z"
+  "nextId": 49,
+  "lastSaved": "2026-04-22T16:47:52.499Z"
 }
