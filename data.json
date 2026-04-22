@@ -77,7 +77,7 @@
     {
       "id": 10,
       "name": "Davis Winfield",
-      "colorIdx": 8,
+      "colorIdx": 4,
       "archived": false,
       "tasks": []
     },
@@ -90,5 +90,5 @@
     }
   ],
   "nextId": 14,
-  "lastSaved": "2026-04-22T14:03:56.814Z"
+  "lastSaved": "2026-04-22T14:04:04.319Z"
 }
