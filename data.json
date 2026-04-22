@@ -4,7 +4,7 @@
       "id": 1,
       "name": "test",
       "colorIdx": 4,
-      "archived": true,
+      "archived": false,
       "tasks": [],
       "type": "",
       "staff": "Scott"
@@ -364,5 +364,5 @@
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:36:09.845Z"
+  "lastSaved": "2026-04-22T17:36:19.174Z"
 }
