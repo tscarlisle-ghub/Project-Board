@@ -56,7 +56,7 @@
     {
       "id": 8,
       "name": "Davis - Liberty Park",
-      "colorIdx": 0,
+      "colorIdx": 7,
       "archived": false,
       "tasks": []
     },
@@ -90,5 +90,5 @@
     }
   ],
   "nextId": 14,
-  "lastSaved": "2026-04-22T14:02:31.161Z"
+  "lastSaved": "2026-04-22T14:03:56.814Z"
 }
