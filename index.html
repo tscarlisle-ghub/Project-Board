@@ -9,52 +9,88 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;min-height:100vh;background:#f0ebe2;}
 body{font-family:"clarendon-text-pro",serif;}
+
+/* ── TOPBAR ── */
 .topbar{background:#1a1a18;padding:12px 32px;display:flex;align-items:center;gap:20px;}
 .topbar-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:36px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
 .topbar-title span{color:#C97B52;}
-.topbar-date{font-size:11px;color:#666;letter-spacing:0.12em;text-transform:uppercase;}
-.save-indicator{font-size:10px;color:#7A9A6A;letter-spacing:0.08em;text-transform:uppercase;opacity:0;transition:opacity 0.3s;margin-left:8px;}
-.save-indicator.show{opacity:1;}
-.topbar-btn{border:0.5px solid #555;color:#aaa;background:transparent;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-family:"clarendon-text-pro",serif;margin-left:auto;}
-.topbar-btn:hover{background:#2a2a28;color:#ddd;}
+.topbar-date{font-size:11px;color:#9a9488;letter-spacing:0.12em;text-transform:uppercase;}
+.sync-status{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;margin-left:8px;transition:opacity 0.3s;opacity:0;}
+.sync-status.show{opacity:1;}
+.sync-status.ok{color:#7A9A6A;}
+.sync-status.err{color:#C97B52;}
+.sync-status.working{color:#C9A83C;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.topbar-btn{border:0.5px solid #6a6a60;color:#9a9488;background:transparent;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:12px;font-family:"clarendon-text-pro",serif;}
+.topbar-btn:hover{background:#2a2a28;color:#aaa;border-color:#555;}
+.topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
+.topbar-btn.primary:hover{background:#C97B52;color:#fff;}
+
+/* ── TOOLBAR ── */
 .toolbar{padding:10px 32px;background:#1a1a18;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2a2a28;}
-.toolbar input[type=text]{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 12px;border-radius:4px;font-family:"clarendon-text-pro",serif;flex:1;min-width:180px;}
-.toolbar input::placeholder{color:#555;}
+.toolbar input[type=text]{font-size:13px;background:#111;border:0.5px solid #333;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"clarendon-text-pro",serif;flex:1;min-width:180px;}
+.toolbar input::placeholder{color:#6a6a60;}
 .toolbar select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
 .toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #555;color:#aaa;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
 .toolbar button:hover{background:#2a2a28;color:#ddd;}
+
+/* ── BOARD ── */
 .board{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
 .projects-grid{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;width:100%;}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;width:100%;text-align:center;gap:14px;}
 .empty-state-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:34px;letter-spacing:0.06em;text-transform:uppercase;color:#c0b8b0;}
 .empty-state-sub{font-size:13px;color:#b0a898;line-height:1.7;}
+
+/* ── PROJECT ── */
 .project-block{display:flex;flex-direction:column;}
 .project-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;}
 .project-meta{margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .project-total-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;}
-.project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:15px;color:#888;letter-spacing:0.04em;}
+.project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:15px;color:#888;}
 .archive-btn-proj{font-family:"trade-gothic-next-compressed",sans-serif;font-size:14px;color:#bbb;cursor:pointer;background:none;border:0.5px solid #ccc;border-radius:3px;letter-spacing:0.05em;padding:1px 5px;line-height:1.35;text-transform:uppercase;}
 .archive-btn-proj:hover{color:#444;border-color:#777;}
+
+/* ── TILES ── */
 .tiles-rect{display:grid;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.14);}
-.tile{display:flex;flex-direction:column;justify-content:space-between;padding:14px 16px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.08);transition:opacity 0.3s;overflow:hidden;user-select:none;}
+.tile{display:flex;flex-direction:column;justify-content:space-between;padding:14px 16px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.08);transition:opacity 0.3s;overflow:hidden;user-select:none;position:relative;}
 .tile.done{opacity:0.38;}
 .tile-name{font-family:"clarendon-text-pro",serif;font-weight:400;line-height:1.35;}
 .tile-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
-.tile-time{font-family:"clarendon-text-pro",serif;font-weight:400;letter-spacing:0.02em;}
+.tile-time{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;letter-spacing:0.04em;}
 .tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .tile-check.checked{background:rgba(0,0,0,0.12);}
 .tile-check svg{display:none;}
 .tile-check.checked svg{display:block;}
-.inline-edit{display:flex;flex-direction:column;gap:8px;background:#1a1a18;padding:14px 16px;border:0.5px solid rgba(0,0,0,0.1);}
-.inline-edit-label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#777;}
+.tile-delete{position:absolute;top:5px;right:6px;width:18px;height:18px;border-radius:50%;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s,background 0.15s;font-size:12px;color:rgba(255,255,255,0.7);padding:0;line-height:1;}
+.tile:hover .tile-delete{opacity:1;}
+.tile-delete:hover{background:rgba(0,0,0,0.28)!important;color:#fff;}
+
+/* ── ADD TASK BUTTON (below rectangle) ── */
+.add-task-below{display:inline-flex;align-items:center;margin-top:7px;font-family:"clarendon-text-pro",serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,0,0,0.3);background:none;border:none;cursor:pointer;padding:2px 0;}
+.add-task-below:hover{color:rgba(0,0,0,0.6);}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{width:100%;margin:6px 0 8px;display:flex;flex-direction:column;gap:3px;}
+.progress-track{width:100%;height:5px;background:rgba(0,0,0,0.08);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
+.progress-labels{display:flex;justify-content:space-between;align-items:center;}
+.progress-done-label{font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:#aaa;font-family:"clarendon-text-pro",serif;}
+.progress-pct{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;color:#aaa;letter-spacing:0.04em;}
+
+/* ── INLINE FORMS ── */
+.inline-edit,.new-task-form{display:flex;flex-direction:column;gap:8px;background:#1a1a18;padding:14px 16px;border:0.5px solid rgba(0,0,0,0.1);}
+.inline-edit-label,.ntf-label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#666;}
 .inline-edit-name{font-size:14px;color:#e8dcc8;font-weight:400;font-family:"clarendon-text-pro",serif;line-height:1.3;}
-.inline-edit select{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:5px 8px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
-.inline-edit-btns{display:flex;gap:6px;}
-.inline-edit-btns button{font-size:12px;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:"clarendon-text-pro",serif;}
+.inline-edit select,.new-task-form select,.new-task-form input[type=text]{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:5px 8px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.new-task-form input::placeholder{color:#555;}
+.inline-edit-btns,.new-task-form-btns{display:flex;gap:6px;}
+.inline-edit-btns button,.new-task-form-btns button{font-size:12px;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:"clarendon-text-pro",serif;}
 .btn-save{background:#C97B52;color:#fff;border:none;}
 .btn-done-tog{background:#4A7A62;color:#fff;border:none;}
 .btn-cancel{background:transparent;color:#888;border:0.5px solid #444;}
+
+/* ── CONTEXT MENU ── */
 .ctx-menu{position:fixed;background:#1a1a18;border:0.5px solid #3a3a38;border-radius:5px;padding:5px 0;min-width:200px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
 .ctx-menu-title{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;padding:6px 16px 5px;font-family:"clarendon-text-pro",serif;border-bottom:0.5px solid #2a2a28;margin-bottom:3px;}
 .ctx-item{font-size:13px;padding:8px 16px;color:#ccc;cursor:pointer;font-family:"clarendon-text-pro",serif;display:flex;align-items:center;gap:10px;}
@@ -62,42 +98,98 @@ body{font-family:"clarendon-text-pro",serif;}
 .ctx-icon{width:16px;text-align:center;flex-shrink:0;}
 .ctx-sep{height:0.5px;background:#2a2a28;margin:4px 0;}
 .ctx-item.done-item{color:#7A9A6A;}
+.ctx-item.del-item{color:#C97B52;}
+
+/* ── NEW PROJECT PANEL ── */
 .new-project-panel{background:#1a1a18;border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:12px;width:300px;}
 .new-project-panel label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#666;}
 .new-project-panel input{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:7px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
 .color-swatches{display:flex;gap:8px;flex-wrap:wrap;}
 .swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;}
 .swatch.selected{border-color:#e8dcc8;}
+
+/* ── ARCHIVE ── */
 .archive-section{padding:16px 32px;background:#e8e3da;border-top:1px solid #d4cfc6;}
 .archive-toggle{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#888;cursor:pointer;background:none;border:none;font-family:"clarendon-text-pro",serif;}
 .archived-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
 .archived-chip{display:flex;align-items:center;gap:8px;background:#ddd8cf;border-radius:20px;padding:5px 14px 5px 10px;font-size:12px;color:#555;font-family:"clarendon-text-pro",serif;}
 .restore-btn{font-size:10px;padding:2px 8px;margin-left:4px;cursor:pointer;background:none;border:0.5px solid #999;border-radius:10px;font-family:"clarendon-text-pro",serif;color:#555;}
 .restore-btn:hover{background:#ccc;}
+
+/* ── SETUP MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;}
+.modal{background:#1a1a18;border-radius:8px;padding:32px;width:460px;max-width:90vw;display:flex;flex-direction:column;gap:16px;border:0.5px solid #3a3a38;}
+.modal-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;color:#e8dcc8;letter-spacing:0.06em;text-transform:uppercase;}
+.modal-sub{font-size:12px;color:#666;line-height:1.7;}
+.modal-sub a{color:#C97B52;text-decoration:none;}
+.modal label{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-bottom:-8px;}
+.modal input{font-size:13px;background:#111;border:0.5px solid #333;color:#ddd;padding:8px 12px;border-radius:4px;font-family:"clarendon-text-pro",serif;width:100%;}
+.modal input::placeholder{color:#444;}
+.modal-btns{display:flex;gap:8px;margin-top:4px;}
+.modal-btns button{font-size:13px;padding:8px 20px;border-radius:4px;cursor:pointer;font-family:"clarendon-text-pro",serif;}
+.modal-note{font-size:11px;color:#555;line-height:1.6;border-top:0.5px solid #2a2a28;padding-top:14px;}
 </style>
 </head>
 <body>
+
 <div class="topbar">
   <div class="topbar-title">PROJECT <span>BOARD</span></div>
   <div class="topbar-date" id="today-date"></div>
-  <span class="save-indicator" id="save-indicator">Saved</span>
-  <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
+  <span class="sync-status" id="sync-status"></span>
+  <div class="topbar-right">
+    <button class="topbar-btn" onclick="toggleNewProject()">+ New project</button>
+    <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
+  </div>
 </div>
+
 <div class="toolbar">
   <input type="text" id="new-task-input" placeholder="Task name..." />
   <select id="new-task-days" style="width:140px;"></select>
   <select id="new-task-project" style="min-width:160px;max-width:240px;"></select>
   <button onclick="addTask()">+ Add task</button>
 </div>
+
 <div class="board">
   <div class="projects-grid" id="projects-grid"></div>
 </div>
+
 <div id="archive-section" style="display:none;" class="archive-section">
   <button class="archive-toggle" onclick="toggleArchiveView()" id="archive-toggle-btn"></button>
   <div class="archived-list" id="archived-list" style="display:none;"></div>
 </div>
+
 <div id="ctx-menu" class="ctx-menu" style="display:none;"></div>
+
+<!-- Setup / token modal -->
+<div class="modal-overlay" id="setup-modal" style="display:none;">
+  <div class="modal">
+    <div class="modal-title">GitHub Sync Setup</div>
+    <div class="modal-sub">
+      Your data saves to <strong style="color:#e8dcc8;">tscarlisle-ghub/project-board</strong> on GitHub.<br>
+      Paste your Personal Access Token below. It stays in this browser only — never sent anywhere except GitHub's API.
+    </div>
+    <label>Personal Access Token</label>
+    <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+    <div class="modal-btns">
+      <button class="btn-save" onclick="saveToken()" style="font-size:13px;padding:8px 20px;">Connect</button>
+      <button class="btn-cancel" onclick="hideSetup()" style="font-size:13px;padding:8px 20px;">Cancel</button>
+    </div>
+    <div class="modal-note">
+      <strong style="color:#888;">How to get a token:</strong> github.com → profile photo → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → check <em>repo</em> scope → copy the token.<br><br>
+      <strong style="color:#888;">First time?</strong> After connecting, click the sync button or make any change — your data will be saved to <code style="color:#C9A83C;">data.json</code> in your repo and will load on any device that opens this page.
+    </div>
+  </div>
+</div>
+
 <script>
+/* ── CONFIG ── */
+const GH_USER   = 'tscarlisle-ghub';
+const GH_REPO   = 'project-board';
+const GH_FILE   = 'data.json';
+const GH_BRANCH = 'main';
+const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+
+/* ── PALETTE & TIME OPTIONS ── */
 const PALETTE=[
   {name:'Old Rose',base:'#A85B5B'},{name:'Jade',base:'#4A7A62'},
   {name:'Warm Tan',base:'#8B6E3A'},{name:'Blue Tint',base:'#7AAAB8'},
@@ -107,39 +199,56 @@ const PALETTE=[
   {name:'Shell Pink',base:'#C8897A'},{name:'Lavender',base:'#8A88A8'},
 ];
 
-function hexRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
-
-function heatColor(base,days,maxDays){
-  const [r,g,b]=hexRgb(base);
-  const t=Math.min(days/Math.max(maxDays,1),1);
-  const bg=[240,235,226];
-  const lr=Math.round(bg[0]+(r-bg[0])*0.22),lg=Math.round(bg[1]+(g-bg[1])*0.22),lb=Math.round(bg[2]+(b-bg[2])*0.22);
-  const dr=Math.round(r*0.75),dg=Math.round(g*0.75),db=Math.round(b*0.75);
-  return `rgb(${Math.round(lr+(dr-lr)*t)},${Math.round(lg+(dg-lg)*t)},${Math.round(lb+(db-lb)*t)})`;
-}
-function txtColor(days,max){return(days/Math.max(max,1))<0.32?'rgba(30,22,14,0.82)':'rgba(255,255,255,0.94)';}
-function subColor(days,max){return(days/Math.max(max,1))<0.32?'rgba(30,22,14,0.48)':'rgba(255,255,255,0.56)';}
-
 function buildTimeOptions(){
   const o=[];
-  o.push({v:0.5,l:'1/2 day'});
-  for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'1/2 days'});}
-  for(let w=1;w<=16;w++){o.push({v:w*7,l:w===1?'1 week':w+' weeks'});o.push({v:w*7+3.5,l:w+'1/2 weeks'});}
+  o.push({v:0.5,l:'½ day'});
+  for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'½ days'});}
+  for(let w=1;w<=16;w++){o.push({v:w*7,l:w===1?'1 week':w+' weeks'});o.push({v:w*7+3.5,l:w+'½ weeks'});}
   return o;
 }
 const TIME_OPTS=buildTimeOptions();
-function timeLabel(v){
-  const o=TIME_OPTS.find(x=>Math.abs(x.v-v)<0.01);
-  if(!o)return v+'d';
-  return o.l.replace('1/2','½');
-}
+function timeLabel(v){const o=TIME_OPTS.find(x=>Math.abs(x.v-v)<0.01);return o?o.l:v+'d';}
 function buildTimeSelect(id,sel){
   const el=document.getElementById(id);if(!el)return;
-  el.innerHTML=TIME_OPTS.map(o=>`<option value="${o.v}"${Math.abs(o.v-(sel||1))<0.01?' selected':''}>${o.l.replace('1/2','½')}</option>`).join('');
+  el.innerHTML=TIME_OPTS.map(o=>`<option value="${o.v}"${Math.abs(o.v-(sel||1))<0.01?' selected':''}>${o.l}</option>`).join('');
 }
+
+/* ── COLOR / HEAT ── */
+function hexRgb(h){return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+
+// Single flat color for all uncompleted tiles in a project — mid-tone of the base
+function projTileColor(base){
+  const[r,g,b]=hexRgb(base);
+  // blend base with a slight darkening for richness
+  return`rgb(${Math.round(r*0.88)},${Math.round(g*0.88)},${Math.round(b*0.88)})`;
+}
+
+// Luminance check to pick text color
+function projTextColor(base){
+  const[r,g,b]=hexRgb(base);
+  const lum=(0.299*r+0.587*g+0.114*b)/255;
+  return lum>0.45?'rgba(30,22,14,0.82)':'rgba(255,255,255,0.94)';
+}
+function projSubColor(base){
+  const[r,g,b]=hexRgb(base);
+  const lum=(0.299*r+0.587*g+0.114*b)/255;
+  return lum>0.45?'rgba(30,22,14,0.48)':'rgba(255,255,255,0.60)';
+}
+
+// Heat map still used for the done (faded) tile tinting
+function heatColor(base,days,max){
+  const[r,g,b]=hexRgb(base);
+  const t=Math.min(days/Math.max(max,1),1);
+  const bg=[240,235,226];
+  const lr=Math.round(bg[0]+(r-bg[0])*0.22),lg=Math.round(bg[1]+(g-bg[1])*0.22),lb=Math.round(bg[2]+(b-bg[2])*0.22);
+  const dr=Math.round(r*0.75),dg=Math.round(g*0.75),db=Math.round(b*0.75);
+  return`rgb(${Math.round(lr+(dr-lr)*t)},${Math.round(lg+(dg-lg)*t)},${Math.round(lb+(db-lb)*t)})`;
+}
+
+/* ── HELPERS ── */
 function totalDays(tasks){return tasks.reduce((s,t)=>s+t.days,0);}
 function fmtTotal(d){
-  if(d<7){const w=Math.floor(d),h=d%1>0.1;if(w===0&&h)return '½ day';return w+(h?'½':'')+' day'+(w===1&&!h?'':'s');}
+  if(d<7){const w=Math.floor(d),h=d%1>0.1;if(w===0&&h)return'½ day';return w+(h?'½':'')+' day'+(w===1&&!h?'':'s');}
   const wk=d/7,ww=Math.floor(wk),wh=wk%1>0.1;
   return ww+(wh?'½':'')+' week'+(ww===1&&!wh?'':'s');
 }
@@ -147,29 +256,190 @@ function tileHeight(days){
   if(days<=7)return Math.round(90+days*34);
   return Math.round(90+7*34+(days-7)*17);
 }
+function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
-const BASE_COLS=3,TILE_FS=22,TILE_TIME_FS=15,TITLE_FS=38;
-let nextId=1,editingTask=null,showNewProject=false,showArchived=false,selectedColorIdx=0,projects=[];
+/* ── STATE ── */
+const BASE_COLS=3,TILE_FS=14,TILE_TIME_FS=13,TITLE_FS=24;
+let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
-function loadData(){
-  try{const r=localStorage.getItem('pb_v2');if(r){const d=JSON.parse(r);projects=d.projects||[];nextId=d.nextId||1;}}
-  catch(e){projects=[];}
+const SAMPLE_PROJECTS=[
+  {id:1,name:'Young Residence',colorIdx:0,archived:false,tasks:[
+    {id:1,name:'QA drawing set review',days:1,done:false},
+    {id:2,name:'Update site plan',days:0.5,done:true},
+    {id:3,name:'Coordinate with MEP',days:1,done:false},
+    {id:4,name:'Submit permit docs',days:0.5,done:false},
+    {id:5,name:'Detail stair section',days:2,done:false},
+    {id:6,name:'Exterior elevation review',days:1,done:false},
+  ]},
+  {id:2,name:'Philip & Breanna',colorIdx:1,archived:false,tasks:[
+    {id:7,name:'Interior coord — Laurin',days:1,done:false},
+    {id:8,name:'Builder mtg w/ Nikolaus',days:0.5,done:true},
+    {id:9,name:'Finish material schedule',days:1.5,done:false},
+    {id:10,name:'Window schedule',days:1,done:false},
+  ]},
+  {id:3,name:'Wine Store – Vestavia',colorIdx:6,archived:false,tasks:[
+    {id:11,name:'Fee proposal revisions',days:0.5,done:true},
+    {id:12,name:'Schematic floor plan',days:3,done:false},
+    {id:13,name:'Client presentation',days:1,done:false},
+  ]},
+  {id:4,name:'Ray Residence',colorIdx:4,archived:false,tasks:[
+    {id:14,name:'Equalized bid comparison',days:1,done:true},
+    {id:15,name:'Architect estimate review',days:1,done:false},
+    {id:16,name:'Contract revisions',days:0.5,done:false},
+  ]},
+  {id:5,name:'CMA Office Relocation',colorIdx:2,archived:false,tasks:[
+    {id:17,name:'Construction docs QA',days:3,done:false},
+    {id:18,name:'Lease review',days:1,done:true},
+    {id:19,name:'Contractor coordination',days:2,done:false},
+  ]},
+];
+
+let projects=[];
+let ghToken=localStorage.getItem('pb_gh_token')||'';
+let ghFileSha=''; // needed to update existing file on GitHub
+let saveTimer=null;
+
+/* ── SYNC STATUS ── */
+function setStatus(msg,type,duration=2500){
+  const el=document.getElementById('sync-status');
+  el.textContent=msg;
+  el.className='sync-status show '+type;
+  if(duration){setTimeout(()=>el.classList.remove('show'),duration);}
 }
-function saveData(){
+
+/* ── TOKEN / SETUP ── */
+function showSetup(){document.getElementById('setup-modal').style.display='flex';}
+function hideSetup(){document.getElementById('setup-modal').style.display='none';}
+function saveToken(){
+  const t=document.getElementById('token-input').value.trim();
+  if(!t)return;
+  ghToken=t;
+  localStorage.setItem('pb_gh_token',t);
+  hideSetup();
+  loadFromGitHub();
+}
+
+/* ── GITHUB LOAD ── */
+async function loadFromGitHub(){
+  if(!ghToken){
+    // Fall back to localStorage
+    loadLocal();
+    setStatus('No token — using local storage only','err',4000);
+    return;
+  }
+  setStatus('Loading…','working',0);
   try{
-    localStorage.setItem('pb_v2',JSON.stringify({projects,nextId}));
-    const i=document.getElementById('save-indicator');
-    if(i){i.classList.add('show');setTimeout(()=>i.classList.remove('show'),1400);}
+    const res=await fetch(GH_API+'?ref='+GH_BRANCH,{
+      headers:{
+        'Authorization':'token '+ghToken,
+        'Accept':'application/vnd.github.v3+json'
+      }
+    });
+    if(res.status===404){
+      // File doesn't exist yet — start with samples and create it
+      setStatus('New repo — loading samples','ok');
+      projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));
+      nextId=20;
+      renderProjects();
+      await saveToGitHub(true);
+      return;
+    }
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const json=await res.json();
+    ghFileSha=json.sha;
+    const decoded=atob(json.content.replace(/\n/g,''));
+    const data=JSON.parse(decoded||'{}');
+    projects=data.projects||[];
+    nextId=data.nextId||1;
+    setStatus('Synced','ok');
+    renderProjects();
+  }catch(e){
+    setStatus('Load failed — using local','err',4000);
+    loadLocal();
+  }
+}
+
+/* ── GITHUB SAVE ── */
+async function saveToGitHub(force=false){
+  if(!ghToken)return;
+  const payload={
+    projects,
+    nextId,
+    lastSaved:new Date().toISOString()
+  };
+  const content=btoa(unescape(encodeURIComponent(JSON.stringify(payload,null,2))));
+  const body={
+    message:'Update project board data',
+    content,
+    branch:GH_BRANCH,
+  };
+  if(ghFileSha)body.sha=ghFileSha;
+  try{
+    const res=await fetch(GH_API,{
+      method:'PUT',
+      headers:{
+        'Authorization':'token '+ghToken,
+        'Accept':'application/vnd.github.v3+json',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(body)
+    });
+    if(!res.ok){
+      const err=await res.json();
+      // SHA conflict — re-fetch and retry once
+      if(res.status===409||res.status===422){
+        await refreshSha();
+        await saveToGitHub();
+        return;
+      }
+      throw new Error(err.message||'HTTP '+res.status);
+    }
+    const json=await res.json();
+    ghFileSha=json.content.sha;
+    // Also save locally as backup
+    saveLocal();
+    setStatus('Saved','ok');
+  }catch(e){
+    setStatus('Sync failed','err',4000);
+    saveLocal(); // at least save locally
+  }
+}
+
+async function refreshSha(){
+  try{
+    const res=await fetch(GH_API+'?ref='+GH_BRANCH,{
+      headers:{'Authorization':'token '+ghToken,'Accept':'application/vnd.github.v3+json'}
+    });
+    const json=await res.json();
+    ghFileSha=json.sha;
   }catch(e){}
 }
-loadData();
 
+/* ── DEBOUNCED SAVE ── */
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>saveToGitHub(),800);
+}
+
+/* ── LOCAL STORAGE FALLBACK ── */
+function saveLocal(){
+  try{localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));}catch(e){}
+}
+function loadLocal(){
+  try{
+    const r=localStorage.getItem('pb_v3');
+    if(r){const d=JSON.parse(r);projects=d.projects||JSON.parse(JSON.stringify(SAMPLE_PROJECTS));nextId=d.nextId||20;}
+    else{projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
+  }catch(e){projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
+  renderProjects();
+}
+
+/* ── RENDER ── */
 function getRectW(){
   const el=document.getElementById('projects-grid');
   const bw=el?el.offsetWidth:900;
   return Math.floor(Math.min(bw,1600)/BASE_COLS)*BASE_COLS;
 }
-function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
 function renderProjects(){
   const grid=document.getElementById('projects-grid');
@@ -181,15 +451,20 @@ function renderProjects(){
   if(!active.length&&!showNewProject){
     const es=document.createElement('div');
     es.className='empty-state';
-    es.innerHTML='<div class="empty-state-title">No projects yet</div><div class="empty-state-sub">Click &ldquo;+ New project&rdquo; to get started,<br>then add tasks using the toolbar above.</div>';
+    es.innerHTML='<div class="empty-state-title">No projects yet</div><div class="empty-state-sub">Click &ldquo;+ New project&rdquo; to get started.</div>';
     grid.appendChild(es);
   }
 
   active.forEach(proj=>{
     const pal=PALETTE[proj.colorIdx];
     const n=proj.tasks.length;
-    const cols=Math.min(n||1,BASE_COLS);
+    const isAdding=addingToProject===proj.id;
+    const cols=Math.min(Math.max(n,1),BASE_COLS);
     const max=getMax(proj);
+    const flatBg=projTileColor(pal.base);
+    const flatTc=projTextColor(pal.base);
+    const flatSc=projSubColor(pal.base);
+    const doneBg=heatColor(pal.base,0.5,7);
 
     const block=document.createElement('div');
     block.className='project-block';
@@ -205,61 +480,108 @@ function renderProjects(){
       </div>`;
     block.appendChild(hdr);
 
+    // Progress bar
+    const allDays=totalDays(proj.tasks);
+    const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
+    const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
+    const prog=document.createElement('div');
+    prog.className='progress-wrap';
+    prog.innerHTML=`
+      <div class="progress-labels">
+        <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
+        <span class="progress-pct">${pct}%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%;background:${pal.base};"></div>
+      </div>`;
+    block.appendChild(prog);
+
     const rect=document.createElement('div');
     rect.className='tiles-rect';
     rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+    rect.style.gridAutoRows='1fr';
     rect.style.width=rw+'px';
 
-    if(!n){
+    if(!n && !isAdding){
       const emp=document.createElement('div');
-      emp.style.cssText=`height:120px;display:flex;align-items:center;justify-content:center;font-size:14px;color:${subColor(0.5,7)};background:${heatColor(pal.base,0.5,7)};grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
+      emp.style.cssText=`height:120px;display:flex;align-items:center;justify-content:center;font-size:14px;color:${flatSc};background:${flatBg};grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
       emp.textContent='No tasks yet';
       rect.appendChild(emp);
-    } else {
-      const rem=n%cols;
-      proj.tasks.forEach((t,i)=>{
-        const editing=editingTask&&editingTask.projId===proj.id&&editingTask.taskId===t.id;
-        const h=tileHeight(t.days);
-        const span=(rem>0&&Math.floor(i/cols)===Math.floor((n-1)/cols))?Math.floor(cols/rem):1;
-        const bg=heatColor(pal.base,t.days,max);
-        const tc=txtColor(t.days,max);
-        const sc=subColor(t.days,max);
-
-        if(editing){
-          const cell=document.createElement('div');
-          cell.className='inline-edit';
-          if(span>1)cell.style.gridColumn=`span ${span}`;
-          cell.style.minHeight=h+'px';
-          cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
-            <div class="inline-edit-name">${t.name}</div>
-            <select id="ed-${t.id}"></select>
-            <div class="inline-edit-btns">
-              <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
-              <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
-              <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
-            </div>`;
-          rect.appendChild(cell);
-          setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
-        } else {
-          const tile=document.createElement('div');
-          tile.className='tile'+(t.done?' done':'');
-          tile.style.cssText=`background:${bg};height:${h}px;${span>1?'grid-column:span '+span+';':''}`;
-          tile.innerHTML=`<div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
-            <div class="tile-bottom">
-              <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:${sc};">${timeLabel(t.days)}</span>
-              <div class="tile-check${t.done?' checked':''}" style="border-color:${sc};">
-                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                  <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </div>
-            </div>`;
-          tile.addEventListener('click',()=>openEdit(proj.id,t.id));
-          tile.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
-          rect.appendChild(tile);
-        }
-      });
     }
+
+    proj.tasks.forEach(t=>{
+      const editing=editingTask&&editingTask.projId===proj.id&&editingTask.taskId===t.id;
+      const h=tileHeight(t.days);
+      const bg=t.done?doneBg:flatBg;
+      const tc=t.done?'rgba(30,22,14,0.35)':flatTc;
+      const sc=t.done?'rgba(30,22,14,0.25)':flatSc;
+
+      if(editing){
+        const cell=document.createElement('div');
+        cell.className='inline-edit';
+        cell.style.minHeight=h+'px';
+        cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
+          <div class="inline-edit-name">${t.name}</div>
+          <select id="ed-${t.id}"></select>
+          <div class="inline-edit-btns">
+            <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
+            <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
+            <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
+          </div>`;
+        rect.appendChild(cell);
+        setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
+      } else {
+        const tile=document.createElement('div');
+        tile.className='tile'+(t.done?' done':'');
+        tile.style.cssText=`background:${bg};min-height:${h}px;`;
+        const delColor=flatTc==='rgba(255,255,255,0.94)'?'rgba(255,255,255,0.5)':'rgba(30,22,14,0.35)';
+        tile.innerHTML=`<button class="tile-delete" style="color:${delColor};" onclick="deleteTile(event,${proj.id},${t.id})">&#x2715;</button>
+          <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
+          <div class="tile-bottom">
+            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:${sc};">${timeLabel(t.days)}</span>
+            <div class="tile-check${t.done?' checked':''}" style="border-color:${sc};">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>`;
+        tile.addEventListener('click',()=>openEdit(proj.id,t.id));
+        tile.addEventListener('contextmenu',(e)=>{e.preventDefault();showCtxMenu(e,proj.id,t.id);});
+        rect.appendChild(tile);
+      }
+    });
+
+    // Inline add form appears as extra cell inside grid
+    if(isAdding){
+      const form=document.createElement('div');
+      form.className='new-task-form';
+      form.style.minHeight=tileHeight(1)+'px';
+      form.innerHTML=`<div class="ntf-label">New task</div>
+        <input type="text" id="ntf-name-${proj.id}" placeholder="Task name..." />
+        <select id="ntf-days-${proj.id}"></select>
+        <div class="new-task-form-btns">
+          <button class="btn-save" onclick="submitInlineTask(${proj.id})">Add</button>
+          <button class="btn-cancel" onclick="cancelInlineAdd()">&#x2715;</button>
+        </div>`;
+      rect.appendChild(form);
+      setTimeout(()=>{
+        buildTimeSelect(`ntf-days-${proj.id}`,1);
+        const inp=document.getElementById(`ntf-name-${proj.id}`);
+        if(inp)inp.focus();
+      },0);
+    }
+
     block.appendChild(rect);
+
+    // Add-task button sits below the rectangle, outside the grid
+    if(!isAdding){
+      const addBtn=document.createElement('button');
+      addBtn.className='add-task-below';
+      addBtn.innerHTML='+ Add task';
+      addBtn.addEventListener('click',()=>openInlineAdd(proj.id));
+      block.appendChild(addBtn);
+    }
+
     grid.appendChild(block);
   });
 
@@ -282,18 +604,37 @@ function renderProjects(){
   renderArchiveSection(archived);
 }
 
+/* ── INLINE ADD ── */
+function openInlineAdd(projId){addingToProject=projId;editingTask=null;renderProjects();}
+function cancelInlineAdd(){addingToProject=null;renderProjects();}
+function submitInlineTask(projId){
+  const nameEl=document.getElementById(`ntf-name-${projId}`);
+  const daysEl=document.getElementById(`ntf-days-${projId}`);
+  const name=nameEl?nameEl.value.trim():'';
+  const days=daysEl?parseFloat(daysEl.value):1;
+  if(!name)return;
+  const proj=projects.find(p=>p.id===projId);if(!proj)return;
+  proj.tasks.push({id:nextId++,name,days,done:false});
+  addingToProject=null;
+  scheduleSave();
+  renderProjects();
+}
+
+/* ── CONTEXT MENU ── */
 function showCtxMenu(e,projId,taskId){
   const proj=projects.find(p=>p.id===projId);
   const t=proj&&proj.tasks.find(t=>t.id===taskId);
   if(!t)return;
   const menu=document.getElementById('ctx-menu');
-  const addOpts=TIME_OPTS.filter(o=>o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${o.v})"><span class="ctx-icon">+</span>Add ${o.l.replace('1/2','½')}</div>`).join('');
-  const subOpts=TIME_OPTS.filter(o=>o.v<=t.days&&o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${-o.v})"><span class="ctx-icon">&#x2212;</span>Remove ${o.l.replace('1/2','½')}</div>`).join('');
+  const addOpts=TIME_OPTS.filter(o=>o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${o.v})"><span class="ctx-icon">+</span>Add ${o.l}</div>`).join('');
+  const subOpts=TIME_OPTS.filter(o=>o.v<=t.days&&o.v<=7).map(o=>`<div class="ctx-item" onclick="adjustTime(${projId},${taskId},${-o.v})"><span class="ctx-icon">&#x2212;</span>Remove ${o.l}</div>`).join('');
   menu.innerHTML=`<div class="ctx-menu-title">${t.name}</div>
     <div style="max-height:180px;overflow-y:auto;">${addOpts}</div>
     ${subOpts?`<div class="ctx-sep"></div><div style="max-height:150px;overflow-y:auto;">${subOpts}</div>`:''}
     <div class="ctx-sep"></div>
-    <div class="ctx-item done-item" onclick="markDoneCtx(${projId},${taskId})">${t.done?'&#x21A9; Reopen':'&#x2713; Mark done'}</div>`;
+    <div class="ctx-item done-item" onclick="markDoneCtx(${projId},${taskId})">${t.done?'&#x21A9; Reopen':'&#x2713; Mark done'}</div>
+    <div class="ctx-sep"></div>
+    <div class="ctx-item del-item" onclick="deleteTask(${projId},${taskId})">&#x2715; Delete task</div>`;
   menu.style.display='block';
   menu.style.left=e.clientX+'px';
   menu.style.top=e.clientY+'px';
@@ -301,29 +642,44 @@ function showCtxMenu(e,projId,taskId){
 function adjustTime(pId,tId,delta){
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
   if(t)t.days=Math.max(0.5,Math.round((t.days+delta)*2)/2);
-  closeCtx();saveData();renderProjects();
+  closeCtx();scheduleSave();renderProjects();
 }
 function markDoneCtx(pId,tId){
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
   if(t)t.done=!t.done;
-  closeCtx();saveData();renderProjects();
+  closeCtx();scheduleSave();renderProjects();
+}
+function deleteTile(e,pId,tId){
+  e.stopPropagation();
+  const p=projects.find(p=>p.id===pId);
+  if(p)p.tasks=p.tasks.filter(t=>t.id!==tId);
+  scheduleSave();renderProjects();
+}
+function deleteTask(pId,tId){
+  const p=projects.find(p=>p.id===pId);
+  if(p)p.tasks=p.tasks.filter(t=>t.id!==tId);
+  closeCtx();scheduleSave();renderProjects();
 }
 function closeCtx(){document.getElementById('ctx-menu').style.display='none';}
 document.addEventListener('click',closeCtx);
 document.addEventListener('contextmenu',(e)=>{if(!e.target.closest('.tile'))closeCtx();});
-function openEdit(pId,tId){editingTask={projId:pId,taskId:tId};renderProjects();}
+
+/* ── EDIT TASK TIME ── */
+function openEdit(pId,tId){editingTask={projId:pId,taskId:tId};addingToProject=null;renderProjects();}
 function cancelEdit(){editingTask=null;renderProjects();}
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
   if(t)t.days=parseFloat(el.value);
-  editingTask=null;saveData();renderProjects();
+  editingTask=null;scheduleSave();renderProjects();
 }
 function markDone(pId,tId){
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
   if(t)t.done=!t.done;
-  editingTask=null;saveData();renderProjects();
+  editingTask=null;scheduleSave();renderProjects();
 }
+
+/* ── PROJECT CRUD ── */
 function renderProjectSelect(){
   const sel=document.getElementById('new-task-project');if(!sel)return;
   const cur=sel.value;
@@ -331,6 +687,29 @@ function renderProjectSelect(){
   sel.innerHTML=active.length?active.map(p=>`<option value="${p.id}">${p.name}</option>`).join(''):'<option value="">— create a project first —</option>';
   if(cur)sel.value=cur;
 }
+function addTask(){
+  const name=document.getElementById('new-task-input').value.trim();
+  const days=parseFloat(document.getElementById('new-task-days').value);
+  const projId=parseInt(document.getElementById('new-task-project').value);
+  if(!name||!days||!projId)return;
+  const proj=projects.find(p=>p.id===projId);if(!proj)return;
+  proj.tasks.push({id:nextId++,name,days,done:false});
+  document.getElementById('new-task-input').value='';
+  scheduleSave();renderProjects();
+}
+function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
+function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').forEach((s,idx)=>s.classList.toggle('selected',idx===i));}
+function createProject(){
+  const el=document.getElementById('np-name');
+  const name=el?el.value.trim():'';if(!name)return;
+  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,tasks:[]});
+  showNewProject=false;scheduleSave();renderProjects();
+}
+function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
+function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;scheduleSave();renderProjects();}
+function toggleArchiveView(){showArchived=!showArchived;renderProjects();}
+
+/* ── ARCHIVE SECTION ── */
 function renderArchiveSection(archived){
   const sec=document.getElementById('archive-section');
   const list=document.getElementById('archived-list');
@@ -341,7 +720,7 @@ function renderArchiveSection(archived){
   list.style.display=showArchived?'flex':'none';
   list.innerHTML=archived.map(p=>{
     const pal=PALETTE[p.colorIdx];
-    return `<div class="archived-chip">
+    return`<div class="archived-chip">
       <div style="width:10px;height:10px;border-radius:50%;background:${pal.base};flex-shrink:0;"></div>
       <span>${p.name}</span>
       <span style="color:#999;font-size:11px;">${fmtTotal(totalDays(p.tasks))} &middot; ${p.tasks.length} tasks</span>
@@ -349,32 +728,27 @@ function renderArchiveSection(archived){
     </div>`;
   }).join('');
 }
-function addTask(){
-  const name=document.getElementById('new-task-input').value.trim();
-  const days=parseFloat(document.getElementById('new-task-days').value);
-  const projId=parseInt(document.getElementById('new-task-project').value);
-  if(!name||!days||!projId)return;
-  const proj=projects.find(p=>p.id===projId);if(!proj)return;
-  proj.tasks.push({id:nextId++,name,days,done:false});
-  document.getElementById('new-task-input').value='';
-  saveData();renderProjects();
-}
-function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
-function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').forEach((s,idx)=>s.classList.toggle('selected',idx===i));}
-function createProject(){
-  const el=document.getElementById('np-name');
-  const name=el?el.value.trim():'';if(!name)return;
-  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,tasks:[]});
-  showNewProject=false;saveData();renderProjects();
-}
-function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;saveData();renderProjects();}
-function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;saveData();renderProjects();}
-function toggleArchiveView(){showArchived=!showArchived;renderProjects();}
 
+/* ── KEYBOARD ── */
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){
+    if(addingToProject!==null)submitInlineTask(addingToProject);
+  }
+  if(e.key==='Escape'){cancelEdit();cancelInlineAdd();hideSetup();}
+});
+
+/* ── INIT ── */
 document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
 buildTimeSelect('new-task-days',1);
-renderProjects();
 window.addEventListener('resize',renderProjects);
+
+// If token exists, load from GitHub. Otherwise show setup.
+if(ghToken){
+  loadFromGitHub();
+} else {
+  showSetup();
+  loadLocal();
+}
 </script>
 </body>
 </html>
