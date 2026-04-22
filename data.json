@@ -62,14 +62,7 @@
       "name": "Davis - Liberty Park",
       "colorIdx": 7,
       "archived": false,
-      "tasks": [
-        {
-          "id": 20,
-          "name": "finish construction drawings",
-          "days": 63,
-          "done": true
-        }
-      ],
+      "tasks": [],
       "type": "new-construction",
       "staff": "Maddie"
     },
@@ -344,5 +337,5 @@
     }
   ],
   "nextId": 51,
-  "lastSaved": "2026-04-22T17:17:57.028Z"
+  "lastSaved": "2026-04-22T17:18:02.517Z"
 }
