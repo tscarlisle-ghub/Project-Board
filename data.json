@@ -26,8 +26,15 @@
           "done": false
         }
       ]
+    },
+    {
+      "id": 5,
+      "name": "Young",
+      "colorIdx": 1,
+      "archived": false,
+      "tasks": []
     }
   ],
-  "nextId": 5,
-  "lastSaved": "2026-04-22T13:05:35.707Z"
+  "nextId": 6,
+  "lastSaved": "2026-04-22T13:15:50.804Z"
 }
