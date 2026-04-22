@@ -71,7 +71,7 @@
           "id": 21,
           "name": "building science details",
           "days": 5,
-          "done": false
+          "done": true
         }
       ],
       "type": "new-construction"
@@ -321,5 +321,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T15:41:32.328Z"
+  "lastSaved": "2026-04-22T16:01:18.738Z"
 }
