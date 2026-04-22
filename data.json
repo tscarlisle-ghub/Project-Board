@@ -202,7 +202,7 @@
       "id": 31,
       "name": "Aultman",
       "colorIdx": 1,
-      "archived": false,
+      "archived": true,
       "type": "renovation",
       "tasks": [],
       "staff": "Scott"
@@ -355,5 +355,5 @@
     }
   ],
   "nextId": 52,
-  "lastSaved": "2026-04-22T17:36:31.356Z"
+  "lastSaved": "2026-04-22T17:36:38.112Z"
 }
