@@ -10,7 +10,7 @@
           "id": 3,
           "name": "Revise side elements",
           "days": 1,
-          "done": true
+          "done": false
         },
         {
           "id": 4,
@@ -412,5 +412,5 @@
     }
   ],
   "nextId": 61,
-  "lastSaved": "2026-04-22T17:46:06.717Z"
+  "lastSaved": "2026-04-22T17:46:07.611Z"
 }
