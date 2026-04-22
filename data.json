@@ -63,7 +63,7 @@
     {
       "id": 9,
       "name": "Clikas",
-      "colorIdx": 0,
+      "colorIdx": 6,
       "archived": false,
       "tasks": [
         {
@@ -128,5 +128,5 @@
     }
   ],
   "nextId": 20,
-  "lastSaved": "2026-04-22T15:18:55.204Z"
+  "lastSaved": "2026-04-22T15:19:08.992Z"
 }
