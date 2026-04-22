@@ -27,6 +27,19 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn-large{border:0.5px solid #7a5030;color:#c8a878;background:transparent;padding:8px 22px;border-radius:4px;cursor:pointer;font-size:16px;font-family:"clarendon-text-pro",serif;display:inline-block;}
 .topbar-btn-large:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 
+/* ── BACK BAR ── */
+.back-bar{background:#422107;padding:8px 32px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e1605;}
+.back-btn{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#c8a878;background:none;border:none;cursor:pointer;padding:0;}
+.back-btn:hover{color:#e8dcc8;}
+.back-page-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:18px;letter-spacing:0.06em;text-transform:uppercase;color:#7a5030;}
+
+/* ── PROJECT TYPE TAG ── */
+.proj-tag{display:inline-block;font-family:"trade-gothic-next-compressed",sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-left:8px;vertical-align:middle;line-height:1.6;}
+.proj-tag.new-construction{background:#4A6878;color:#fff;}
+.proj-tag.renovation{background:#8B6E3A;color:#fff;}
+.proj-tag.in-construction{background:#4A7A62;color:#fff;}
+.proj-tag.prospect{background:#9A7898;color:#fff;}
+
 /* ── GANTT ── */
 .gantt-page{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
 .gantt-page-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
@@ -186,6 +199,10 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="archive-page" style="display:none;">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
+    <span class="back-page-title">/ Archived Projects</span>
+  </div>
   <div class="board">
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
       <span style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;">Archived Projects</span>
@@ -199,6 +216,10 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="gantt-page" style="display:none;">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
+    <span class="back-page-title">/ Project Timeline</span>
+  </div>
   <div class="gantt-page">
     <div class="gantt-page-header">
       <div class="gantt-title">Project Timeline</div>
@@ -250,7 +271,17 @@ const PALETTE=[
   {name:'Shell Pink',base:'#C8897A'},{name:'Lavender',base:'#8A88A8'},
 ];
 
-function buildTimeOptions(){
+const TYPE_LABELS={
+  'new-construction':'New Construction',
+  'renovation':'Renovation',
+  'in-construction':'In Construction',
+  'prospect':'Prospect',
+  '':'',
+};
+function tagChip(type){
+  if(!type||!TYPE_LABELS[type])return '';
+  return `<span class="proj-tag ${type}">${TYPE_LABELS[type]}</span>`;
+}
   const o=[];
   o.push({v:0.5,l:'½ day'});
   for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'½ days'});}
@@ -314,7 +345,7 @@ const BASE_COLS=3,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=29;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
-  {id:1,name:'Young Residence',colorIdx:0,archived:false,tasks:[
+  {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',tasks:[
     {id:1,name:'QA drawing set review',days:1,done:false},
     {id:2,name:'Update site plan',days:0.5,done:true},
     {id:3,name:'Coordinate with MEP',days:1,done:false},
@@ -322,23 +353,23 @@ const SAMPLE_PROJECTS=[
     {id:5,name:'Detail stair section',days:2,done:false},
     {id:6,name:'Exterior elevation review',days:1,done:false},
   ]},
-  {id:2,name:'Philip & Breanna',colorIdx:1,archived:false,tasks:[
+  {id:2,name:'Philip & Breanna',colorIdx:1,archived:false,type:'new-construction',tasks:[
     {id:7,name:'Interior coord — Laurin',days:1,done:false},
     {id:8,name:'Builder mtg w/ Nikolaus',days:0.5,done:true},
     {id:9,name:'Finish material schedule',days:1.5,done:false},
     {id:10,name:'Window schedule',days:1,done:false},
   ]},
-  {id:3,name:'Wine Store – Vestavia',colorIdx:6,archived:false,tasks:[
+  {id:3,name:'Wine Store – Vestavia',colorIdx:6,archived:false,type:'prospect',tasks:[
     {id:11,name:'Fee proposal revisions',days:0.5,done:true},
     {id:12,name:'Schematic floor plan',days:3,done:false},
     {id:13,name:'Client presentation',days:1,done:false},
   ]},
-  {id:4,name:'Ray Residence',colorIdx:4,archived:false,tasks:[
+  {id:4,name:'Ray Residence',colorIdx:4,archived:false,type:'in-construction',tasks:[
     {id:14,name:'Equalized bid comparison',days:1,done:true},
     {id:15,name:'Architect estimate review',days:1,done:false},
     {id:16,name:'Contract revisions',days:0.5,done:false},
   ]},
-  {id:5,name:'CMA Office Relocation',colorIdx:2,archived:false,tasks:[
+  {id:5,name:'CMA Office Relocation',colorIdx:2,archived:false,type:'renovation',tasks:[
     {id:17,name:'Construction docs QA',days:3,done:false},
     {id:18,name:'Lease review',days:1,done:true},
     {id:19,name:'Contractor coordination',days:2,done:false},
@@ -525,7 +556,7 @@ function renderProjects(){
 
     const hdr=document.createElement('div');
     hdr.className='project-header';
-    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
+    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>${tagChip(proj.type||'')}
       <div class="project-meta">
         <div class="project-total-stack">
           <span class="project-total-label">Total</span>
@@ -767,6 +798,11 @@ function editProjectName(projId, el){
   popup.innerHTML=`
     <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;font-family:'clarendon-text-pro',serif;">Edit project</div>
     <input id="pep-name" type="text" value="${proj.name}" style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:${Math.round(TITLE_FS*1.5)}px;letter-spacing:0.05em;text-transform:uppercase;background:#111;border:none;border-bottom:1.5px solid #C97B52;color:#e8dcc8;outline:none;width:100%;padding:2px 0;" />
+    <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;font-family:'clarendon-text-pro',serif;">Project type</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      ${['','new-construction','renovation','in-construction','prospect'].map(t=>`
+        <button id="pep-type-${t||'none'}" onclick="setProjType('${t}')" style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 10px;border-radius:2px;cursor:pointer;border:1px solid ${(!proj.type&&!t)||(proj.type===t)?'#e8dcc8':'#444'};background:${(!proj.type&&!t)||(proj.type===t)?'rgba(255,255,255,0.12)':'transparent'};color:${(!proj.type&&!t)||(proj.type===t)?'#e8dcc8':'#888'};">${t?TYPE_LABELS[t]:'None'}</button>`).join('')}
+    </div>
     <div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#666;font-family:'clarendon-text-pro',serif;">Color</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       ${PALETTE.map((p,i)=>`<div onclick="setProjColor(${projId},${i})" style="width:28px;height:28px;border-radius:50%;background:${p.base};cursor:pointer;border:3px solid ${i===proj.colorIdx?'#e8dcc8':'transparent'};box-sizing:border-box;" id="pep-swatch-${i}"></div>`).join('')}
@@ -787,13 +823,22 @@ function editProjectName(projId, el){
     if(e.key==='Escape'){closeProjEdit();}
   });
 }
+function setProjType(type){
+  window._pendingType=type;
+  ['','new-construction','renovation','in-construction','prospect'].forEach(t=>{
+    const btn=document.getElementById(`pep-type-${t||'none'}`);
+    if(!btn)return;
+    const active=type===t;
+    btn.style.border=active?'1px solid #e8dcc8':'1px solid #444';
+    btn.style.background=active?'rgba(255,255,255,0.12)':'transparent';
+    btn.style.color=active?'#e8dcc8':'#888';
+  });
+}
 function setProjColor(projId,colorIdx){
-  // Update swatch highlights immediately
   PALETTE.forEach((_,i)=>{
     const sw=document.getElementById(`pep-swatch-${i}`);
     if(sw)sw.style.border=i===colorIdx?'3px solid #e8dcc8':'3px solid transparent';
   });
-  // Store pending color
   window._pendingColor={projId,colorIdx};
 }
 function saveProjEdit(projId){
@@ -804,6 +849,10 @@ function saveProjEdit(projId){
   if(window._pendingColor&&window._pendingColor.projId===projId){
     proj.colorIdx=window._pendingColor.colorIdx;
     window._pendingColor=null;
+  }
+  if(window._pendingType!==undefined){
+    proj.type=window._pendingType;
+    window._pendingType=undefined;
   }
   closeProjEdit();
   scheduleSave();renderProjects();
@@ -825,7 +874,7 @@ function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').
 function createProject(){
   const el=document.getElementById('np-name');
   const name=el?el.value.trim():'';if(!name)return;
-  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,tasks:[]});
+  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,type:'',tasks:[]});
   showNewProject=false;scheduleSave();renderProjects();
 }
 function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
@@ -925,11 +974,14 @@ function renderGantt(){
     const totalW=totalD/7;
     const barW=Math.max(totalW*CELL_W,CELL_W*0.5);
     html+=`<tr class="gantt-row">
-      <td class="gantt-row-name" style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#1a1a18;padding-right:16px;white-space:nowrap;">${proj.name}</td>
-      <td colspan="${WEEKS}" style="position:relative;height:34px;vertical-align:middle;">
-        <div style="position:absolute;top:7px;left:0;height:20px;width:${barW}px;background:${pal.base};border-radius:3px;max-width:${WEEKS*CELL_W}px;"></div>
+      <td style="padding-right:16px;white-space:nowrap;vertical-align:middle;">
+        <div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:16px;letter-spacing:0.04em;text-transform:uppercase;color:#1a1a18;">${proj.name}</div>
+        ${proj.type?`<div style="margin-top:2px;">${tagChip(proj.type)}</div>`:''}
+      </td>
+      <td colspan="${WEEKS}" style="position:relative;height:${proj.type?48:34}px;vertical-align:middle;">
+        <div style="position:absolute;top:${proj.type?14:7}px;left:0;height:20px;width:${barW}px;background:${pal.base};border-radius:3px;max-width:${WEEKS*CELL_W}px;"></div>
         <div style="position:absolute;top:0;bottom:0;left:${todayOffset*CELL_W}px;width:1.5px;background:#C97B52;opacity:0.7;z-index:2;"></div>
-        ${totalW>0.3?`<div style="position:absolute;top:10px;left:${Math.min(barW+4,WEEKS*CELL_W-60)}px;font-family:'clarendon-text-pro',serif;font-size:10px;color:#888;white-space:nowrap;">${totalW>=1?Math.round(totalW*2)/2+'w':totalD+'d'}</div>`:''}
+        ${totalW>0.3?`<div style="position:absolute;top:${proj.type?17:10}px;left:${Math.min(barW+4,WEEKS*CELL_W-60)}px;font-family:'clarendon-text-pro',serif;font-size:10px;color:#888;white-space:nowrap;">${totalW>=1?Math.round(totalW*2)/2+'w':totalD+'d'}</div>`:''}
       </td>
     </tr>`;
   });
