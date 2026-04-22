@@ -111,7 +111,14 @@
       "name": "Davis Winfield",
       "colorIdx": 4,
       "archived": false,
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 54,
+          "name": "Check in with David Brush",
+          "days": 1,
+          "done": false
+        }
+      ],
       "type": "new-construction",
       "staff": "Maddie"
     },
@@ -366,6 +373,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 54,
-  "lastSaved": "2026-04-22T17:38:37.276Z"
+  "nextId": 55,
+  "lastSaved": "2026-04-22T17:38:54.810Z"
 }
