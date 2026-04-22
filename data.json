@@ -38,10 +38,16 @@
           "name": "Interior redo",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 7,
+          "name": "check drawings for permit issue",
+          "days": 1,
+          "done": false
         }
       ]
     }
   ],
-  "nextId": 7,
-  "lastSaved": "2026-04-22T13:16:04.996Z"
+  "nextId": 8,
+  "lastSaved": "2026-04-22T13:16:18.656Z"
 }
