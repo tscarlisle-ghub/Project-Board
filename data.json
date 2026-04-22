@@ -217,6 +217,12 @@
           "name": "Start Interiors",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 57,
+          "name": "Get interior designers contact info",
+          "days": 1,
+          "done": false
         }
       ],
       "staff": "Kathleen"
@@ -386,6 +392,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 57,
-  "lastSaved": "2026-04-22T17:39:28.723Z"
+  "nextId": 58,
+  "lastSaved": "2026-04-22T17:39:37.579Z"
 }
