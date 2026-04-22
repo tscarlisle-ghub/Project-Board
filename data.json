@@ -128,7 +128,8 @@
           "days": 1,
           "done": false
         }
-      ]
+      ],
+      "type": "new-construction"
     },
     {
       "id": 14,
@@ -159,5 +160,5 @@
     }
   ],
   "nextId": 24,
-  "lastSaved": "2026-04-22T15:21:41.086Z"
+  "lastSaved": "2026-04-22T15:21:46.509Z"
 }
