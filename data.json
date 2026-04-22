@@ -73,6 +73,12 @@
           "name": "HOA Submittal",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 62,
+          "name": "Look into windows Chris likes",
+          "days": 1,
+          "done": false
         }
       ],
       "type": "new-construction",
@@ -418,6 +424,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 62,
-  "lastSaved": "2026-04-22T17:48:33.198Z"
+  "nextId": 63,
+  "lastSaved": "2026-04-22T20:52:53.544Z"
 }
