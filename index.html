@@ -52,7 +52,7 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TILES ── */
 .tiles-rect{display:grid;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.14);}
-.tile{display:flex;flex-direction:column;justify-content:space-between;padding:14px 16px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.08);transition:opacity 0.3s;overflow:hidden;user-select:none;position:relative;}
+.tile{display:flex;flex-direction:column;justify-content:space-between;padding:14px 16px;cursor:pointer;transition:opacity 0.3s;overflow:hidden;user-select:none;position:relative;}
 .tile.done{opacity:0.38;}
 .tile-name{font-family:"clarendon-text-pro",serif;font-weight:400;line-height:1.35;}
 .tile-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
@@ -259,7 +259,7 @@ function tileHeight(days){
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
 /* ── STATE ── */
-const BASE_COLS=3,TILE_FS=14,TILE_TIME_FS=13,TITLE_FS=24;
+const BASE_COLS=3,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=24;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
@@ -535,12 +535,12 @@ function renderProjects(){
       } else {
         const tile=document.createElement('div');
         tile.className='tile'+(t.done?' done':'');
-        tile.style.cssText=`background:${bg};min-height:${h}px;`;
+        tile.style.cssText=`background:${bg};min-height:${h}px;border:1px solid ${bg};`;
         const delColor=flatTc==='rgba(255,255,255,0.94)'?'rgba(255,255,255,0.5)':'rgba(30,22,14,0.35)';
         tile.innerHTML=`<button class="tile-delete" style="color:${delColor};" onclick="deleteTile(event,${proj.id},${t.id})">&#x2715;</button>
           <div class="tile-name" style="font-size:${TILE_FS}px;color:${tc};">${t.name}</div>
           <div class="tile-bottom">
-            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:${sc};">${timeLabel(t.days)}</span>
+            <span class="tile-time" style="font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.82);">${timeLabel(t.days)}</span>
             <div class="tile-check${t.done?' checked':''}" style="border-color:${sc};">
               <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                 <path d="M1 4L3.5 7L9 1" stroke="${tc}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
