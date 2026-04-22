@@ -26,10 +26,10 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
 
 /* ── TOOLBAR ── */
-.toolbar{padding:10px 32px;background:#2e1605;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #1a0c02;}
-.toolbar input[type=text]{font-size:18px;background:#1a0c02;border:0.5px solid #5a3010;color:#9a9488;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
-.toolbar input::placeholder{color:#5a4030;}
-.toolbar select{font-size:13px;background:#1a0c02;border:0.5px solid #5a3010;color:#c8b89a;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
+.toolbar{padding:10px 32px;background:#422107;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2e1605;}
+.toolbar input[type=text]{font-size:18px;background:#2e1605;border:0.5px solid #5a3010;color:#c8a878;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
+.toolbar input::placeholder{color:#c8a878;}
+.toolbar select{font-size:13px;background:#2e1605;border:0.5px solid #5a3010;color:#c8b89a;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
 .toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #7a5030;color:#c8b89a;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
 .toolbar button:hover{background:#3a1808;color:#e8d8c0;}
 
@@ -69,8 +69,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile-delete:hover{background:rgba(0,0,0,0.28)!important;color:#fff;}
 
 /* ── ADD TASK BUTTON (below rectangle) ── */
-.add-task-below{display:inline-flex;align-items:center;margin-top:7px;font-family:"clarendon-text-pro",serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,0,0,0.3);background:none;border:none;cursor:pointer;padding:2px 0;}
-.add-task-below:hover{color:rgba(0,0,0,0.6);}
+.add-task-below{display:inline-flex;align-items:center;margin-top:7px;font-family:"clarendon-text-pro",serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(0,0,0,0.55);background:none;border:none;cursor:pointer;padding:2px 0;}
+.add-task-below:hover{color:rgba(0,0,0,0.8);}
 
 /* ── PROGRESS BAR ── */
 .progress-wrap{width:100%;margin:6px 0 8px;display:flex;flex-direction:column;gap:3px;}
@@ -279,7 +279,7 @@ function tileHeight(days){
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
 /* ── STATE ── */
-const BASE_COLS=3,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=24;
+const BASE_COLS=3,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=29;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
