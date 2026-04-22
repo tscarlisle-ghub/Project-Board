@@ -203,7 +203,8 @@
       "colorIdx": 0,
       "archived": false,
       "type": "renovation",
-      "tasks": []
+      "tasks": [],
+      "staff": "Kat"
     },
     {
       "id": 31,
@@ -327,5 +328,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T16:29:29.084Z"
+  "lastSaved": "2026-04-22T16:29:38.115Z"
 }
