@@ -80,8 +80,15 @@
       "colorIdx": 8,
       "archived": false,
       "tasks": []
+    },
+    {
+      "id": 13,
+      "name": "Visintainer",
+      "colorIdx": 10,
+      "archived": false,
+      "tasks": []
     }
   ],
-  "nextId": 13,
-  "lastSaved": "2026-04-22T14:02:09.349Z"
+  "nextId": 14,
+  "lastSaved": "2026-04-22T14:02:31.161Z"
 }
