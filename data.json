@@ -153,9 +153,10 @@
           "days": 1,
           "done": false
         }
-      ]
+      ],
+      "type": "renovation"
     }
   ],
   "nextId": 24,
-  "lastSaved": "2026-04-22T15:21:29.281Z"
+  "lastSaved": "2026-04-22T15:21:33.731Z"
 }
