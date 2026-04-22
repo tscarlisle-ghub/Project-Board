@@ -43,7 +43,9 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PROJECT ── */
 .project-block{display:flex;flex-direction:column;}
 .project-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;}
+.project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;cursor:pointer;border-bottom:1px solid transparent;transition:border-color 0.15s;}
+.project-name:hover{border-bottom-color:rgba(0,0,0,0.2);}
+.project-name-input{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#1a1a18;line-height:1.0;text-transform:uppercase;border:none;border-bottom:1.5px solid #C97B52;background:transparent;outline:none;padding:0;width:auto;min-width:120px;}
 .project-meta{margin-left:auto;display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .project-total-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;}
 .project-total-val{font-family:"trade-gothic-next-compressed",sans-serif;font-size:15px;color:#888;}
@@ -108,12 +110,18 @@ body{font-family:"clarendon-text-pro",serif;}
 .swatch.selected{border-color:#e8dcc8;}
 
 /* ── ARCHIVE ── */
-.archive-section{padding:16px 32px;background:#e8e3da;border-top:1px solid #d4cfc6;}
-.archive-toggle{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#888;cursor:pointer;background:none;border:none;font-family:"clarendon-text-pro",serif;}
-.archived-list{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
-.archived-chip{display:flex;align-items:center;gap:8px;background:#ddd8cf;border-radius:20px;padding:5px 14px 5px 10px;font-size:12px;color:#555;font-family:"clarendon-text-pro",serif;}
-.restore-btn{font-size:10px;padding:2px 8px;margin-left:4px;cursor:pointer;background:none;border:0.5px solid #999;border-radius:10px;font-family:"clarendon-text-pro",serif;color:#555;}
-.restore-btn:hover{background:#ccc;}
+.archive-section{padding:24px 32px;background:#e6e1d8;border-top:1.5px solid #d0cbc2;}
+.archive-header{display:flex;align-items:center;gap:16px;margin-bottom:0;}
+.archive-toggle{font-family:"trade-gothic-next-compressed",sans-serif;font-size:20px;letter-spacing:0.06em;text-transform:uppercase;color:#aaa;cursor:pointer;background:none;border:none;padding:0;}
+.archive-toggle:hover{color:#666;}
+.archive-count{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;font-family:"clarendon-text-pro",serif;}
+.archived-list{display:flex;flex-wrap:wrap;gap:28px;margin-top:20px;align-items:flex-start;}
+.archived-project-block{display:flex;flex-direction:column;opacity:0.6;transition:opacity 0.2s;}
+.archived-project-block:hover{opacity:0.85;}
+.archived-project-header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.archived-project-name{font-family:"trade-gothic-next-compressed",sans-serif;letter-spacing:0.05em;color:#555;line-height:1.0;text-transform:uppercase;}
+.restore-btn{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;color:#fff;cursor:pointer;background:#C97B52;border:none;border-radius:3px;letter-spacing:0.05em;padding:2px 8px;line-height:1.5;text-transform:uppercase;margin-left:auto;}
+.restore-btn:hover{background:#a85e3a;}
 
 /* ── SETUP MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;}
@@ -154,7 +162,10 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="archive-section" style="display:none;" class="archive-section">
-  <button class="archive-toggle" onclick="toggleArchiveView()" id="archive-toggle-btn"></button>
+  <div class="archive-header">
+    <button class="archive-toggle" onclick="toggleArchiveView()" id="archive-toggle-btn">Archived Projects</button>
+    <span class="archive-count" id="archive-count"></span>
+  </div>
   <div class="archived-list" id="archived-list" style="display:none;"></div>
 </div>
 
@@ -474,7 +485,7 @@ function renderProjects(){
 
     const hdr=document.createElement('div');
     hdr.className='project-header';
-    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;">${proj.name}</span>
+    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
       <div class="project-meta">
         <span class="project-total-label">Total</span>
         <span class="project-total-val">${fmtTotal(totalDays(proj.tasks))}</span>
@@ -699,6 +710,30 @@ function addTask(){
   document.getElementById('new-task-input').value='';
   scheduleSave();renderProjects();
 }
+function editProjectName(projId, el){
+  const proj=projects.find(p=>p.id===projId);
+  if(!proj)return;
+  const fs=el.style.fontSize||TITLE_FS+'px';
+  const inp=document.createElement('input');
+  inp.type='text';
+  inp.className='project-name-input';
+  inp.style.fontSize=fs;
+  inp.value=proj.name;
+  el.replaceWith(inp);
+  inp.focus();
+  inp.select();
+  function save(){
+    const newName=inp.value.trim();
+    if(newName)proj.name=newName;
+    scheduleSave();
+    renderProjects();
+  }
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',(e)=>{
+    if(e.key==='Enter'){e.preventDefault();inp.blur();}
+    if(e.key==='Escape'){inp.value=proj.name;inp.blur();}
+  });
+}
 function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
 function selectColor(i){selectedColorIdx=i;document.querySelectorAll('.swatch').forEach((s,idx)=>s.classList.toggle('selected',idx===i));}
 function createProject(){
@@ -716,19 +751,83 @@ function renderArchiveSection(archived){
   const sec=document.getElementById('archive-section');
   const list=document.getElementById('archived-list');
   const btn=document.getElementById('archive-toggle-btn');
+  const cnt=document.getElementById('archive-count');
   if(!archived.length){sec.style.display='none';return;}
   sec.style.display='block';
-  btn.textContent=showArchived?'Hide archived':'Show archived ('+archived.length+')';
+  cnt.textContent=archived.length+' project'+(archived.length===1?'':'s');
+  btn.textContent=(showArchived?'▲ ':'▼ ')+'Archived Projects';
   list.style.display=showArchived?'flex':'none';
-  list.innerHTML=archived.map(p=>{
-    const pal=PALETTE[p.colorIdx];
-    return`<div class="archived-chip">
-      <div style="width:10px;height:10px;border-radius:50%;background:${pal.base};flex-shrink:0;"></div>
-      <span>${p.name}</span>
-      <span style="color:#999;font-size:11px;">${fmtTotal(totalDays(p.tasks))} &middot; ${p.tasks.length} tasks</span>
-      <button class="restore-btn" onclick="restoreProject(${p.id})">Restore</button>
-    </div>`;
-  }).join('');
+  if(!showArchived){list.innerHTML='';return;}
+
+  // Render full project cards for archived projects
+  list.innerHTML='';
+  const rw=getRectW();
+
+  archived.forEach(proj=>{
+    const pal=PALETTE[proj.colorIdx];
+    const n=proj.tasks.length;
+    const cols=Math.min(Math.max(n,1),BASE_COLS);
+    const allDays=totalDays(proj.tasks);
+    const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
+    const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
+
+    const block=document.createElement('div');
+    block.className='archived-project-block';
+    block.style.width=rw+'px';
+
+    // Header
+    const hdr=document.createElement('div');
+    hdr.className='archived-project-header';
+    hdr.innerHTML=`
+      <span class="archived-project-name" style="font-size:${TITLE_FS}px;">${proj.name}</span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;font-family:'clarendon-text-pro',serif;">${fmtTotal(allDays)} total</span>
+        <button class="restore-btn" onclick="restoreProject(${proj.id})">Restore</button>
+      </div>`;
+    block.appendChild(hdr);
+
+    // Progress bar
+    const prog=document.createElement('div');
+    prog.className='progress-wrap';
+    prog.innerHTML=`
+      <div class="progress-labels">
+        <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
+        <span class="progress-pct">${pct}%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%;background:${pal.base};opacity:0.5;"></div>
+      </div>`;
+    block.appendChild(prog);
+
+    // Tile grid — same layout, muted colors
+    const rect=document.createElement('div');
+    rect.className='tiles-rect';
+    rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+    rect.style.gridAutoRows='1fr';
+    rect.style.width=rw+'px';
+    rect.style.filter='grayscale(30%)';
+
+    if(!n){
+      const emp=document.createElement('div');
+      emp.style.cssText=`height:80px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#aaa;background:#ddd8cf;grid-column:1/-1;font-family:"clarendon-text-pro",serif;`;
+      emp.textContent='No tasks';
+      rect.appendChild(emp);
+    } else {
+      const flatBg=projTileColor(pal.base);
+      const flatTc=projTextColor(pal.base);
+      proj.tasks.forEach(t=>{
+        const h=tileHeight(t.days);
+        const tile=document.createElement('div');
+        tile.style.cssText=`background:${flatBg};min-height:${h}px;border:1px solid ${flatBg};display:flex;flex-direction:column;justify-content:space-between;padding:10px 13px;overflow:hidden;`;
+        tile.innerHTML=`
+          <div style="font-family:'clarendon-text-pro',serif;font-weight:400;font-size:${TILE_FS}px;color:${flatTc};line-height:1.35;${t.done?'text-decoration:line-through;opacity:0.5;':''}">${t.name}</div>
+          <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:${TILE_TIME_FS}px;color:rgba(255,255,255,0.7);margin-top:6px;">${timeLabel(t.days)}</div>`;
+        rect.appendChild(tile);
+      });
+    }
+    block.appendChild(rect);
+    list.appendChild(block);
+  });
 }
 
 /* ── KEYBOARD ── */
