@@ -42,7 +42,7 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── GANTT ── */
 /* ── GANTT TOPBAR ── */
-.gantt-topbar{background:#422107;padding:10px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:1px solid #2e1605;}
+.gantt-topbar{background:#422107;padding:14px 32px 12px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:1px solid #2e1605;}
 .gantt-page{padding:0 32px 28px;background:#f0ebe2;min-height:calc(100vh - 50px);}
 .gantt-page-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
 .gantt-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;}
@@ -64,7 +64,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;color:#4a6a6e;padding:8px 16px;background:#dce8ea;border-radius:4px;margin-bottom:16px;border:none;}
 
 /* ── STAFF TAG ── */
-.staff-tag{display:inline-block;font-family:"trade-gothic-next-condensed",sans-serif;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:1px 7px;border-radius:2px;background:#e8e2d8;color:#6a5a48;border:0.5px solid #c8bfb0;margin-top:3px;}
+.staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#7a9a9e;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
 .phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
 @media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
 .board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
@@ -222,9 +222,15 @@ body{font-family:"clarendon-text-pro",serif;}
 
 <div id="gantt-page" style="display:none;">
   <div class="gantt-topbar" id="gantt-topbar">
-    <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
-    <span class="back-page-title">/ Project Timeline</span>
-    <span class="sync-status" id="sync-status-gantt" style="margin-left:16px;"></span>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <div class="topbar-title">PROJECT BOARD</div>
+      <div class="topbar-date" id="gantt-date"></div>
+    </div>
+    <div style="margin-left:24px;display:flex;align-items:center;gap:12px;">
+      <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
+      <span class="back-page-title">/ Project Timeline</span>
+    </div>
+    <span class="sync-status" id="sync-status-gantt" style="margin-left:auto;"></span>
   </div>
   <div class="gantt-page">
     <div class="gantt-wrap">
@@ -332,6 +338,18 @@ function tagChip(type){
   return `<span class="proj-tag ${type}">${TYPE_LABELS[type]}</span>`;
 }
 
+const PHASE_COLORS={
+  'new-construction': 5,   // Slate  — medium steel blue-grey
+  'renovation':       0,   // Steel Grey — the mid tone from palette
+  'in-construction':  6,   // Deep Steel — darker blue-grey
+  'prospect':         9,   // Cloud — lightest blue-grey
+  '':                 7,   // Pewter — neutral mid
+};
+// Returns the palette base for a project based on its phase
+function phaseBase(proj){
+  const idx=PHASE_COLORS.hasOwnProperty(proj.type)?PHASE_COLORS[proj.type]:PHASE_COLORS[''];
+  return PALETTE[idx].base;
+}
 function buildTimeOptions(){
   const o=[];
   o.push({v:0.5,l:'½ day'});
@@ -758,14 +776,15 @@ function renderProjects(){
 
     projs.forEach(proj=>{
       const pal=PALETTE[proj.colorIdx];
+      const base=phaseBase(proj);
       const n=proj.tasks.length;
       const isAdding=addingToProject===proj.id;
       const cols=Math.min(Math.max(n,1),BASE_COLS);
       const max=getMax(proj);
-      const flatBg=projTileColor(pal.base);
-      const flatTc=projTextColor(pal.base);
-      const flatSc=projSubColor(pal.base);
-      const doneBg=heatColor(pal.base,0.5,7);
+      const flatBg=projTileColor(base);
+      const flatTc=projTextColor(base);
+      const flatSc=projSubColor(base);
+      const doneBg=heatColor(base,0.5,7);
 
       const block=document.createElement('div');
       block.className='project-block';
@@ -796,7 +815,7 @@ function renderProjects(){
           <span class="progress-pct">${pct}%</span>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" style="width:${pct}%;background:${pal.base};"></div>
+          <div class="progress-fill" style="width:${pct}%;background:${base};"></div>
         </div>`;
       block.appendChild(prog);
 
@@ -1146,7 +1165,11 @@ function showPage(page){
   document.getElementById('archive-nav-btn').textContent=page==='archive'?'\u2190 Board':'Archive';
   document.getElementById('gantt-nav-btn').textContent=page==='gantt'?'\u2190 Board':'GANTT CHART';
   if(page==='archive')renderArchiveSection(projects.filter(p=>p.archived));
-  if(page==='gantt')renderGantt();
+  if(page==='gantt'){
+    const gd=document.getElementById('gantt-date');
+    if(gd)gd.textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+    renderGantt();
+  }
 }
 function toggleArchivePage(){showPage(archivePageOpen?'board':'archive');}
 function toggleGanttPage(){showPage(ganttPageOpen?'board':'gantt');}
@@ -1232,14 +1255,14 @@ function renderGantt(){
     html+=`<tr style="background:#ddd5c8;"><td colspan="${WEEKS+1}" style="padding:6px 10px 4px;font-family:'trade-gothic-next-compressed',sans-serif;font-size:15px;letter-spacing:0.08em;text-transform:uppercase;color:#5a4a3a;border-top:1.5px solid #c4bab0;border-bottom:0.5px solid #ccc5bb;">${PHASE_LABELS[phase]}</td></tr>`;
 
     projs.forEach(proj=>{
-      const pal=PALETTE[proj.colorIdx];
+      const base=phaseBase(proj);
       const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
       const totalW=totalD/7;
       const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
 
       html+=`<tr style="background:#f0ebe2;">
         <td style="padding:0 12px 0 10px;white-space:nowrap;vertical-align:middle;height:${ROW_H}px;border-bottom:0.5px solid #e2dbd0;border-right:1px solid #d8d0c8;">
-          <div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:#2a2018;line-height:1;">${proj.name}</div>
+          <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:#2a2018;line-height:1;">${proj.name}</div>
         </td>`;
 
       weeks.forEach((w,wi)=>{
@@ -1255,7 +1278,7 @@ function renderGantt(){
 
         html+=`<td style="position:relative;height:${ROW_H}px;padding:0;border-bottom:0.5px solid #e2dbd0;border-left:1px dotted #cec8be;${isTodayCol?'background:rgba(201,123,82,0.07);':''}">`;
         if(inBar&&barWidthInCell>0){
-          html+=`<div style="position:absolute;top:6px;left:${barLeftInCell}px;width:${barWidthInCell}px;height:${ROW_H-12}px;background:${pal.base};${isFirst?'border-top-left-radius:3px;border-bottom-left-radius:3px;':''}${isLast?'border-top-right-radius:3px;border-bottom-right-radius:3px;':''}"></div>`;
+          html+=`<div style="position:absolute;top:6px;left:${barLeftInCell}px;width:${barWidthInCell}px;height:${ROW_H-12}px;background:${base};${isFirst?'border-top-left-radius:3px;border-bottom-left-radius:3px;':''}${isLast?'border-top-right-radius:3px;border-bottom-right-radius:3px;':''}"></div>`;
         }
         if(isTodayCol){
           const fracX=(todayOffset-Math.floor(todayOffset))*CELL_W;
