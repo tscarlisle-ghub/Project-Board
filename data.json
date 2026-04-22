@@ -65,7 +65,14 @@
       "name": "Clikas",
       "colorIdx": 0,
       "archived": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": 12,
+          "name": "Draw new floor plan",
+          "days": 1,
+          "done": false
+        }
+      ]
     },
     {
       "id": 10,
@@ -75,6 +82,6 @@
       "tasks": []
     }
   ],
-  "nextId": 12,
-  "lastSaved": "2026-04-22T13:57:33.255Z"
+  "nextId": 13,
+  "lastSaved": "2026-04-22T14:02:09.349Z"
 }
