@@ -223,14 +223,6 @@
       "tasks": []
     },
     {
-      "id": 32,
-      "name": "Clikas",
-      "colorIdx": 2,
-      "archived": false,
-      "type": "renovation",
-      "tasks": []
-    },
-    {
       "id": 33,
       "name": "Casadaban - Magnolia",
       "colorIdx": 3,
@@ -352,5 +344,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T15:29:07.942Z"
+  "lastSaved": "2026-04-22T15:36:24.049Z"
 }
