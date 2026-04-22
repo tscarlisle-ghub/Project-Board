@@ -192,7 +192,8 @@
       "colorIdx": 9,
       "archived": false,
       "type": "new-construction",
-      "tasks": []
+      "tasks": [],
+      "staff": "Kathleen"
     },
     {
       "id": 30,
@@ -324,5 +325,5 @@
     }
   ],
   "nextId": 48,
-  "lastSaved": "2026-04-22T16:29:06.231Z"
+  "lastSaved": "2026-04-22T16:29:11.391Z"
 }
