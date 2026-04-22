@@ -220,7 +220,14 @@
       "colorIdx": 3,
       "archived": false,
       "type": "renovation",
-      "tasks": []
+      "tasks": [
+        {
+          "id": 49,
+          "name": "revise kitchen layout",
+          "days": 1,
+          "done": false
+        }
+      ]
     },
     {
       "id": 34,
@@ -336,6 +343,6 @@
       "tasks": []
     }
   ],
-  "nextId": 49,
-  "lastSaved": "2026-04-22T16:47:52.499Z"
+  "nextId": 50,
+  "lastSaved": "2026-04-22T16:54:07.886Z"
 }
