@@ -20,8 +20,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .sync-status.ok{color:#7A9A6A;}
 .sync-status.err{color:#C97B52;}
 .sync-status.working{color:#C9A83C;}
-.topbar-btn{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:5px 13px;border-radius:4px;cursor:pointer;font-size:10.5px;font-family:"clarendon-text-pro",serif;}
-.topbar-btn:hover{background:#9a4e10;color:#f0ddb8;border-color:#c07840;}
+.topbar-btn{border:0.5px solid #7a5030;color:#c8a878;background:#422107;padding:5px 13px;border-radius:4px;cursor:pointer;font-size:10.5px;font-family:"clarendon-text-pro",serif;}
+.topbar-btn:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 .topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
 .topbar-btn-large{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"trade-gothic-next-condensed",sans-serif;display:inline-block;letter-spacing:0.04em;}
@@ -56,7 +56,12 @@ body{font-family:"clarendon-text-pro",serif;}
 .gantt-today-line{position:absolute;top:0;bottom:0;width:1.5px;background:#C97B52;opacity:0.7;pointer-events:none;z-index:2;}
 
 
-/* ── BOARD ── */
+/* ── PHASE SECTIONS (board) ── */
+.phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
+.phase-section:first-child{margin-top:0;}
+.phase-section-header{font-family:"trade-gothic-next-compressed",sans-serif;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#a09080;padding:0 0 6px;border-bottom:1px solid #d8d0c4;margin-bottom:16px;}
+.phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+@media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
 .board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
 .projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;width:100%;}
 @media(max-width:700px){
@@ -184,7 +189,7 @@ body{font-family:"clarendon-text-pro",serif;}
     </div>
     <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
     <div style="margin-top:8px;">
-      <button class="topbar-btn-large" onclick="toggleNewProject()">+ New project</button>
+      <button class="topbar-btn-large" onclick="toggleNewProject()">+ NEW PROJECT</button>
     </div>
   </div>
 </div>
@@ -703,7 +708,6 @@ function getRectW(){
 function renderProjects(){
   const grid=document.getElementById('projects-grid');
   grid.innerHTML='';
-  const rw=getRectW();
   const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
   const archived=projects.filter(p=>p.archived).sort((a,b)=>a.name.localeCompare(b.name));
 
@@ -714,45 +718,77 @@ function renderProjects(){
     grid.appendChild(es);
   }
 
-  active.forEach(proj=>{
-    const pal=PALETTE[proj.colorIdx];
-    const n=proj.tasks.length;
-    const isAdding=addingToProject===proj.id;
-    const cols=Math.min(Math.max(n,1),BASE_COLS);
-    const max=getMax(proj);
-    const flatBg=projTileColor(pal.base);
-    const flatTc=projTextColor(pal.base);
-    const flatSc=projSubColor(pal.base);
-    const doneBg=heatColor(pal.base,0.5,7);
+  // Group by phase
+  const BOARD_PHASES=['new-construction','in-construction','renovation','prospect',''];
+  const BOARD_PHASE_LABELS={
+    'new-construction':'New Construction',
+    'in-construction':'In Construction',
+    'renovation':'Renovation',
+    'prospect':'Prospect',
+    '':'Unassigned',
+  };
+  const groups={};
+  BOARD_PHASES.forEach(k=>{groups[k]=[];});
+  active.forEach(p=>{
+    const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
+    groups[k].push(p);
+  });
 
-    const block=document.createElement('div');
-    block.className='project-block';
-    block.style.width='100%';
+  BOARD_PHASES.forEach(phase=>{
+    const projs=groups[phase];
+    if(!projs||!projs.length)return;
 
-    const hdr=document.createElement('div');
-    hdr.className='project-header';
-    hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>${tagChip(proj.type||'')}
-      <div class="project-meta">
-        <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
-        <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
-      </div>`;
-    block.appendChild(hdr);
+    // Phase section wrapper
+    const section=document.createElement('div');
+    section.className='phase-section';
 
-    // Progress bar
-    const allDays=totalDays(proj.tasks);
-    const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
-    const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
-    const prog=document.createElement('div');
-    prog.className='progress-wrap';
-    prog.innerHTML=`
-      <div class="progress-labels">
-        <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
-        <span class="progress-pct">${pct}%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width:${pct}%;background:${pal.base};"></div>
-      </div>`;
-    block.appendChild(prog);
+    const sectionHdr=document.createElement('div');
+    sectionHdr.className='phase-section-header';
+    sectionHdr.textContent=BOARD_PHASE_LABELS[phase];
+    section.appendChild(sectionHdr);
+
+    const phaseGrid=document.createElement('div');
+    phaseGrid.className='phase-section-grid';
+
+    projs.forEach(proj=>{
+      const pal=PALETTE[proj.colorIdx];
+      const n=proj.tasks.length;
+      const isAdding=addingToProject===proj.id;
+      const cols=Math.min(Math.max(n,1),BASE_COLS);
+      const max=getMax(proj);
+      const flatBg=projTileColor(pal.base);
+      const flatTc=projTextColor(pal.base);
+      const flatSc=projSubColor(pal.base);
+      const doneBg=heatColor(pal.base,0.5,7);
+
+      const block=document.createElement('div');
+      block.className='project-block';
+      block.style.width='100%';
+
+      const hdr=document.createElement('div');
+      hdr.className='project-header';
+      hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
+        <div class="project-meta">
+          <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
+          <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>
+        </div>`;
+      block.appendChild(hdr);
+
+      // Progress bar
+      const allDays=totalDays(proj.tasks);
+      const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
+      const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
+      const prog=document.createElement('div');
+      prog.className='progress-wrap';
+      prog.innerHTML=`
+        <div class="progress-labels">
+          <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
+          <span class="progress-pct">${pct}%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${pct}%;background:${pal.base};"></div>
+        </div>`;
+      block.appendChild(prog);
 
     const rect=document.createElement('div');
     rect.className='tiles-rect';
@@ -840,12 +876,17 @@ function renderProjects(){
       block.appendChild(addBtn);
     }
 
-    grid.appendChild(block);
-  });
+    phaseGrid.appendChild(block);
+    }); // end projs.forEach
+
+    section.appendChild(phaseGrid);
+    grid.appendChild(section);
+  }); // end BOARD_PHASES.forEach
 
   if(showNewProject){
     const form=document.createElement('div');
     form.className='new-project-panel';
+    form.style.gridColumn='1/-1';
     form.innerHTML=`<label>Project name</label>
       <input type="text" id="np-name" placeholder="Project name..." />
       <label>Color</label>
@@ -977,8 +1018,8 @@ function editProjectName(projId, el){
       ${PALETTE.map((p,i)=>`<div onclick="setProjColor(${projId},${i})" style="width:28px;height:28px;border-radius:50%;background:${p.base};cursor:pointer;border:3px solid ${i===proj.colorIdx?'#e8dcc8':'transparent'};box-sizing:border-box;" id="pep-swatch-${i}"></div>`).join('')}
     </div>
     <div style="display:flex;gap:8px;">
-      <button onclick="saveProjEdit(${projId})" style="flex:1;font-size:12px;padding:6px;background:#C97B52;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'clarendon-text-pro',serif;">Save</button>
-      <button onclick="closeProjEdit()" style="font-size:12px;padding:6px 12px;background:transparent;color:#888;border:0.5px solid #444;border-radius:4px;cursor:pointer;font-family:'clarendon-text-pro',serif;">Cancel</button>
+      <button onclick="saveProjEdit(${projId})" style="flex:1;font-size:13px;padding:6px;background:#4a7a5a;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'trade-gothic-next-condensed',sans-serif;letter-spacing:0.04em;text-transform:uppercase;">Save</button>
+      <button onclick="closeProjEdit()" style="font-size:13px;padding:6px 12px;background:#8a3030;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:'trade-gothic-next-condensed',sans-serif;letter-spacing:0.04em;text-transform:uppercase;">Cancel</button>
     </div>`;
   // Position below the project header
   const rect=el.closest('.project-block').getBoundingClientRect();
