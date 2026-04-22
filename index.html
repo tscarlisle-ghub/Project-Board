@@ -20,11 +20,11 @@ body{font-family:"clarendon-text-pro",serif;}
 .sync-status.ok{color:#7A9A6A;}
 .sync-status.err{color:#C97B52;}
 .sync-status.working{color:#C9A83C;}
-.topbar-btn{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:14px;font-family:"clarendon-text-pro",serif;}
+.topbar-btn{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:5px 13px;border-radius:4px;cursor:pointer;font-size:10.5px;font-family:"clarendon-text-pro",serif;}
 .topbar-btn:hover{background:#9a4e10;color:#f0ddb8;border-color:#c07840;}
 .topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
-.topbar-btn-large{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:9px 24px;border-radius:4px;cursor:pointer;font-size:18px;font-family:"clarendon-text-pro",serif;display:inline-block;}
+.topbar-btn-large{border:0.5px solid #a05828;color:#e8c898;background:#7d3d05;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"clarendon-text-pro",serif;display:inline-block;}
 .topbar-btn-large:hover{background:#9a4e10;color:#f0ddb8;border-color:#c07840;}
 
 /* ── BACK BAR ── */
@@ -35,10 +35,10 @@ body{font-family:"clarendon-text-pro",serif;}
 
 /* ── PROJECT TYPE TAG ── */
 .proj-tag{display:inline-block;font-family:"trade-gothic-next-compressed",sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;margin-left:8px;vertical-align:middle;line-height:1.6;}
-.proj-tag.new-construction{background:#4A6878;color:#fff;}
-.proj-tag.renovation{background:#8B6E3A;color:#fff;}
-.proj-tag.in-construction{background:#4A7A62;color:#fff;}
-.proj-tag.prospect{background:#9A7898;color:#fff;}
+.proj-tag.new-construction{background:#243f63;color:#e2d4b8;}
+.proj-tag.renovation{background:#6b5344;color:#e2d4b8;}
+.proj-tag.in-construction{background:#3d6b58;color:#e2d4b8;}
+.proj-tag.prospect{background:#4a8fa0;color:#e2d4b8;}
 
 /* ── GANTT ── */
 .gantt-page{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
@@ -55,17 +55,14 @@ body{font-family:"clarendon-text-pro",serif;}
 .gantt-bar{height:20px;border-radius:3px;position:absolute;top:4px;left:0;}
 .gantt-today-line{position:absolute;top:0;bottom:0;width:1.5px;background:#C97B52;opacity:0.7;pointer-events:none;z-index:2;}
 
-/* ── TOOLBAR ── */
-.toolbar{padding:10px 32px;background:#422107;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid #2e1605;}
-.toolbar input[type=text]{font-size:18px;background:#2e1605;border:0.5px solid #5a3010;color:#c8a878;padding:6px 12px;border-radius:4px;font-family:"trade-gothic-next-condensed",sans-serif;flex:1;min-width:180px;}
-.toolbar input::placeholder{color:#c8a878;}
-.toolbar select{font-size:13px;background:#2e1605;border:0.5px solid #5a3010;color:#c8b89a;padding:6px 10px;border-radius:4px;font-family:"clarendon-text-pro",serif;}
-.toolbar button{font-size:12px;padding:6px 18px;background:transparent;border:0.5px solid #7a5030;color:#c8b89a;cursor:pointer;border-radius:4px;font-family:"clarendon-text-pro",serif;white-space:nowrap;}
-.toolbar button:hover{background:#3a1808;color:#e8d8c0;}
 
 /* ── BOARD ── */
-.board{padding:28px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
-.projects-grid{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;width:100%;}
+.board{padding:24px 32px;background:#f0ebe2;min-height:calc(100vh - 110px);}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;width:100%;}
+@media(max-width:700px){
+  .projects-grid{grid-template-columns:1fr;}
+  .board{padding:16px;}
+}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;width:100%;text-align:center;gap:14px;}
 .empty-state-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:34px;letter-spacing:0.06em;text-transform:uppercase;color:#c0b8b0;}
 .empty-state-sub{font-size:13px;color:#b0a898;line-height:1.7;}
@@ -146,7 +143,8 @@ body{font-family:"clarendon-text-pro",serif;}
 .archive-toggle{font-family:"trade-gothic-next-compressed",sans-serif;font-size:20px;letter-spacing:0.06em;text-transform:uppercase;color:#aaa;cursor:pointer;background:none;border:none;padding:0;}
 .archive-toggle:hover{color:#666;}
 .archive-count{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;font-family:"clarendon-text-pro",serif;}
-.archived-list{display:flex;flex-wrap:wrap;gap:28px;margin-top:20px;align-items:flex-start;}
+.archived-list{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;align-items:start;}
+@media(max-width:700px){.archived-list{grid-template-columns:1fr;}}
 .archived-project-block{display:flex;flex-direction:column;opacity:0.6;transition:opacity 0.2s;}
 .archived-project-block:hover{opacity:0.85;}
 .archived-project-header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
@@ -179,7 +177,7 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn" id="archive-nav-btn" onclick="toggleArchivePage()">Archive</button>
       <button class="topbar-btn" id="gantt-nav-btn" onclick="toggleGanttPage()">Gantt</button>
       <button class="topbar-btn" onclick="triggerImport()" title="Import projects from text file">&#8679; Import</button>
-      <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">&#9881;</button>
+      <button class="topbar-btn" onclick="showSetup()" title="GitHub sync settings">Settings</button>
       <span class="sync-status" id="sync-status"></span>
     </div>
     <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
@@ -187,13 +185,6 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ New project</button>
     </div>
   </div>
-</div>
-
-<div class="toolbar">
-  <input type="text" id="new-task-input" placeholder="Task name..." />
-  <select id="new-task-days" style="width:140px;"></select>
-  <select id="new-task-project" style="min-width:160px;max-width:240px;"></select>
-  <button onclick="addTask()">Add</button>
 </div>
 
 <div class="board">
@@ -303,12 +294,18 @@ const GH_API    = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/$
 
 /* ── PALETTE & TIME OPTIONS ── */
 const PALETTE=[
-  {name:'Old Rose',base:'#A85B5B'},{name:'Jade',base:'#4A7A62'},
-  {name:'Warm Tan',base:'#8B6E3A'},{name:'Blue Tint',base:'#7AAAB8'},
-  {name:'Maize',base:'#C9A83C'},{name:'Salmon',base:'#C97B52'},
-  {name:'Delft',base:'#4A6878'},{name:'Orchid',base:'#9A7898'},
-  {name:'Green Tint',base:'#7A9A6A'},{name:'Henna',base:'#8A3A2A'},
-  {name:'Shell Pink',base:'#C8897A'},{name:'Lavender',base:'#8A88A8'},
+  {name:'Charcoal',    base:'#2e2b27'},
+  {name:'Walnut',      base:'#6b5344'},
+  {name:'Sand',        base:'#d4a882'},
+  {name:'Linen',       base:'#e2d4b8'},
+  {name:'Navy',        base:'#243f63'},
+  {name:'Slate',       base:'#5a6e72'},
+  {name:'Steel Blue',  base:'#4a8fa0'},
+  {name:'Khaki',       base:'#b8aa8a'},
+  {name:'Crimson',     base:'#b83248'},
+  {name:'Terracotta',  base:'#d4723a'},
+  {name:'Straw',       base:'#e0c85a'},
+  {name:'Forest',      base:'#3d6b58'},
 ];
 
 const TYPE_LABELS={
@@ -377,17 +374,24 @@ function fmtTotal(d){
   return ww+(wh?'½':'')+' week'+(ww===1&&!wh?'':'s');
 }
 function tileHeight(days){
-  if(days<=7)return Math.round(90+days*34);
-  return Math.round(90+7*34+(days-7)*17);
+  // Compact: tile height = line height of text * estimated lines + padding
+  // Base height for short tasks, grows moderately with days
+  if(days<=0.5)return 52;
+  if(days<=1)return 60;
+  if(days<=2)return 70;
+  if(days<=3)return 80;
+  if(days<=5)return 92;
+  if(days<=7)return 104;
+  return Math.round(104+(days-7)*6);
 }
 function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.days),7):7;}
 
 /* ── STATE ── */
-const BASE_COLS=3,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=29;
+const BASE_COLS=2,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=29;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
 
 const SAMPLE_PROJECTS=[
-  {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',tasks:[
+  {id:1,name:'Young Residence',colorIdx:4,archived:false,type:'renovation',tasks:[
     {id:1,name:'QA drawing set review',days:1,done:false},
     {id:2,name:'Update site plan',days:0.5,done:true},
     {id:3,name:'Coordinate with MEP',days:1,done:false},
@@ -395,23 +399,23 @@ const SAMPLE_PROJECTS=[
     {id:5,name:'Detail stair section',days:2,done:false},
     {id:6,name:'Exterior elevation review',days:1,done:false},
   ]},
-  {id:2,name:'Philip & Breanna',colorIdx:1,archived:false,type:'new-construction',tasks:[
+  {id:2,name:'Philip & Breanna',colorIdx:11,archived:false,type:'new-construction',tasks:[
     {id:7,name:'Interior coord — Laurin',days:1,done:false},
     {id:8,name:'Builder mtg w/ Nikolaus',days:0.5,done:true},
     {id:9,name:'Finish material schedule',days:1.5,done:false},
     {id:10,name:'Window schedule',days:1,done:false},
   ]},
-  {id:3,name:'Wine Store – Vestavia',colorIdx:6,archived:false,type:'prospect',tasks:[
+  {id:3,name:'Wine Store – Vestavia',colorIdx:9,archived:false,type:'prospect',tasks:[
     {id:11,name:'Fee proposal revisions',days:0.5,done:true},
     {id:12,name:'Schematic floor plan',days:3,done:false},
     {id:13,name:'Client presentation',days:1,done:false},
   ]},
-  {id:4,name:'Ray Residence',colorIdx:4,archived:false,type:'in-construction',tasks:[
+  {id:4,name:'Ray Residence',colorIdx:5,archived:false,type:'in-construction',tasks:[
     {id:14,name:'Equalized bid comparison',days:1,done:true},
     {id:15,name:'Architect estimate review',days:1,done:false},
     {id:16,name:'Contract revisions',days:0.5,done:false},
   ]},
-  {id:5,name:'CMA Office Relocation',colorIdx:2,archived:false,type:'renovation',tasks:[
+  {id:5,name:'CMA Office Relocation',colorIdx:1,archived:false,type:'renovation',tasks:[
     {id:17,name:'Construction docs QA',days:3,done:false},
     {id:18,name:'Lease review',days:1,done:true},
     {id:19,name:'Contractor coordination',days:2,done:false},
@@ -689,7 +693,9 @@ function loadLocal(){
 function getRectW(){
   const el=document.getElementById('projects-grid');
   const bw=el?el.offsetWidth:900;
-  return Math.floor(Math.min(bw,1600)/BASE_COLS)*BASE_COLS;
+  // 2 projects per row with gap
+  const projW=Math.floor((Math.min(bw,1600)-32)/2);
+  return projW;
 }
 
 function renderProjects(){
@@ -719,16 +725,12 @@ function renderProjects(){
 
     const block=document.createElement('div');
     block.className='project-block';
-    block.style.width=rw+'px';
+    block.style.width='100%';
 
     const hdr=document.createElement('div');
     hdr.className='project-header';
     hdr.innerHTML=`<span class="project-name" style="font-size:${TITLE_FS}px;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>${tagChip(proj.type||'')}
       <div class="project-meta">
-        <div class="project-total-stack">
-          <span class="project-total-label">Total</span>
-          <span class="project-total-val">${fmtTotal(totalDays(proj.tasks))}</span>
-        </div>
         <button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
       </div>`;
     block.appendChild(hdr);
@@ -753,7 +755,7 @@ function renderProjects(){
     rect.className='tiles-rect';
     rect.style.gridTemplateColumns=`repeat(${cols},1fr)`;
     rect.style.gridAutoRows='1fr';
-    rect.style.width=rw+'px';
+    rect.style.width='100%';
 
     if(!n && !isAdding){
       const emp=document.createElement('div');
@@ -852,9 +854,6 @@ function renderProjects(){
     grid.appendChild(form);
   }
 
-  buildTimeSelect('new-task-days',1);
-  renderProjectSelect();
-  // Update archive nav button count
   const archivedCount=projects.filter(p=>p.archived).length;
   const archBtn=document.getElementById('archive-nav-btn');
   if(archBtn)archBtn.textContent=archivePageOpen?'\u2190 Board':'Archive'+(archivedCount?' ('+archivedCount+')':'');
@@ -1065,7 +1064,6 @@ let ganttPageOpen=false;
 function showPage(page){
   // page: 'board' | 'archive' | 'gantt'
   document.querySelector('.board').style.display=page==='board'?'block':'none';
-  document.querySelector('.toolbar').style.display=page==='board'?'flex':'none';
   document.getElementById('archive-page').style.display=page==='archive'?'block':'none';
   document.getElementById('gantt-page').style.display=page==='gantt'?'block':'none';
   archivePageOpen=page==='archive';
@@ -1187,7 +1185,7 @@ function renderArchiveSection(archived){
 
     const block=document.createElement('div');
     block.className='project-block';
-    block.style.cssText='width:'+rw+'px;opacity:0.7;';
+    block.style.cssText='width:100%;opacity:0.7;';
 
     const hdr=document.createElement('div');
     hdr.className='project-header';
@@ -1214,7 +1212,7 @@ function renderArchiveSection(archived){
 
     const rect=document.createElement('div');
     rect.className='tiles-rect';
-    rect.style.cssText='grid-template-columns:repeat('+cols+',1fr);grid-auto-rows:1fr;width:'+rw+'px;filter:grayscale(25%);';
+    rect.style.cssText='grid-template-columns:repeat('+cols+',1fr);grid-auto-rows:1fr;width:100%;filter:grayscale(25%);';
 
     if(!n){
       const emp=document.createElement('div');
@@ -1246,7 +1244,6 @@ document.addEventListener('keydown',(e)=>{
 
 /* ── INIT ── */
 document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
-buildTimeSelect('new-task-days',1);
 window.addEventListener('resize',renderProjects);
 
 // If token exists, load from GitHub. Otherwise show setup.
