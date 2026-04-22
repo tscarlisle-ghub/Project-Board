@@ -32,9 +32,16 @@
       "name": "Young",
       "colorIdx": 1,
       "archived": false,
-      "tasks": []
+      "tasks": [
+        {
+          "id": 6,
+          "name": "Interior redo",
+          "days": 1,
+          "done": false
+        }
+      ]
     }
   ],
-  "nextId": 6,
-  "lastSaved": "2026-04-22T13:15:50.804Z"
+  "nextId": 7,
+  "lastSaved": "2026-04-22T13:16:04.996Z"
 }
