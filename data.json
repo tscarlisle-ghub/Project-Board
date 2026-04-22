@@ -145,6 +145,12 @@
           "name": "Design exterior",
           "days": 1,
           "done": false
+        },
+        {
+          "id": 59,
+          "name": "Check on interior designer",
+          "days": 1,
+          "done": false
         }
       ],
       "type": "new-construction",
@@ -399,6 +405,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 59,
-  "lastSaved": "2026-04-22T17:40:02.963Z"
+  "nextId": 60,
+  "lastSaved": "2026-04-22T17:44:02.357Z"
 }
