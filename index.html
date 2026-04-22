@@ -629,6 +629,8 @@ async function loadFromGitHub(){
     const data=JSON.parse(decoded||'{}');
     projects=data.projects||[];
     nextId=data.nextId||1;
+    // Normalize missing fields from older saved data
+    projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;});
     setStatus('Synced ✓','ok',3000);
     renderProjects();
   }catch(e){
@@ -711,6 +713,8 @@ function loadLocal(){
     if(r){const d=JSON.parse(r);projects=d.projects||JSON.parse(JSON.stringify(SAMPLE_PROJECTS));nextId=d.nextId||20;}
     else{projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
   }catch(e){projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
+  // Normalize any missing fields from older saved data
+  projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;});
   renderProjects();
 }
 
@@ -775,7 +779,10 @@ function renderProjects(){
     phaseGrid.className='phase-section-grid';
 
     projs.forEach(proj=>{
-      const pal=PALETTE[proj.colorIdx];
+      if(!proj)return;
+      proj.tasks=proj.tasks||[];
+      proj.type=proj.type||'';
+      const pal=PALETTE[proj.colorIdx]||PALETTE[0];
       const base=phaseBase(proj);
       const n=proj.tasks.length;
       const isAdding=addingToProject===proj.id;
