@@ -1325,7 +1325,8 @@ function renderGantt(){
     projs.forEach(proj=>{
       const base=phaseBase(proj);
       const [br,bg2,bb]=hexRgb(base);
-      const barColor=`rgb(${Math.round(br*0.6)},${Math.round(bg2*0.6)},${Math.round(bb*0.6)})`;
+      const GANTT_COLORS={'new-construction':'#7aa8ae','renovation':'#c8b86a','in-construction':'#c8a070','prospect':'#b89878','':'#9aacac'};
+      const barColor=GANTT_COLORS[proj.type||'']||GANTT_COLORS[''];
       const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
       const totalW=totalD/7;
       const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
