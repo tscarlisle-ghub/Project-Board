@@ -357,7 +357,14 @@
       "colorIdx": 10,
       "archived": false,
       "type": "in-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 64,
+          "name": "Gate Design",
+          "days": 1,
+          "done": false
+        }
+      ],
       "staff": "Scott"
     },
     {
@@ -431,6 +438,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 64,
-  "lastSaved": "2026-04-23T13:31:11.773Z"
+  "nextId": 65,
+  "lastSaved": "2026-04-23T13:33:54.939Z"
 }
