@@ -38,7 +38,7 @@
           "id": 6,
           "name": "Interior redo",
           "days": 1,
-          "done": true
+          "done": false
         },
         {
           "id": 7,
@@ -419,5 +419,5 @@
     }
   ],
   "nextId": 62,
-  "lastSaved": "2026-04-23T15:14:17.294Z"
+  "lastSaved": "2026-04-23T15:14:20.363Z"
 }
