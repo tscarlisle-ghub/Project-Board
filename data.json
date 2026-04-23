@@ -226,7 +226,7 @@
       "name": "Taylor, Chris and Paget",
       "colorIdx": 3,
       "archived": false,
-      "type": "new-construction",
+      "type": "in-construction",
       "tasks": [],
       "staff": "Scott"
     },
@@ -432,5 +432,5 @@
     }
   ],
   "nextId": 64,
-  "lastSaved": "2026-04-22T21:40:30.754Z"
+  "lastSaved": "2026-04-23T13:31:11.773Z"
 }
