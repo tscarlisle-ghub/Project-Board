@@ -38,7 +38,7 @@
           "id": 6,
           "name": "Interior redo",
           "days": 1,
-          "done": false
+          "done": true
         },
         {
           "id": 7,
@@ -71,12 +71,6 @@
         {
           "id": 53,
           "name": "HOA Submittal",
-          "days": 1,
-          "done": false
-        },
-        {
-          "id": 62,
-          "name": "Look into windows Chris likes",
           "days": 1,
           "done": false
         }
@@ -226,7 +220,7 @@
       "name": "Taylor, Chris and Paget",
       "colorIdx": 3,
       "archived": false,
-      "type": "in-construction",
+      "type": "new-construction",
       "tasks": [],
       "staff": "Scott"
     },
@@ -357,14 +351,7 @@
       "colorIdx": 10,
       "archived": false,
       "type": "in-construction",
-      "tasks": [
-        {
-          "id": 64,
-          "name": "Gate Design",
-          "days": 1,
-          "done": false
-        }
-      ],
+      "tasks": [],
       "staff": "Scott"
     },
     {
@@ -391,14 +378,7 @@
       "colorIdx": 1,
       "archived": false,
       "type": "in-construction",
-      "tasks": [
-        {
-          "id": 63,
-          "name": "Put out sign",
-          "days": 1,
-          "done": false
-        }
-      ],
+      "tasks": [],
       "staff": "Scott"
     },
     {
@@ -438,6 +418,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 65,
-  "lastSaved": "2026-04-23T13:33:54.939Z"
+  "nextId": 62,
+  "lastSaved": "2026-04-23T15:14:12.290Z"
 }
