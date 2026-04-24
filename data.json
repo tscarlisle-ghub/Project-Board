@@ -90,7 +90,7 @@
           "id": 65,
           "name": "Engineering",
           "days": 7,
-          "done": false,
+          "done": true,
           "createdAt": "2026-04-24T17:57:43.511Z",
           "due": "2026-05-01"
         }
@@ -447,5 +447,5 @@
     }
   ],
   "nextId": 66,
-  "lastSaved": "2026-04-24T17:57:50.267Z"
+  "lastSaved": "2026-04-24T17:58:03.279Z"
 }
