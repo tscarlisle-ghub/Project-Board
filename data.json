@@ -221,7 +221,14 @@
       "colorIdx": 3,
       "archived": false,
       "type": "new-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 64,
+          "name": "Check in with Dorksy on Pricing",
+          "days": 5,
+          "done": false
+        }
+      ],
       "staff": "Scott"
     },
     {
@@ -425,6 +432,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 64,
-  "lastSaved": "2026-04-24T16:23:36.538Z"
+  "nextId": 65,
+  "lastSaved": "2026-04-24T16:26:31.110Z"
 }
