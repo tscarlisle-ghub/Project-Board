@@ -151,12 +151,6 @@
           "name": "Check on interior designer",
           "days": 1,
           "done": false
-        },
-        {
-          "id": 60,
-          "name": "check on Landscape Architect",
-          "days": 1,
-          "done": false
         }
       ],
       "type": "new-construction",
@@ -419,5 +413,5 @@
     }
   ],
   "nextId": 62,
-  "lastSaved": "2026-04-24T16:16:59.140Z"
+  "lastSaved": "2026-04-24T16:17:18.931Z"
 }
