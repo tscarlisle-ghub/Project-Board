@@ -301,7 +301,14 @@
       "colorIdx": 5,
       "archived": false,
       "type": "renovation",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 63,
+          "name": "check with Callahan's on Barn",
+          "days": 1,
+          "done": false
+        }
+      ],
       "staff": "Scott"
     },
     {
@@ -418,6 +425,6 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 63,
-  "lastSaved": "2026-04-24T16:23:08.129Z"
+  "nextId": 64,
+  "lastSaved": "2026-04-24T16:23:36.538Z"
 }
