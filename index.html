@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://use.typekit.net/mfq1ynf.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;min-height:100vh;background:#f5f2ec;}
+html,body{width:100%;min-height:100vh;background:#f0eeeb;}
 body{font-family:"clarendon-text-pro",serif;}
 
 /* ── TOPBAR ── */
@@ -43,7 +43,7 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── GANTT ── */
 /* ── GANTT TOPBAR ── */
 .gantt-topbar{background:#422107;padding:14px 32px 12px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:1px solid #2e1605;}
-.gantt-page{padding:0 32px 28px;background:#f5f2ec;min-height:calc(100vh - 50px);}
+.gantt-page{padding:0 32px 28px;background:#f0eeeb;min-height:calc(100vh - 50px);}
 .gantt-page-header{display:flex;align-items:baseline;gap:16px;margin-bottom:24px;}
 .gantt-title{font-family:"trade-gothic-next-compressed",sans-serif;font-size:28px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;}
 .gantt-wrap{overflow-x:auto;overflow-y:visible;}
@@ -62,13 +62,13 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 0 8px;margin-bottom:16px;border:none;background:none!important;}
+.phase-section-header{font-family:"trade-gothic-next-compressed",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 0 8px;margin-bottom:16px;border:none;background:none!important;}
 
 /* ── STAFF TAG ── */
 .staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#5a8088;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
 .phase-section-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;}
 @media(max-width:700px){.phase-section-grid{grid-template-columns:1fr;}}
-.board{padding:24px 32px;background:#f5f2ec;min-height:calc(100vh - 110px);}
+.board{padding:24px 32px;background:#f0eeeb;min-height:calc(100vh - 110px);}
 .projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;width:100%;}
 @media(max-width:700px){
   .projects-grid{grid-template-columns:1fr;}
@@ -100,7 +100,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .tile-name{font-family:"clarendon-text-pro",serif;font-weight:400;line-height:1.35;}
 .tile-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
 .tile-time{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;letter-spacing:0.08em;text-transform:uppercase;}
-.tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.5);background:#f5f2ec;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tile-check{width:17px;height:17px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.5);background:#f0eeeb;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .tile-check.checked{background:rgba(0,0,0,0.18);border-color:rgba(255,255,255,0.9);}
 .tile-check svg{display:none;}
 .tile-check.checked svg{display:block;}
@@ -196,6 +196,8 @@ body{font-family:"clarendon-text-pro",serif;}
     <div style="margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ NEW PROJECT</button>
       <button class="topbar-btn-large" id="gantt-nav-btn" onclick="toggleGanttPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">GANTT CHART</button>
+      <button class="topbar-btn-large" id="summary-nav-btn" onclick="toggleSummaryPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">SUMMARY</button>
+      <button class="topbar-btn-large" id="list-nav-btn" onclick="toggleListPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">LIST</button>
       <div id="staff-filter-btns" style="display:flex;gap:6px;align-items:center;margin-left:4px;">
         <button class="topbar-btn" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;">All</button>
         <button class="topbar-btn" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;">Maddie</button>
@@ -244,6 +246,26 @@ body{font-family:"clarendon-text-pro",serif;}
 </div>
 
 <div id="ctx-menu" class="ctx-menu" style="display:none;"></div>
+
+<div id="summary-page" style="display:none;">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
+    <span class="back-page-title">/ Task Summary</span>
+  </div>
+  <div class="board">
+    <div id="summary-content"></div>
+  </div>
+</div>
+
+<div id="list-page" style="display:none;">
+  <div class="back-bar">
+    <button class="back-btn" onclick="showPage('board')">&#8592; Projects</button>
+    <span class="back-page-title">/ Project List</span>
+  </div>
+  <div class="board">
+    <div id="list-content"></div>
+  </div>
+</div>
 
 <!-- Import modal -->
 <div class="modal-overlay" id="import-modal" style="display:none;">
@@ -416,7 +438,7 @@ function getMax(proj){return proj.tasks.length?Math.max(...proj.tasks.map(t=>t.d
 /* ── STATE ── */
 const BASE_COLS=2,TILE_FS=16,TILE_TIME_FS=13,TITLE_FS=33;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,showArchived=false,selectedColorIdx=0;
-let archivePageOpen=false,ganttPageOpen=false,activeStaffFilter=null;
+let archivePageOpen=false,ganttPageOpen=false,summaryPageOpen=false,listPageOpen=false,activeStaffFilter=null;
 
 const SAMPLE_PROJECTS=[
   {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',staff:'Scott',tasks:[
@@ -807,25 +829,10 @@ function renderProjects(){
       hdr.innerHTML=`<div style="display:flex;flex-direction:column;gap:3px;">
         <span class="project-name" style="font-size:${TITLE_FS}px;color:#1a1a18;" onclick="editProjectName(${proj.id},this)">${proj.name}</span>
         <span class="staff-tag">${proj.staff||DEFAULT_STAFF}</span>
-        <button class="add-task-below" onclick="openInlineAdd(${proj.id})">+ Add task</button>
       </div>`;
       block.appendChild(hdr);
 
-      // Progress bar
-      const allDays=totalDays(proj.tasks);
-      const doneDays=proj.tasks.filter(t=>t.done).reduce((s,t)=>s+t.days,0);
-      const pct=allDays>0?Math.round((doneDays/allDays)*100):0;
-      const prog=document.createElement('div');
-      prog.className='progress-wrap';
-      prog.innerHTML=`
-        <div class="progress-labels">
-          <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
-          <span class="progress-pct">${pct}%</span>
-        </div>
-        <div class="progress-track" style="background:${cardBorder};">
-          <div class="progress-fill" style="width:${pct}%;background:${accentColor};"></div>
-        </div>`;
-      block.appendChild(prog);
+
 
       // Task list
       const taskList=document.createElement('div');
@@ -896,7 +903,7 @@ function renderProjects(){
 
           // Delete button
           const del=document.createElement('button');
-          del.style.cssText='background:none;border:none;cursor:pointer;color:#cca0a0;font-size:12px;padding:0 2px;flex-shrink:0;opacity:0;transition:opacity 0.15s;margin-top:2px;';
+          del.style.cssText='background:none;border:none;cursor:pointer;color:#cca0a0;font-size:18px;line-height:1;padding:0 4px;flex-shrink:0;opacity:0;transition:opacity 0.15s;';
           del.innerHTML='&#x2715;';
           del.addEventListener('click',(e)=>{e.stopPropagation();deleteTile(e,proj.id,t.id);});
 
@@ -930,9 +937,19 @@ function renderProjects(){
 
       block.appendChild(taskList);
 
+      // Add task button below the list
+      if(!isAdding){
+        const addBtn=document.createElement('button');
+        addBtn.className='add-task-below';
+        addBtn.textContent='+ Add task';
+        addBtn.style.marginTop='10px';
+        addBtn.addEventListener('click',()=>openInlineAdd(proj.id));
+        block.appendChild(addBtn);
+      }
+
       // Card footer — archive & delete at bottom right
       const footer=document.createElement('div');
-      footer.style.cssText='display:flex;justify-content:flex-end;gap:8px;margin-top:12px;padding-top:8px;border-top:1px solid '+cardBorder+';';
+      footer.style.cssText='display:flex;justify-content:flex-end;gap:8px;margin-top:12px;';
       footer.innerHTML=`<button class="archive-btn-proj" onclick="archiveProject(${proj.id})">Archive</button>
         <button class="delete-btn-proj" onclick="deleteProject(${proj.id})">Delete</button>`;
       block.appendChild(footer);
@@ -1222,25 +1239,33 @@ function setStaffFilter(staff){
   renderProjects();
 }
 function showPage(page){
-  // page: 'board' | 'archive' | 'gantt'
   document.querySelector('.board').style.display=page==='board'?'block':'none';
   document.getElementById('archive-page').style.display=page==='archive'?'block':'none';
   document.getElementById('gantt-page').style.display=page==='gantt'?'block':'none';
-  // Hide main topbar on gantt (has its own); show on board/archive
+  document.getElementById('summary-page').style.display=page==='summary'?'block':'none';
+  document.getElementById('list-page').style.display=page==='list'?'block':'none';
   document.querySelector('.topbar').style.display=page==='gantt'?'none':'flex';
   archivePageOpen=page==='archive';
   ganttPageOpen=page==='gantt';
+  summaryPageOpen=page==='summary';
+  listPageOpen=page==='list';
   document.getElementById('archive-nav-btn').textContent=page==='archive'?'\u2190 Board':'Archive';
   document.getElementById('gantt-nav-btn').textContent=page==='gantt'?'\u2190 Board':'GANTT CHART';
+  document.getElementById('summary-nav-btn').textContent=page==='summary'?'\u2190 Board':'SUMMARY';
+  document.getElementById('list-nav-btn').textContent=page==='list'?'\u2190 Board':'LIST';
   if(page==='archive')renderArchiveSection(projects.filter(p=>p.archived));
   if(page==='gantt'){
     const gd=document.getElementById('gantt-date');
     if(gd)gd.textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
     renderGantt();
   }
+  if(page==='summary')renderSummary();
+  if(page==='list')renderList();
 }
 function toggleArchivePage(){showPage(archivePageOpen?'board':'archive');}
 function toggleGanttPage(){showPage(ganttPageOpen?'board':'gantt');}
+function toggleSummaryPage(){showPage(summaryPageOpen?'board':'summary');}
+function toggleListPage(){showPage(listPageOpen?'board':'list');}
 function toggleArchiveView(){toggleArchivePage();}
 
 /* ── GANTT ── */
@@ -1284,7 +1309,7 @@ function renderGantt(){
     groups[k].push(p);
   });
 
-  let html='<colgroup><col style="width:200px;min-width:160px;">';
+  let html='<colgroup><col style="width:160px;min-width:120px;">';
   for(let i=0;i<WEEKS;i++)html+=`<col style="width:${CELL_W}px;min-width:${CELL_W}px;">`;
   html+='</colgroup><thead>';
 
@@ -1414,16 +1439,7 @@ function renderArchiveSection(archived){
       </div>`;
       block.appendChild(hdr);
 
-      const prog=document.createElement('div');
-      prog.className='progress-wrap';
-      prog.innerHTML=`<div class="progress-labels">
-          <span class="progress-done-label">${fmtTotal(doneDays)} done</span>
-          <span class="progress-pct">${pct}%</span>
-        </div>
-        <div class="progress-track" style="background:${cardBorder};">
-          <div class="progress-fill" style="width:${pct}%;background:${accentColor};"></div>
-        </div>`;
-      block.appendChild(prog);
+
 
       const taskList=document.createElement('div');
       taskList.style.cssText='display:flex;flex-direction:column;margin-top:8px;';
@@ -1451,6 +1467,135 @@ function renderArchiveSection(archived){
       list.appendChild(block);
     });
   });
+}
+
+/* ── SUMMARY ── */
+function renderSummary(){
+  const el=document.getElementById('summary-content');
+  if(!el)return;
+  const PHASES=['new-construction','renovation','in-construction','prospect',''];
+  const PHASE_LABELS={'new-construction':'New Construction','renovation':'Renovation','in-construction':'In Construction','prospect':'Prospect','':'Unassigned'};
+  const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
+  const groups={};
+  PHASES.forEach(k=>{groups[k]=[];});
+  active.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';
+    const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
+    groups[k].push(p);
+  });
+
+  let html='<div style="max-width:820px;">';
+  let hasAny=false;
+  PHASES.forEach(phase=>{
+    const projs=groups[phase];
+    if(!projs||!projs.length)return;
+    hasAny=true;
+    const phaseCol=PHASE_COLORS[phase]||PHASE_COLORS[''];
+    const [pr,pg,pb]=hexRgb(phaseCol);
+    const txtR=Math.round(pr*0.5),txtG=Math.round(pg*0.5),txtB=Math.round(pb*0.5);
+    html+=`<div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:700;font-size:20px;letter-spacing:0.08em;text-transform:uppercase;color:rgb(${txtR},${txtG},${txtB});margin:28px 0 12px;padding-bottom:6px;border-bottom:1.5px solid rgb(${Math.round(pr*0.35)},${Math.round(pg*0.35)},${Math.round(pb*0.35)});">${PHASE_LABELS[phase]}</div>`;
+
+    projs.forEach(proj=>{
+      const base=phaseBase(proj);
+      const [cr,cg,cb]=hexRgb(base);
+      const accentColor=`rgb(${Math.round(cr*0.5)},${Math.round(cg*0.5)},${Math.round(cb*0.5)})`;
+      const pending=proj.tasks.filter(t=>!t.done);
+      const done=proj.tasks.filter(t=>t.done);
+
+      html+=`<div style="margin-bottom:20px;">`;
+      html+=`<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+        <span style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:22px;letter-spacing:0.04em;text-transform:uppercase;color:#1a1a18;">${proj.name}</span>
+        <span style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:${accentColor};">${proj.staff||DEFAULT_STAFF}</span>
+        <span style="font-family:'clarendon-text-pro',serif;font-size:11px;color:#aaa;margin-left:auto;">${pending.length} remaining · ${done.length} done</span>
+      </div>`;
+
+      if(!proj.tasks.length){
+        html+=`<div style="font-size:13px;color:#aaa;font-family:'clarendon-text-pro',serif;font-style:italic;padding:4px 0;">No tasks</div>`;
+      } else {
+        // Pending tasks first
+        pending.forEach(t=>{
+          const name=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
+          html+=`<div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
+            <div style="width:14px;height:14px;border-radius:50%;border:1.5px solid ${accentColor};flex-shrink:0;"></div>
+            <span style="font-family:'clarendon-text-pro',serif;font-size:14px;color:#1a1a18;flex:1;">${name}</span>
+            <span style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${accentColor};">${timeLabel(t.days)}</span>
+          </div>`;
+        });
+        // Done tasks after, faded
+        done.forEach(t=>{
+          const name=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
+          html+=`<div style="display:flex;align-items:center;gap:10px;padding:4px 0;opacity:0.4;">
+            <div style="width:14px;height:14px;border-radius:50%;border:1.5px solid ${accentColor};background:${accentColor};flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+              <svg width="7" height="5" viewBox="0 0 7 5" fill="none"><path d="M1 2.5L2.5 4L6 1" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span style="font-family:'clarendon-text-pro',serif;font-size:14px;color:#1a1a18;flex:1;text-decoration:line-through;">${name}</span>
+            <span style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${accentColor};">${timeLabel(t.days)}</span>
+          </div>`;
+        });
+      }
+      html+='</div>';
+    });
+  });
+
+  if(!hasAny){
+    html+='<div style="padding:60px 0;text-align:center;color:#aaa;font-family:\'clarendon-text-pro\',serif;font-size:14px;">No active projects</div>';
+  }
+
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+/* ── LIST ── */
+function renderList(){
+  const el=document.getElementById('list-content');
+  if(!el)return;
+  const PHASES=['new-construction','renovation','in-construction','prospect',''];
+  const PHASE_LABELS={'new-construction':'New Construction','renovation':'Renovation','in-construction':'In Construction','prospect':'Prospect','':'Unassigned'};
+  const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
+  const groups={};
+  PHASES.forEach(k=>{groups[k]=[];});
+  active.forEach(p=>{
+    p.tasks=p.tasks||[];p.type=p.type||'';
+    const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
+    groups[k].push(p);
+  });
+
+  let html='<div style="max-width:640px;">';
+  let hasAny=false;
+  PHASES.forEach(phase=>{
+    const projs=groups[phase];
+    if(!projs||!projs.length)return;
+    hasAny=true;
+    const phaseCol=PHASE_COLORS[phase]||PHASE_COLORS[''];
+    const [pr,pg,pb]=hexRgb(phaseCol);
+    const txtR=Math.round(pr*0.45),txtG=Math.round(pg*0.45),txtB=Math.round(pb*0.45);
+    html+=`<div style="font-family:'trade-gothic-next-compressed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:rgb(${txtR},${txtG},${txtB});margin:32px 0 8px;text-transform:uppercase;">${PHASE_LABELS[phase]}</div>`;
+
+    projs.forEach(proj=>{
+      const pending=proj.tasks.filter(t=>!t.done);
+      const done=proj.tasks.filter(t=>t.done);
+      html+=`<div style="margin-bottom:16px;">`;
+      html+=`<div style="font-family:'trade-gothic-next-compressed',sans-serif;font-size:18px;letter-spacing:0.04em;text-transform:uppercase;color:#1a1a18;margin-bottom:3px;">${proj.name}</div>`;
+      if(!proj.tasks.length){
+        html+=`<div style="font-size:13px;color:#bbb;font-family:'clarendon-text-pro',serif;font-style:italic;padding-left:4px;">No tasks</div>`;
+      } else {
+        pending.forEach(t=>{
+          const name=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
+          html+=`<div style="font-family:'clarendon-text-pro',serif;font-size:14px;color:#2a2018;padding:2px 0 2px 4px;">${name} <span style="font-size:11px;color:#aaa;font-family:'trade-gothic-next-lt-pro',sans-serif;font-weight:300;letter-spacing:0.06em;text-transform:uppercase;">${timeLabel(t.days)}</span></div>`;
+        });
+        done.forEach(t=>{
+          const name=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
+          html+=`<div style="font-family:'clarendon-text-pro',serif;font-size:14px;color:#aaa;padding:2px 0 2px 4px;text-decoration:line-through;">${name}</div>`;
+        });
+      }
+      html+=`</div>`;
+    });
+  });
+
+  if(!hasAny){
+    html+='<div style="padding:60px 0;text-align:center;color:#aaa;font-family:\'clarendon-text-pro\',serif;">No active projects</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
 }
 
 /* ── KEYBOARD ── */
