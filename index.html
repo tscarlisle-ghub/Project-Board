@@ -25,7 +25,7 @@ body{font-family:"clarendon-text-pro",serif;}
 .topbar-btn:hover{background:#5a2e0a;color:#e8d0a8;border-color:#a07040;}
 .topbar-btn.primary{border-color:#C97B52;color:#C97B52;}
 .topbar-btn.primary:hover{background:#C97B52;color:#fff;}
-.topbar-btn-large{border:0.5px solid #3a6e3a;color:#d8f0d8;background:#3a6030;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"trade-gothic-next-condensed",sans-serif;display:inline-block;letter-spacing:0.04em;}
+.topbar-btn-large{border:0.5px solid #3a6e3a;color:#d8f0d8;background:#3a6030;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13.5px;font-family:"trade-gothic-next-condensed",sans-serif;display:inline-block;letter-spacing:0.04em;text-transform:uppercase;}
 .topbar-btn-large:hover{background:#4a7840;color:#e8f8e8;border-color:#5a9050;}
 
 /* ── BACK BAR ── */
@@ -63,7 +63,7 @@ body{font-family:"clarendon-text-pro",serif;}
 /* ── PHASE SECTIONS (board) ── */
 .phase-section{width:100%;grid-column:1/-1;margin-top:8px;}
 .phase-section:first-child{margin-top:0;}
-.phase-section-header{font-family:"trade-gothic-next-compressed",sans-serif;font-weight:700;font-size:24px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 0 8px;margin-bottom:16px;border:none;background:none!important;}
+.phase-section-header{font-family:"trade-gothic-next-compressed",sans-serif;font-weight:700;font-size:33px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 0 8px;margin-bottom:16px;border:none;background:none!important;}
 
 /* ── STAFF TAG ── */
 .staff-tag{display:inline-block;font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#5a8088;margin-top:2px;padding:0;background:none;border:none;border-radius:0;}
@@ -198,12 +198,11 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn-large" onclick="toggleNewProject()">+ NEW PROJECT</button>
       <button class="topbar-btn-large" id="gantt-nav-btn" onclick="toggleGanttPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">GANTT CHART</button>
       <button class="topbar-btn-large" id="summary-nav-btn" onclick="toggleSummaryPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">SUMMARY</button>
-      <button class="topbar-btn-large" id="list-nav-btn" onclick="toggleListPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">LIST</button>
       <div id="staff-filter-btns" style="display:flex;gap:6px;align-items:center;margin-left:4px;">
-        <button class="topbar-btn-large" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;background:#422107;border-color:#7a5030;color:#c8a878;">All</button>
-        <button class="topbar-btn-large" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Maddie</button>
-        <button class="topbar-btn-large" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Kat</button>
-        <button class="topbar-btn-large" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Kathleen</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;background:#422107;border-color:#7a5030;color:#c8a878;">ALL</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">MADDIE</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">KAT</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">KATHLEEN</button>
       </div>
     </div>
   </div>
@@ -407,11 +406,12 @@ function fmtDue(t){
   if(!due)return '';
   const today=new Date();today.setHours(0,0,0,0);
   const diff=Math.round((due-today)/86400000);
-  if(diff<0)return 'overdue '+(Math.abs(diff))+'d';
-  if(diff===0)return 'due today';
-  if(diff===1)return 'due tomorrow';
-  if(diff<=7)return 'due in '+diff+'d';
-  return due.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const dateStr=due.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  if(diff<0)return `Overdue · ${dateStr}`;
+  if(diff===0)return `Due today · ${dateStr}`;
+  if(diff===1)return `Due tomorrow · ${dateStr}`;
+  if(diff<=7)return `Due in ${diff}d · ${dateStr}`;
+  return dateStr;
 }
 function dueColor(t,accentColor){
   const d=dueDays(t);
@@ -1298,7 +1298,6 @@ function showPage(page){
   document.getElementById('archive-nav-btn').textContent=page==='archive'?'\u2190 Board':'Archive';
   document.getElementById('gantt-nav-btn').textContent=page==='gantt'?'\u2190 Board':'GANTT CHART';
   document.getElementById('summary-nav-btn').textContent=page==='summary'?'\u2190 Board':'SUMMARY';
-  document.getElementById('list-nav-btn').textContent=page==='list'?'\u2190 Board':'LIST';
   if(page==='archive')renderArchiveSection(projects.filter(p=>p.archived));
   if(page==='gantt'){
     const gd=document.getElementById('gantt-date');
