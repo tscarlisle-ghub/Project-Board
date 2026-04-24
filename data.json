@@ -241,7 +241,7 @@
           "id": 57,
           "name": "Get interior designers contact info",
           "days": 1,
-          "done": false
+          "done": true
         }
       ],
       "staff": "Kathleen"
@@ -419,5 +419,5 @@
     }
   ],
   "nextId": 62,
-  "lastSaved": "2026-04-24T15:09:20.576Z"
+  "lastSaved": "2026-04-24T16:13:11.017Z"
 }
