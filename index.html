@@ -200,10 +200,10 @@ body{font-family:"clarendon-text-pro",serif;}
       <button class="topbar-btn-large" id="summary-nav-btn" onclick="toggleSummaryPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">SUMMARY</button>
       <button class="topbar-btn-large" id="list-nav-btn" onclick="toggleListPage()" style="background:#422107;border-color:#7a5030;color:#c8a878;">LIST</button>
       <div id="staff-filter-btns" style="display:flex;gap:6px;align-items:center;margin-left:4px;">
-        <button class="topbar-btn" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;">All</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;">Maddie</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.75;">Kat</button>
-        <button class="topbar-btn" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.75;">Kathleen</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter(null)" id="sf-all" style="opacity:1;background:#422107;border-color:#7a5030;color:#c8a878;">All</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Maddie')" id="sf-Maddie" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Maddie</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Kat')" id="sf-Kat" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Kat</button>
+        <button class="topbar-btn-large" onclick="setStaffFilter('Kathleen')" id="sf-Kathleen" style="opacity:0.75;background:#422107;border-color:#7a5030;color:#c8a878;">Kathleen</button>
       </div>
     </div>
   </div>
@@ -381,12 +381,45 @@ function phaseBase(proj){
 }
 function buildTimeOptions(){
   const o=[];
-  o.push({v:0.5,l:'½ day'});
-  for(let d=1;d<=7;d++){o.push({v:d,l:d===1?'1 day':d+' days'});if(d<7)o.push({v:d+0.5,l:d+'½ days'});}
-  for(let w=1;w<=16;w++){o.push({v:w*7,l:w===1?'1 week':w+' weeks'});o.push({v:w*7+3.5,l:w+'½ weeks'});}
+  o.push({v:1,l:'1 day'});
+  o.push({v:2,l:'2 days'});
+  o.push({v:3,l:'3 days'});
+  o.push({v:5,l:'5 days'});
+  for(let w=1;w<=16;w++){o.push({v:w*7,l:w===1?'1 week':w+' weeks'});}
   return o;
 }
 const TIME_OPTS=buildTimeOptions();
+
+function dueDate(t){
+  // t.due = ISO date string. Fallback: compute from t.days if t.due missing
+  if(t.due) return new Date(t.due);
+  if(t.createdAt) return new Date(new Date(t.createdAt).getTime()+t.days*86400000);
+  return null;
+}
+function dueDays(t){
+  const due=dueDate(t);
+  if(!due)return null;
+  const today=new Date();today.setHours(0,0,0,0);
+  return Math.round((due-today)/86400000);
+}
+function fmtDue(t){
+  const due=dueDate(t);
+  if(!due)return '';
+  const today=new Date();today.setHours(0,0,0,0);
+  const diff=Math.round((due-today)/86400000);
+  if(diff<0)return 'overdue '+(Math.abs(diff))+'d';
+  if(diff===0)return 'due today';
+  if(diff===1)return 'due tomorrow';
+  if(diff<=7)return 'due in '+diff+'d';
+  return due.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function dueColor(t,accentColor){
+  const d=dueDays(t);
+  if(d===null)return accentColor;
+  if(d<0)return '#c04040';   // overdue — red
+  if(d<=3)return '#b87020';  // due soon — amber
+  return accentColor;
+}
 function timeLabel(v){const o=TIME_OPTS.find(x=>Math.abs(x.v-v)<0.01);return o?o.l:v+'d';}
 function buildTimeSelect(id,sel){
   const el=document.getElementById(id);if(!el)return;
@@ -882,7 +915,8 @@ function renderProjects(){
           // Task name — editable, sentence case
           const nameLine=document.createElement('div');
           const displayName=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
-          nameLine.style.cssText=`font-family:"clarendon-text-pro",serif;font-size:14px;color:#2a2018;line-height:1.4;cursor:text;`;
+          const overdue=!t.done&&dueDays(t)!==null&&dueDays(t)<0;
+          nameLine.style.cssText=`font-family:"clarendon-text-pro",serif;font-size:14px;color:${overdue?'#c04040':'#2a2018'};line-height:1.4;cursor:text;`;
           nameLine.textContent=displayName;
           nameLine.addEventListener('click',(e)=>{
             e.stopPropagation();
@@ -899,8 +933,9 @@ function renderProjects(){
           });
           // Time label
           const timeLine=document.createElement('div');
-          timeLine.style.cssText=`font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${accentColor};margin-top:2px;cursor:pointer;`;
-          timeLine.textContent=timeLabel(t.days);
+          const dc=dueColor(t,accentColor);
+          timeLine.style.cssText=`font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:${dc};margin-top:2px;cursor:pointer;`;
+          timeLine.textContent=fmtDue(t)||timeLabel(t.days);
           timeLine.addEventListener('click',(e)=>{e.stopPropagation();openEdit(proj.id,t.id);});
           txt.appendChild(nameLine);
           txt.appendChild(timeLine);
@@ -991,10 +1026,12 @@ function submitInlineTask(projId){
   const nameEl=document.getElementById(`ntf-name-${projId}`);
   const daysEl=document.getElementById(`ntf-days-${projId}`);
   const name=nameEl?nameEl.value.trim():'';
-  const days=daysEl?parseFloat(daysEl.value):1;
+  const days=daysEl?parseFloat(daysEl.value):7;
   if(!name)return;
   const proj=projects.find(p=>p.id===projId);if(!proj)return;
-  proj.tasks.push({id:nextId++,name,days,done:false});
+  const now=new Date();
+  const due=new Date(now.getTime()+days*86400000);
+  proj.tasks.push({id:nextId++,name,days,done:false,createdAt:now.toISOString(),due:due.toISOString().split('T')[0]});
   addingToProject=null;
   scheduleSave();
   renderProjects();
@@ -1073,7 +1110,12 @@ function cancelEdit(){editingTask=null;renderProjects();}
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
-  if(t)t.days=parseFloat(el.value);
+  if(t){
+    t.days=parseFloat(el.value);
+    const due=new Date(new Date().getTime()+t.days*86400000);
+    t.due=due.toISOString().split('T')[0];
+    t.createdAt=new Date().toISOString();
+  }
   editingTask=null;scheduleSave();renderProjects();
 }
 function markDone(pId,tId){
@@ -1356,9 +1398,15 @@ function renderGantt(){
       const [br,bg2,bb]=hexRgb(base);
       const GANTT_COLORS={'new-construction':'#7aa8ae','renovation':'#c8b86a','in-construction':'#c8a070','prospect':'#b89878','':'#9aacac'};
       const barColor=GANTT_COLORS[proj.type||'']||GANTT_COLORS[''];
-      const totalD=proj.tasks.reduce((s,t)=>s+t.days,0);
-      const totalW=totalD/7;
-      const barW=Math.min(Math.max(totalW*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
+      // Use furthest due date for bar width
+      const today=new Date();today.setHours(0,0,0,0);
+      const pendingTasks=proj.tasks.filter(t=>!t.done&&dueDate(t));
+      let barW=CELL_W*0.4;
+      if(pendingTasks.length){
+        const maxDue=new Date(Math.max(...pendingTasks.map(t=>dueDate(t).getTime())));
+        const daysToMax=Math.max(0,(maxDue-today)/86400000);
+        barW=Math.min(Math.max(daysToMax/7*CELL_W,CELL_W*0.4),WEEKS*CELL_W);
+      }
       const todayX=todayOffset*CELL_W;
       const totalCellW=WEEKS*CELL_W;
 
