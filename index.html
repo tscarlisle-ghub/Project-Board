@@ -41,6 +41,26 @@ body{font-family:"clarendon-text-pro",serif;}
 .proj-tag.in-construction{color:#2a4a50;border:0.5px solid #5a7a84;}
 .proj-tag.prospect{color:#4a6e72;border:0.5px solid #8aabaf;}
 
+/* ── CUSTOM CALENDAR ── */
+#cal-popup{position:fixed;z-index:9999;background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.18);padding:20px;width:320px;}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-month-label{font-family:"trade-gothic-next-compressed",sans-serif;font-weight:700;font-size:22px;letter-spacing:0.06em;text-transform:uppercase;color:#1a1a18;}
+.cal-nav{background:none;border:none;cursor:pointer;font-size:20px;color:#888;padding:2px 10px;border-radius:4px;}
+.cal-nav:hover{background:#f0eeeb;color:#1a1a18;}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;}
+.cal-dow span{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#aaa;text-align:center;padding:4px 0;}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-day{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:15px;text-align:center;padding:8px 2px;border-radius:4px;cursor:pointer;border:none;background:none;color:#1a1a18;width:100%;}
+.cal-day:hover:not(.past){background:#f0eeeb;}
+.cal-day.today{font-weight:700;color:#422107;}
+.cal-day.selected{background:#422107;color:#fff!important;}
+.cal-day.other-month{color:#ccc;}
+.cal-day.past{color:#ddd;cursor:default;}
+.cal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;border-top:0.5px solid #e8e2d8;padding-top:12px;}
+.cal-btn-cancel{font-family:"trade-gothic-next-lt-pro",sans-serif;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;background:none;border:0.5px solid #ccc;color:#888;padding:5px 14px;border-radius:4px;cursor:pointer;}
+.cal-btn-ok{font-family:"trade-gothic-next-compressed",sans-serif;font-weight:700;font-size:14px;letter-spacing:0.06em;text-transform:uppercase;background:#422107;border:none;color:#c8a878;padding:6px 20px;border-radius:4px;cursor:pointer;}
+.cal-trigger{font-family:"trade-gothic-next-lt-pro",sans-serif;font-weight:300;font-size:13px;border:0.5px solid;border-radius:4px;padding:5px 10px;cursor:pointer;background:white;text-align:left;min-width:130px;}
+
 /* ── GANTT ── */
 /* ── GANTT TOPBAR ── */
 .gantt-topbar{background:#422107;padding:14px 32px 12px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:200;border-bottom:1px solid #2e1605;}
@@ -891,7 +911,7 @@ function renderProjects(){
           cell.style.cssText=`margin-bottom:4px;border-radius:4px;background:${cardBg};border:1px solid ${cardBorder};padding:10px 12px;`;
           const existingDue=t.due||new Date(Date.now()+7*86400000).toISOString().split('T')[0];
           cell.innerHTML=`<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#888;font-family:'clarendon-text-pro',serif;margin-bottom:4px;">Due date for: <em>${t.name}</em></div>
-            <input type="date" id="ed-${t.id}" value="${existingDue}" style="font-size:13px;font-family:'clarendon-text-pro',serif;border:0.5px solid ${cardBorder};border-radius:4px;padding:5px 8px;background:white;color:#2a2018;width:100%;box-sizing:border-box;" />
+            <button class="cal-trigger" id="ed-${t.id}" data-date="${existingDue}" style="border-color:${cardBorder};color:#2a2018;" onclick="openCalForEl(this)">${new Date(existingDue+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</button>
             <div style="display:flex;gap:6px;margin-top:8px;">
               <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
               <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
@@ -961,7 +981,7 @@ function renderProjects(){
         form.style.cssText='display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1px solid '+cardBorder+';margin-top:4px;';
         form.innerHTML=`<input type="text" id="ntf-name-${proj.id}" placeholder="Task name..." style="font-family:'clarendon-text-pro',serif;font-size:14px;background:transparent;border:none;border-bottom:1.5px solid ${accentColor};outline:none;color:#2a2018;padding:2px 0;" />
           <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
-            <input type="date" id="ntf-days-${proj.id}" value="${new Date(Date.now()+7*86400000).toISOString().split('T')[0]}" style="font-size:12px;font-family:'clarendon-text-pro',serif;border:0.5px solid ${cardBorder};border-radius:3px;padding:3px 6px;background:white;color:#2a2018;flex:1;" />
+            <button class="cal-trigger" id="ntf-days-${proj.id}" data-date="${new Date(Date.now()+7*86400000).toISOString().split('T')[0]}" style="border-color:${cardBorder};color:#2a2018;flex:1;" onclick="openCalForEl(this)">${new Date(Date.now()+7*86400000).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</button>
             <button class="btn-save" onclick="submitInlineTask(${proj.id})" style="font-size:11px;padding:4px 10px;">Add</button>
             <button class="btn-cancel" onclick="cancelInlineAdd()" style="font-size:11px;padding:4px 8px;">&#x2715;</button>
           </div>`;
@@ -1024,11 +1044,11 @@ function submitInlineTask(projId){
   const nameEl=document.getElementById(`ntf-name-${projId}`);
   const dateEl=document.getElementById(`ntf-days-${projId}`);
   const name=nameEl?nameEl.value.trim():'';
-  const dueStr=dateEl?dateEl.value:'';
+  const dueStr=dateEl?(dateEl.dataset.date||dateEl.value||''):'';
   if(!name)return;
   const proj=projects.find(p=>p.id===projId);if(!proj)return;
   const now=new Date();
-  const due=dueStr?new Date(dueStr):new Date(now.getTime()+7*86400000);
+  const due=dueStr?new Date(dueStr+'T12:00:00'):new Date(now.getTime()+7*86400000);
   const days=Math.max(1,Math.round((due-now)/86400000));
   proj.tasks.push({id:nextId++,name,days,done:false,createdAt:now.toISOString(),due:due.toISOString().split('T')[0]});
   addingToProject=null;
@@ -1109,10 +1129,11 @@ function cancelEdit(){editingTask=null;renderProjects();}
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
-  if(t&&el.value){
-    t.due=el.value;
+  const dueStr=el.dataset.date||el.value||'';
+  if(t&&dueStr){
+    t.due=dueStr;
     const now=new Date();
-    const due=new Date(el.value);
+    const due=new Date(dueStr+'T12:00:00');
     t.days=Math.max(1,Math.round((due-now)/86400000));
     t.createdAt=now.toISOString();
   }
@@ -1652,6 +1673,93 @@ function renderList(){
   }
   html+='</div>';
   el.innerHTML=html;
+}
+
+function openCalForEl(btn){
+  const cur=btn.dataset.date||new Date(Date.now()+7*86400000).toISOString().split('T')[0];
+  showCalendar(btn,cur,function(picked){
+    btn.dataset.date=picked;
+    btn.textContent=new Date(picked+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  });
+}
+
+/* ── CALENDAR POPUP ── */
+let calState={month:0,year:0,selected:'',targetId:'',onPick:null};
+function showCalendar(anchorEl, currentVal, onPick){
+  let popup=document.getElementById('cal-popup');
+  if(!popup){popup=document.createElement('div');popup.id='cal-popup';document.body.appendChild(popup);}
+  const init=currentVal?new Date(currentVal+'T12:00:00'):new Date(Date.now()+7*86400000);
+  calState.selected=currentVal||init.toISOString().split('T')[0];
+  calState.month=init.getMonth();
+  calState.year=init.getFullYear();
+  calState.onPick=onPick;
+  renderCalendar();
+  // Position near anchor
+  const rect=anchorEl.getBoundingClientRect();
+  let top=rect.bottom+8, left=rect.left;
+  if(top+400>window.innerHeight)top=rect.top-400;
+  if(left+320>window.innerWidth)left=window.innerWidth-328;
+  popup.style.top=Math.max(8,top)+'px';
+  popup.style.left=Math.max(8,left)+'px';
+  popup.style.display='block';
+  setTimeout(()=>document.addEventListener('click',calOutsideClick),0);
+}
+function calOutsideClick(e){
+  const p=document.getElementById('cal-popup');
+  if(p&&!p.contains(e.target)&&!e.target.closest('.cal-trigger')){closeCalendar();}
+}
+function closeCalendar(){
+  const p=document.getElementById('cal-popup');
+  if(p)p.style.display='none';
+  document.removeEventListener('click',calOutsideClick);
+}
+function calPick(dateStr){calState.selected=dateStr;renderCalendar();}
+function calConfirm(){
+  if(calState.onPick&&calState.selected)calState.onPick(calState.selected);
+  closeCalendar();
+}
+function renderCalendar(){
+  const popup=document.getElementById('cal-popup');
+  if(!popup)return;
+  const {month,year,selected}=calState;
+  const monthNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const today=new Date();today.setHours(0,0,0,0);
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const daysInPrev=new Date(year,month,0).getDate();
+  let days='';
+  // Prev month tail
+  for(let i=firstDay-1;i>=0;i--){
+    days+=`<button class="cal-day other-month past" disabled>${daysInPrev-i}</button>`;
+  }
+  // This month
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dt=new Date(year,month,d);
+    const isToday=dt.getTime()===today.getTime();
+    const isSel=ds===selected;
+    const isPast=dt<today;
+    days+=`<button class="cal-day${isToday?' today':''}${isSel?' selected':''}${isPast?' past':''}" onclick="calPick('${ds}')">${d}</button>`;
+  }
+  // Next month
+  const remaining=(7-((firstDay+daysInMonth)%7))%7;
+  for(let d=1;d<=remaining;d++){
+    days+=`<button class="cal-day other-month past" disabled>${d}</button>`;
+  }
+  const selFmt=selected?new Date(selected+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'No date selected';
+  popup.innerHTML=`
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calState.month--;if(calState.month<0){calState.month=11;calState.year--;}renderCalendar()">&#8249;</button>
+      <div class="cal-month-label">${monthNames[month]} ${year}</div>
+      <button class="cal-nav" onclick="calState.month++;if(calState.month>11){calState.month=0;calState.year++;}renderCalendar()">&#8250;</button>
+    </div>
+    <div class="cal-dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+    <div class="cal-days">${days}</div>
+    <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-size:12px;color:#888;margin-top:10px;text-align:center;letter-spacing:0.04em;">${selFmt}</div>
+    <div class="cal-actions">
+      <button class="cal-btn-cancel" onclick="closeCalendar()">Cancel</button>
+      <button class="cal-btn-ok" onclick="calConfirm()">Set date</button>
+    </div>`;
 }
 
 /* ── KEYBOARD ── */
