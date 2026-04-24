@@ -888,17 +888,16 @@ function renderProjects(){
         if(editing){
           const cell=document.createElement('div');
           cell.className='inline-edit';
-          cell.style.cssText='margin-bottom:4px;border-radius:4px;';
-          cell.innerHTML=`<div class="inline-edit-label">Edit time</div>
-            <div class="inline-edit-name">${t.name}</div>
-            <select id="ed-${t.id}"></select>
-            <div class="inline-edit-btns">
+          cell.style.cssText=`margin-bottom:4px;border-radius:4px;background:${cardBg};border:1px solid ${cardBorder};padding:10px 12px;`;
+          const existingDue=t.due||new Date(Date.now()+7*86400000).toISOString().split('T')[0];
+          cell.innerHTML=`<div style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#888;font-family:'clarendon-text-pro',serif;margin-bottom:4px;">Due date for: <em>${t.name}</em></div>
+            <input type="date" id="ed-${t.id}" value="${existingDue}" style="font-size:13px;font-family:'clarendon-text-pro',serif;border:0.5px solid ${cardBorder};border-radius:4px;padding:5px 8px;background:white;color:#2a2018;width:100%;box-sizing:border-box;" />
+            <div style="display:flex;gap:6px;margin-top:8px;">
               <button class="btn-save" onclick="saveTaskTime(${proj.id},${t.id})">Save</button>
               <button class="btn-done-tog" onclick="markDone(${proj.id},${t.id})">${t.done?'Reopen':'Done'}</button>
               <button class="btn-cancel" onclick="cancelEdit()">&#x2715;</button>
             </div>`;
           taskList.appendChild(cell);
-          setTimeout(()=>buildTimeSelect(`ed-${t.id}`,t.days),0);
         } else {
           const row=document.createElement('div');
           row.style.cssText=`display:flex;align-items:flex-start;gap:10px;padding:6px 0;${t.done?'opacity:0.45;':''}`;
@@ -961,14 +960,13 @@ function renderProjects(){
         const form=document.createElement('div');
         form.style.cssText='display:flex;flex-direction:column;gap:8px;padding:10px 0;border-top:1px solid '+cardBorder+';margin-top:4px;';
         form.innerHTML=`<input type="text" id="ntf-name-${proj.id}" placeholder="Task name..." style="font-family:'clarendon-text-pro',serif;font-size:14px;background:transparent;border:none;border-bottom:1.5px solid ${accentColor};outline:none;color:#2a2018;padding:2px 0;" />
-          <div style="display:flex;gap:8px;align-items:center;">
-            <select id="ntf-days-${proj.id}" style="font-size:12px;background:transparent;border:0.5px solid ${cardBorder};color:#555;padding:3px 6px;border-radius:3px;font-family:'clarendon-text-pro',serif;"></select>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:4px;">
+            <input type="date" id="ntf-days-${proj.id}" value="${new Date(Date.now()+7*86400000).toISOString().split('T')[0]}" style="font-size:12px;font-family:'clarendon-text-pro',serif;border:0.5px solid ${cardBorder};border-radius:3px;padding:3px 6px;background:white;color:#2a2018;flex:1;" />
             <button class="btn-save" onclick="submitInlineTask(${proj.id})" style="font-size:11px;padding:4px 10px;">Add</button>
             <button class="btn-cancel" onclick="cancelInlineAdd()" style="font-size:11px;padding:4px 8px;">&#x2715;</button>
           </div>`;
         taskList.appendChild(form);
         setTimeout(()=>{
-          buildTimeSelect(`ntf-days-${proj.id}`,1);
           const inp=document.getElementById(`ntf-name-${proj.id}`);
           if(inp)inp.focus();
         },0);
@@ -1024,13 +1022,14 @@ function openInlineAdd(projId){addingToProject=projId;editingTask=null;renderPro
 function cancelInlineAdd(){addingToProject=null;renderProjects();}
 function submitInlineTask(projId){
   const nameEl=document.getElementById(`ntf-name-${projId}`);
-  const daysEl=document.getElementById(`ntf-days-${projId}`);
+  const dateEl=document.getElementById(`ntf-days-${projId}`);
   const name=nameEl?nameEl.value.trim():'';
-  const days=daysEl?parseFloat(daysEl.value):7;
+  const dueStr=dateEl?dateEl.value:'';
   if(!name)return;
   const proj=projects.find(p=>p.id===projId);if(!proj)return;
   const now=new Date();
-  const due=new Date(now.getTime()+days*86400000);
+  const due=dueStr?new Date(dueStr):new Date(now.getTime()+7*86400000);
+  const days=Math.max(1,Math.round((due-now)/86400000));
   proj.tasks.push({id:nextId++,name,days,done:false,createdAt:now.toISOString(),due:due.toISOString().split('T')[0]});
   addingToProject=null;
   scheduleSave();
@@ -1110,11 +1109,12 @@ function cancelEdit(){editingTask=null;renderProjects();}
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
   const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);
-  if(t){
-    t.days=parseFloat(el.value);
-    const due=new Date(new Date().getTime()+t.days*86400000);
-    t.due=due.toISOString().split('T')[0];
-    t.createdAt=new Date().toISOString();
+  if(t&&el.value){
+    t.due=el.value;
+    const now=new Date();
+    const due=new Date(el.value);
+    t.days=Math.max(1,Math.round((due-now)/86400000));
+    t.createdAt=now.toISOString();
   }
   editingTask=null;scheduleSave();renderProjects();
 }
@@ -1280,7 +1280,12 @@ function setStaffFilter(staff){
   activeStaffFilter=staff;
   ['all','Maddie','Kat','Kathleen'].forEach(s=>{
     const btn=document.getElementById('sf-'+(s==='all'?'all':s));
-    if(btn)btn.style.opacity=(staff===null&&s==='all')||(staff===s)?'1':'0.75';
+    if(!btn)return;
+    const active=(staff===null&&s==='all')||(staff===s);
+    btn.style.opacity='1';
+    btn.style.background=active?'#7a5030':'#422107';
+    btn.style.borderColor=active?'#c8a060':'#7a5030';
+    btn.style.color=active?'#f0ddb0':'#c8a878';
   });
   renderProjects();
 }
