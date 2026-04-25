@@ -80,7 +80,7 @@
         },
         {
           "id": 53,
-          "name": "HOA Submittal",
+          "name": "Hoa submittal",
           "days": 14,
           "done": false,
           "due": "2026-05-08",
@@ -447,5 +447,5 @@
     }
   ],
   "nextId": 66,
-  "lastSaved": "2026-04-25T17:14:09.952Z"
+  "lastSaved": "2026-04-25T17:14:56.488Z"
 }
