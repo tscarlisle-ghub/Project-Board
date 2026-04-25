@@ -140,7 +140,7 @@
         },
         {
           "id": 55,
-          "name": "Update Billing",
+          "name": "Update billing",
           "days": 1,
           "done": false
         }
@@ -447,5 +447,5 @@
     }
   ],
   "nextId": 66,
-  "lastSaved": "2026-04-25T17:14:56.488Z"
+  "lastSaved": "2026-04-25T17:16:24.318Z"
 }
