@@ -1714,10 +1714,6 @@ function closeCalendar(){
   document.removeEventListener('click',calOutsideClick);
 }
 function calPick(dateStr){calState.selected=dateStr;renderCalendar();}
-function calConfirm(){
-  if(calState.onPick&&calState.selected)calState.onPick(calState.selected);
-  closeCalendar();
-}
 function renderCalendar(){
   const popup=document.getElementById('cal-popup');
   if(!popup)return;
@@ -1728,20 +1724,17 @@ function renderCalendar(){
   const daysInMonth=new Date(year,month+1,0).getDate();
   const daysInPrev=new Date(year,month,0).getDate();
   let days='';
-  // Prev month tail
   for(let i=firstDay-1;i>=0;i--){
     days+=`<button class="cal-day other-month past" disabled>${daysInPrev-i}</button>`;
   }
-  // This month
   for(let d=1;d<=daysInMonth;d++){
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dt=new Date(year,month,d);
     const isToday=dt.getTime()===today.getTime();
     const isSel=ds===selected;
     const isPast=dt<today;
-    days+=`<button class="cal-day${isToday?' today':''}${isSel?' selected':''}${isPast?' past':''}" onclick="calPick('${ds}')">${d}</button>`;
+    days+=`<button class="cal-day${isToday?' today':''}${isSel?' selected':''}${isPast?' past':''}" data-date="${isPast?'':ds}"${isPast?' disabled':''}>${d}</button>`;
   }
-  // Next month
   const remaining=(7-((firstDay+daysInMonth)%7))%7;
   for(let d=1;d<=remaining;d++){
     days+=`<button class="cal-day other-month past" disabled>${d}</button>`;
@@ -1749,17 +1742,32 @@ function renderCalendar(){
   const selFmt=selected?new Date(selected+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'No date selected';
   popup.innerHTML=`
     <div class="cal-header">
-      <button class="cal-nav" onclick="calState.month--;if(calState.month<0){calState.month=11;calState.year--;}renderCalendar()">&#8249;</button>
+      <button class="cal-nav" id="cal-prev">&#8249;</button>
       <div class="cal-month-label">${monthNames[month]} ${year}</div>
-      <button class="cal-nav" onclick="calState.month++;if(calState.month>11){calState.month=0;calState.year++;}renderCalendar()">&#8250;</button>
+      <button class="cal-nav" id="cal-next">&#8250;</button>
     </div>
     <div class="cal-dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
-    <div class="cal-days">${days}</div>
+    <div class="cal-days" id="cal-days-grid">${days}</div>
     <div style="font-family:'trade-gothic-next-lt-pro',sans-serif;font-size:12px;color:#888;margin-top:10px;text-align:center;letter-spacing:0.04em;">${selFmt}</div>
     <div class="cal-actions">
-      <button class="cal-btn-cancel" onclick="closeCalendar()">Cancel</button>
-      <button class="cal-btn-ok" onclick="calConfirm()">Set date</button>
+      <button class="cal-btn-cancel" id="cal-cancel">Cancel</button>
+      <button class="cal-btn-ok" id="cal-ok">Set date</button>
     </div>`;
+  // Bind events via JS — no inline onclick
+  document.getElementById('cal-prev').addEventListener('click',e=>{e.stopPropagation();calState.month--;if(calState.month<0){calState.month=11;calState.year--;}renderCalendar();});
+  document.getElementById('cal-next').addEventListener('click',e=>{e.stopPropagation();calState.month++;if(calState.month>11){calState.month=0;calState.year++;}renderCalendar();});
+  document.getElementById('cal-cancel').addEventListener('click',e=>{e.stopPropagation();closeCalendar();});
+  document.getElementById('cal-ok').addEventListener('click',e=>{e.stopPropagation();calConfirm();});
+  document.getElementById('cal-days-grid').addEventListener('click',e=>{
+    const btn=e.target.closest('.cal-day');
+    if(!btn||!btn.dataset.date)return;
+    e.stopPropagation();
+    calPick(btn.dataset.date);
+  });
+}
+function calConfirm(){
+  if(calState.onPick&&calState.selected)calState.onPick(calState.selected);
+  closeCalendar();
 }
 
 /* ── KEYBOARD ── */
