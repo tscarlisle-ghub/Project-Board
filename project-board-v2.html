@@ -210,12 +210,12 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   grid-column:2/4;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:0 48px;
+  gap:16px 32px;
   align-items:start;
   border-left:1px solid var(--rule);
-  padding-left:36px;
-  padding-top:20px;
-  padding-bottom:20px;
+  padding-left:28px;
+  padding-top:16px;
+  padding-bottom:24px;
 }
 .phase-new-construction{background:#f4f8f9;}
 .phase-renovation{background:#fdfbf3;}
@@ -232,11 +232,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 
 /* ── PROJECT ENTRY ── */
-.project-entry{margin-bottom:36px;position:relative;}
-.project-entry+.project-entry{
-  padding-top:28px;
-  border-top:1px solid var(--ink-faint);
-}
+.project-entry{position:relative;padding:22px 18px 22px;margin-bottom:0;border-radius:4px;}
 .project-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
 .project-name{
   font-family:"interstate-condensed",sans-serif;
@@ -1020,8 +1016,10 @@ function renderProjects(){
     projGrid.className='phase-projects';
     const phaseClass={'new-construction':'phase-new-construction','renovation':'phase-renovation','in-construction':'phase-in-construction','prospect':'phase-prospect','':'phase-unassigned'};
     if(phaseClass[phase])projGrid.classList.add(phaseClass[phase]);
-    projs.forEach(proj=>{
-      projGrid.appendChild(buildProjectEntry(proj,phase));
+    projs.forEach((proj,pi)=>{
+      const entry=buildProjectEntry(proj,phase);
+      entry.style.background=pi%2===0?'rgba(255,255,255,0.85)':'rgba(176,201,223,0.10)';
+      projGrid.appendChild(entry);
     });
     inner.appendChild(projGrid);
     phaseBlock.appendChild(inner);
@@ -1078,6 +1076,7 @@ function createProject(){
 function buildProjectEntry(proj,phase){
   const entry=document.createElement('div');
   entry.className='project-entry';
+  // alternating set by parent index
 
   // Header row
   const head=document.createElement('div');
