@@ -1016,9 +1016,8 @@ function renderProjects(){
     projGrid.className='phase-projects';
     const phaseClass={'new-construction':'phase-new-construction','renovation':'phase-renovation','in-construction':'phase-in-construction','prospect':'phase-prospect','':'phase-unassigned'};
     if(phaseClass[phase])projGrid.classList.add(phaseClass[phase]);
-    projs.forEach((proj,pi)=>{
+    projs.forEach(proj=>{
       const entry=buildProjectEntry(proj,phase);
-      entry.style.background=pi%2===0?'rgba(255,255,255,0.85)':'rgba(176,201,223,0.10)';
       projGrid.appendChild(entry);
     });
     inner.appendChild(projGrid);
@@ -1076,7 +1075,6 @@ function createProject(){
 function buildProjectEntry(proj,phase){
   const entry=document.createElement('div');
   entry.className='project-entry';
-  // alternating set by parent index
 
   // Header row
   const head=document.createElement('div');
