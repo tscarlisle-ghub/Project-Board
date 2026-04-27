@@ -14,7 +14,7 @@
   --ink-mid:#6a5e50;
   --ink-light:#9a8e80;
   --ink-faint:#e8e0d0;
-  --page:#fff4de;
+  --page:#fafad2;
   --rule:#b0c9df;
   --rule-strong:#8194b1;
   --brand:#d04030;
@@ -218,10 +218,10 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   padding-top:20px;
   padding-bottom:20px;
 }
-.phase-new-construction{background:#e9eced;}
-.phase-renovation{background:#fff4de;}
-.phase-in-construction{background:#ddeaf5;}
-.phase-prospect{background:#fce8e4;}
+.phase-new-construction{background:#f0f4f5;}
+.phase-renovation{background:#faf5e6;}
+.phase-in-construction{background:#eaf2f8;}
+.phase-prospect{background:#fbeeec;}
 .phase-unassigned{background:#f0f0f0;}
 .phase-rule{
   border:none;
@@ -306,7 +306,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   line-height:1.35;
   cursor:text;
 }
-.task-name.done{color:var(--ink-light);text-decoration:line-through;}
+.task-name.done{color:rgba(200,195,185,0.9);text-decoration:line-through;}
 .task-name.overdue{color:var(--red);}
 .task-due{
   font-family:"ff-meta-web-pro",sans-serif;
@@ -723,7 +723,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
     </div>
   </div>
   <div class="sub-navbar">
-    <button class="nav-action primary" onclick="toggleNewProject()">+ New project</button>
+    <div class="navbar-inner-wrap"><button class="nav-action primary" onclick="toggleNewProject()">+ New project</button></div>
   </div>
 </div>
 
