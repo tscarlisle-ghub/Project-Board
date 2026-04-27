@@ -188,8 +188,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .phase-block{margin-bottom:52px;}
 .phase-block-inner{
   display:grid;
-  grid-template-columns:220px 1fr 1fr;
-  gap:0 40px;
+  grid-template-columns:220px 1fr;
+  gap:0;
   align-items:start;
 }
 .phase-label{
@@ -207,7 +207,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   grid-column:1;
 }
 .phase-projects{
-  grid-column:2/4;
+  grid-column:2;
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:3px;
@@ -395,7 +395,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .if-btn.cancel:hover{color:var(--red);}
 
 /* ── PROJECT FOOTER ── */
-.project-footer{display:flex;justify-content:flex-start;gap:14px;margin-top:14px;padding-top:10px;}
+.project-footer{display:flex;justify-content:flex-end;gap:14px;margin-top:14px;padding-top:10px;}
 
 /* ── EMPTY STATE ── */
 .empty-note{
