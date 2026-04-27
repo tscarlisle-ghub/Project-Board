@@ -36,7 +36,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 
 /* ── MASTHEAD ── */
 .masthead{
-  border-bottom:2px solid var(--ink);
+  border-bottom:1px solid var(--rule);
   padding:14px 0 10px;
   margin-bottom:0;
   position:sticky;top:0;z-index:200;
@@ -87,7 +87,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 
 /* ── NAV BAR ── */
 .navbar{
-  border-bottom:1px solid var(--rule);
+  border-bottom:none;
   padding:11px 0;
   background:var(--page);
   position:sticky;top:74px;z-index:199;
@@ -210,24 +210,19 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   grid-column:2/4;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px 20px;
+  gap:3px;
   align-items:start;
   border-left:1px solid var(--rule);
   padding-left:28px;
   padding-top:16px;
   padding-bottom:24px;
 }
-.project-entry{position:relative;padding:22px 18px;margin-bottom:0;border-radius:4px;outline:4px solid white;}.phase-new-construction{background:#f4f8f9;}
+.project-entry{position:relative;padding:20px 18px;margin-bottom:0;border-radius:0;outline:3px solid white;}.phase-new-construction{background:#f4f8f9;}
 .phase-renovation{background:#fdfbf3;}
 .phase-in-construction{background:#f2f7fb;}
 .phase-prospect{background:#fdf5f3;}
 .phase-unassigned{background:#f0f0f0;}
-.phase-rule{
-  border:none;
-  border-top:1px solid var(--rule);
-  margin-bottom:20px;
-  grid-column:1/-1;
-}
+.phase-rule{display:none;}
   margin-bottom:28px;
 }
 
@@ -400,7 +395,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .if-btn.cancel:hover{color:var(--red);}
 
 /* ── PROJECT FOOTER ── */
-.project-footer{display:none;}
+.project-footer{display:flex;justify-content:flex-start;gap:14px;margin-top:14px;padding-top:10px;}
 
 /* ── EMPTY STATE ── */
 .empty-note{
@@ -1092,10 +1087,7 @@ function buildProjectEntry(proj,phase){
       <span class="project-name" onclick="openProjEdit(${proj.id},this)">${proj.name}</span>
       <span class="project-staff">${proj.staff||DEFAULT_STAFF}</span>
     </div>
-    <div class="project-actions">
-      <button class="proj-act-btn" onclick="archiveProject(${proj.id})">Archive</button>
-      <button class="proj-act-btn danger" onclick="deleteProject(${proj.id})">Delete</button>
-    </div>`;
+`;
   entry.appendChild(head);
 
   // Task list
