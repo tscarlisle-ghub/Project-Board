@@ -421,7 +421,16 @@
       "colorIdx": 2,
       "archived": false,
       "type": "in-construction",
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 66,
+          "name": "Invoice",
+          "days": 2,
+          "done": false,
+          "createdAt": "2026-04-27T19:01:42.540Z",
+          "due": "2026-04-29"
+        }
+      ],
       "staff": "Maddie"
     },
     {
@@ -452,5 +461,5 @@
       "staff": "Scott"
     }
   ],
-  "nextId": 66
+  "nextId": 67
 }
