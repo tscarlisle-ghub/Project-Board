@@ -13,10 +13,10 @@
   --ink:#2e2e2e;
   --ink-mid:#6a5e50;
   --ink-light:#9a8e80;
-  --ink-faint:#e8e0d0;
-  --page:#fafad2;
-  --rule:#b0c9df;
-  --rule-strong:#8194b1;
+  --ink-faint:#eeebe4;
+  --page:#fefefc;
+  --rule:#d8e4ec;
+  --rule-strong:#a0b4c8;
   --brand:#d04030;
   --brand-light:#ff7863;
   --warm:#e9eced;
@@ -37,7 +37,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 /* ── MASTHEAD ── */
 .masthead{
   border-bottom:2px solid var(--ink);
-  padding:18px 0 10px;
+  padding:14px 0 10px;
   margin-bottom:0;
   position:sticky;top:0;z-index:200;
   background:var(--page);
@@ -47,7 +47,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   margin:0 auto;
   padding:0 40px;
   display:flex;
-  align-items:flex-start;
+  align-items:baseline;
   gap:0;
 }
 .masthead-firm{
@@ -64,10 +64,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   font-size:40px;
   text-transform:uppercase;
   letter-spacing:0.04em;
-  letter-spacing:0.04em;
   text-transform:uppercase;
   color:var(--ink);
-  margin-left:24px;
+  margin-left:0;
   line-height:1;
 }
 .masthead-date{
@@ -218,10 +217,10 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   padding-top:20px;
   padding-bottom:20px;
 }
-.phase-new-construction{background:#f0f4f5;}
-.phase-renovation{background:#faf5e6;}
-.phase-in-construction{background:#eaf2f8;}
-.phase-prospect{background:#fbeeec;}
+.phase-new-construction{background:#f4f8f9;}
+.phase-renovation{background:#fdfbf3;}
+.phase-in-construction{background:#f2f7fb;}
+.phase-prospect{background:#fdf5f3;}
 .phase-unassigned{background:#f0f0f0;}
 .phase-rule{
   border:none;
@@ -693,10 +692,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 <div id="main-masthead">
   <div class="masthead">
     <div class="masthead-inner">
-      <div style="display:flex;flex-direction:column;gap:4px;line-height:1;">
-        <span class="masthead-title">Project Board</span>
-        <span id="today-date" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);"></span>
-      </div>
+      <span class="masthead-title">Project Board</span>
+      <span id="today-date" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);margin-left:20px;align-self:flex-end;padding-bottom:4px;"></span>
     </div>
   </div>
   <div class="navbar">
@@ -723,7 +720,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
     </div>
   </div>
   <div class="sub-navbar">
-    <div class="navbar-inner-wrap"><button class="nav-action primary" onclick="toggleNewProject()">+ New project</button></div>
+    <div style="max-width:1600px;margin:0 auto;padding:0 40px;width:100%;"><button class="nav-action primary" onclick="toggleNewProject()">+ New project</button></div>
   </div>
 </div>
 
