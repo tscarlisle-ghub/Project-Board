@@ -188,7 +188,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .phase-block{margin-bottom:52px;}
 .phase-block-inner{
   display:grid;
-  grid-template-columns:180px 1fr 1fr;
+  grid-template-columns:220px 1fr 1fr;
   gap:0 40px;
   align-items:start;
 }
@@ -210,14 +210,14 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   grid-column:2/4;
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:16px 32px;
+  gap:16px 20px;
   align-items:start;
   border-left:1px solid var(--rule);
   padding-left:28px;
   padding-top:16px;
   padding-bottom:24px;
 }
-.phase-new-construction{background:#f4f8f9;}
+.project-entry{position:relative;padding:22px 18px;margin-bottom:0;border-radius:4px;outline:4px solid white;}.phase-new-construction{background:#f4f8f9;}
 .phase-renovation{background:#fdfbf3;}
 .phase-in-construction{background:#f2f7fb;}
 .phase-prospect{background:#fdf5f3;}
@@ -232,7 +232,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 
 /* ── PROJECT ENTRY ── */
-.project-entry{position:relative;padding:22px 18px 22px;margin-bottom:0;border-radius:4px;}
+
 .project-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
 .project-name{
   font-family:"interstate-condensed",sans-serif;
@@ -690,6 +690,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
     <div class="masthead-inner">
       <span class="masthead-title">Project Board</span>
       <span id="today-date" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);margin-left:20px;align-self:flex-end;padding-bottom:4px;"></span>
+      <span id="version-label" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);margin-left:14px;align-self:flex-end;padding-bottom:5px;"></span>
     </div>
   </div>
   <div class="navbar">
@@ -732,7 +733,6 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 <div id="gantt-page" style="display:none;">
   <div class="gantt-masthead">
     <div class="gantt-masthead-inner">
-      <span class="masthead-firm">Carlisle Moore Architects</span>
       <span class="masthead-title">Project Timeline</span>
       <span class="masthead-date" id="gantt-date-label"></span>
       <button class="back-btn" style="margin-left:auto;" onclick="showPage('board')">← Board</button>
@@ -781,6 +781,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
       <button class="btn-save" onclick="saveToken()" style="flex:1;">Connect</button>
       <button class="btn-cancel" onclick="hideSetup()">Cancel</button>
     </div>
+    <div id="modal-version" style="font-family:'interstate-condensed',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-faint);text-align:center;margin-top:4px;"></div>
   </div>
 </div>
 
@@ -815,6 +816,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    CMA PROJECT BOARD  — V2 (Tufte Edition)
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
+
+const APP_VERSION='1.00';
+const APP_VERSION_DATE='Apr 27, 2026 · 3:45 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -912,7 +916,7 @@ async function saveToGitHub(){
     const j=await r.json();ghFileSha=j.content.sha;
     localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
     const _sn=new Date();localStorage.setItem('pb_last_sync',_sn.toISOString());
-    const _sl=document.getElementById('last-sync-label');if(_sl)_sl.textContent='Synced '+_sn.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    const _sl=document.getElementById('last-sync-label');if(_sl)_sl.textContent='Synced '+_sn.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' '+_sn.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     setStatus('✓','ok',3000);
   }catch(e){setStatus('Save failed','err');localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));}
 }
@@ -1255,10 +1259,10 @@ function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p
 document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name'))closeProjEdit();});
 
 /* ── TASK ACTIONS ── */
-function openInlineAdd(projId){addingToProject=projId;editingTask=null;renderProjects();}
-function cancelInlineAdd(){addingToProject=null;renderProjects();}
-function openEdit(pId,tId){editingTask={projId:pId,taskId:tId};addingToProject=null;renderProjects();}
-function cancelEdit(){editingTask=null;renderProjects();}
+function openInlineAdd(projId){addingToProject=projId;editingTask=null;if(currentPage==='summary')renderSummary();else renderProjects();}
+function cancelInlineAdd(){addingToProject=null;if(currentPage==='summary')renderSummary();else renderProjects();}
+function openEdit(pId,tId){editingTask={projId:pId,taskId:tId};addingToProject=null;if(currentPage==='summary')renderSummary();else renderProjects();}
+function cancelEdit(){editingTask=null;if(currentPage==='summary')renderSummary();else renderProjects();}
 function submitInlineTask(projId){
   const nameEl=document.getElementById(`ntf-name-${projId}`);
   const dateEl=document.getElementById(`ntf-days-${projId}`);
@@ -1394,43 +1398,72 @@ function renderGantt(){
 /* ── SUMMARY ── */
 function renderSummary(){
   const el=document.getElementById('summary-content');if(!el)return;
+  el.innerHTML='';
   const active=projects.filter(p=>!p.archived).sort((a,b)=>a.name.localeCompare(b.name));
   const groups={};BOARD_PHASES.forEach(k=>{groups[k]=[];});
   active.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';const k=groups[p.type]!==undefined?p.type:'';groups[k].push(p);});
-  let html='<div style="max-width:var(--col-w);">';
-  let hasAny=false;
+
+  if(!active.length){el.innerHTML='<div style="font-family:var(--font-body);font-size:15px;color:var(--ink-light);font-style:italic;padding:40px 0;">No active projects.</div>';return;}
+
   BOARD_PHASES.forEach(phase=>{
-    const projs=groups[phase];if(!projs||!projs.length)return;hasAny=true;
-    html+=`<div style="font-family:var(--font-condensed);font-weight:700;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-light);margin:36px 0 10px;border-bottom:1px solid var(--rule);padding-bottom:6px;">${PHASE_LABELS[phase]}</div>`;
+    const projs=groups[phase];if(!projs||!projs.length)return;
+
+    // Phase header
+    const phdr=document.createElement('div');
+    phdr.style.cssText='font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);margin:32px 0 10px;border-bottom:1px solid var(--rule);padding-bottom:6px;';
+    phdr.textContent=PHASE_LABELS[phase];
+    el.appendChild(phdr);
+
     projs.forEach(proj=>{
-      const pending=proj.tasks.filter(t=>!t.done);const done=proj.tasks.filter(t=>t.done);
-      html+=`<div style="margin-bottom:24px;">
-        <div style="font-family:var(--font-compressed);font-size:22px;letter-spacing:0.03em;text-transform:uppercase;color:var(--ink);margin-bottom:4px;display:flex;align-items:baseline;gap:12px;">
-          ${proj.name}
-          <span style="font-family:var(--font-sans);font-weight:300;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);">${proj.staff||DEFAULT_STAFF}</span>
-          <span style="font-family:var(--font-body);font-size:12px;color:var(--ink-light);margin-left:auto;">${pending.length} remaining</span>
-        </div>`;
-      if(!proj.tasks.length){html+='<div style="font-family:var(--font-body);font-size:14px;color:var(--ink-light);font-style:italic;padding-left:16px;">No tasks</div>';}
-      pending.forEach(t=>{
-        const dc=dueClass(t);const dn=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
-        html+=`<div style="display:flex;align-items:baseline;gap:12px;padding:4px 0 4px 0;border-bottom:1px solid var(--ink-faint);">
-          <div style="width:10px;height:10px;border-radius:50%;border:1px solid var(--rule-strong);flex-shrink:0;margin-top:4px;"></div>
-          <span style="font-family:var(--font-body);font-size:16px;color:${dc==='overdue'?'var(--red)':'var(--ink)'};">${dn}</span>
-          <span style="font-family:var(--font-sans);font-weight:300;font-size:12px;color:${dc==='overdue'?'var(--red)':dc==='soon'?'var(--amber)':'var(--ink-light)'};margin-left:auto;white-space:nowrap;">${fmtDue(t)}</span>
-        </div>`;
-      });
-      done.forEach(t=>{
-        const dn=t.name.charAt(0).toUpperCase()+t.name.slice(1).toLowerCase();
-        html+=`<div style="display:flex;align-items:baseline;gap:12px;padding:4px 0;opacity:0.4;border-bottom:1px solid var(--ink-faint);">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;margin-top:4px;"></div>
-          <span style="font-family:var(--font-body);font-size:16px;color:var(--ink-light);text-decoration:line-through;">${dn}</span>
-        </div>`;
-      });
-      html+='</div>';
+      const card=document.createElement('div');
+      card.style.cssText='margin-bottom:28px;';
+
+      // Project header
+      const phead=document.createElement('div');
+      phead.style.cssText='display:flex;align-items:baseline;gap:12px;margin-bottom:8px;';
+      const pname=document.createElement('span');
+      pname.style.cssText='font-family:"interstate-condensed",sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink);cursor:pointer;';
+      pname.textContent=proj.name;
+      pname.onclick=()=>openProjEdit(proj.id,pname);
+      const pstaff=document.createElement('span');
+      pstaff.style.cssText='font-family:"ff-meta-web-pro",sans-serif;font-size:12px;color:var(--ink-light);letter-spacing:0.06em;text-transform:uppercase;';
+      pstaff.textContent=proj.staff||DEFAULT_STAFF;
+      const pcount=document.createElement('span');
+      pcount.style.cssText='font-family:var(--font-body);font-size:12px;color:var(--ink-light);margin-left:auto;';
+      pcount.textContent=proj.tasks.filter(t=>!t.done).length+' remaining';
+      phead.appendChild(pname);phead.appendChild(pstaff);phead.appendChild(pcount);
+      card.appendChild(phead);
+
+      // Task list
+      const taskList=document.createElement('div');
+      proj.tasks.forEach(t=>taskList.appendChild(buildTaskRow(proj,t)));
+
+      // Edit form
+      if(editingTask&&editingTask.projId===proj.id){
+        const et=proj.tasks.find(x=>x.id===editingTask.taskId);
+        if(et)taskList.appendChild(buildEditForm(proj,et));
+      }
+      // Add form
+      if(addingToProject===proj.id)taskList.appendChild(buildAddForm(proj));
+
+      if(!proj.tasks.length&&addingToProject!==proj.id){
+        const emp=document.createElement('div');
+        emp.style.cssText='font-family:var(--font-body);font-size:14px;color:var(--ink-light);font-style:italic;padding:6px 0;';
+        emp.textContent='No tasks yet.';
+        taskList.appendChild(emp);
+      }
+      card.appendChild(taskList);
+
+      // Add task button
+      if(addingToProject!==proj.id){
+        const ab=document.createElement('button');
+        ab.className='add-task-btn';ab.textContent='+ Add task';
+        ab.onclick=()=>openInlineAdd(proj.id);
+        card.appendChild(ab);
+      }
+      el.appendChild(card);
     });
   });
-  if(!hasAny)html+='<div style="font-family:var(--font-body);font-size:15px;color:var(--ink-light);font-style:italic;padding:40px 0;">No active projects.</div>';
-  html+='</div>';el.innerHTML=html;
 }
 
 /* ── CALENDAR ── */
@@ -1505,8 +1538,12 @@ document.addEventListener('keydown',e=>{
 /* ── INIT ── */
 const _ls=localStorage.getItem('pb_last_sync');
 const _lsl=document.getElementById('last-sync-label');
-if(_lsl&&_ls){const _d=new Date(_ls);_lsl.textContent='Last synced '+_d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+if(_lsl&&_ls){const _d=new Date(_ls);_lsl.textContent='Synced '+_d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' '+_d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
 document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+const _vl=document.getElementById('version-label');
+if(_vl)_vl.textContent='v'+APP_VERSION+' · '+APP_VERSION_DATE;
+const _mv=document.getElementById('modal-version');
+if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
 </script>
 </body>
