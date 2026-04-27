@@ -14,7 +14,7 @@
   --ink-mid:#6a5e50;
   --ink-light:#9a8e80;
   --ink-faint:#eeebe4;
-  --page:#fefefc;
+  --page:#ffffff;
   --rule:#d8e4ec;
   --rule-strong:#a0b4c8;
   --brand:#d04030;
@@ -1016,8 +1016,13 @@ function renderProjects(){
     projGrid.className='phase-projects';
     const phaseClass={'new-construction':'phase-new-construction','renovation':'phase-renovation','in-construction':'phase-in-construction','prospect':'phase-prospect','':'phase-unassigned'};
     if(phaseClass[phase])projGrid.classList.add(phaseClass[phase]);
-    projs.forEach(proj=>{
+    projs.forEach((proj,pi)=>{
       const entry=buildProjectEntry(proj,phase);
+      if(pi>0){
+        const div=document.createElement('hr');
+        div.style.cssText=`border:none;border-top:2px solid ${phaseBase(proj)};margin:0;grid-column:1/-1;opacity:0.6;`;
+        projGrid.appendChild(div);
+      }
       projGrid.appendChild(entry);
     });
     inner.appendChild(projGrid);
