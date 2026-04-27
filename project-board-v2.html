@@ -14,16 +14,16 @@
   --ink-mid:#6a5e50;
   --ink-light:#9a8e80;
   --ink-faint:#e8e0d0;
-  --page:#faf8f4;
-  --rule:#cdb79e;
-  --rule-strong:#a08060;
-  --brand:#8b0000;
-  --brand-light:#c84040;
-  --warm:#f0ebe0;
-  --tan:#cdb79e;
-  --red:#8b0000;
+  --page:#fff4de;
+  --rule:#b0c9df;
+  --rule-strong:#8194b1;
+  --brand:#d04030;
+  --brand-light:#ff7863;
+  --warm:#e9eced;
+  --tan:#b0c9df;
+  --red:#d04030;
   --amber:#a06010;
-  --green:#3a6040;
+  --green:#3a7060;
   --teal:#2a5a6a;
   --col-w:680px;
   --margin-w:140px;
@@ -47,8 +47,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   margin:0 auto;
   padding:0 40px;
   display:flex;
-  align-items:center;
-  gap:24px;
+  align-items:flex-start;
+  gap:0;
 }
 .masthead-firm{
   font-family:var(--font-condensed);
@@ -164,6 +164,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   font-size:12px;
   text-transform:uppercase;
   letter-spacing:0.08em;
+  margin-right:12px;
   letter-spacing:0.14em;
   text-transform:uppercase;
   color:var(--ink-light);
@@ -188,7 +189,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .phase-block{margin-bottom:52px;}
 .phase-block-inner{
   display:grid;
-  grid-template-columns:120px 1fr 1fr;
+  grid-template-columns:180px 1fr 1fr;
   gap:0 40px;
   align-items:start;
 }
@@ -217,10 +218,10 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   padding-top:20px;
   padding-bottom:20px;
 }
-.phase-new-construction{background:#eef4f0;}
-.phase-renovation{background:#f5f0e4;}
-.phase-in-construction{background:#edf2f5;}
-.phase-prospect{background:#f5efea;}
+.phase-new-construction{background:#e9eced;}
+.phase-renovation{background:#fff4de;}
+.phase-in-construction{background:#ddeaf5;}
+.phase-prospect{background:#fce8e4;}
 .phase-unassigned{background:#f0f0f0;}
 .phase-rule{
   border:none;
@@ -260,11 +261,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .project-actions{
   margin-left:auto;
-  display:flex;gap:14px;align-items:baseline;
-  opacity:0;
-  transition:opacity 0.15s;
+  display:flex;gap:10px;align-items:center;
+  flex-shrink:0;
 }
-.project-entry:hover .project-actions{opacity:1;}
 .proj-act-btn{
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
@@ -307,7 +306,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   line-height:1.35;
   cursor:text;
 }
-.task-name.done{color:var(--ink-faint);text-decoration:line-through;}
+.task-name.done{color:var(--ink-light);text-decoration:line-through;}
 .task-name.overdue{color:var(--red);}
 .task-due{
   font-family:"ff-meta-web-pro",sans-serif;
@@ -406,14 +405,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .if-btn.cancel:hover{color:var(--red);}
 
 /* ── PROJECT FOOTER ── */
-.project-footer{
-  display:flex;justify-content:flex-end;
-  gap:16px;
-  margin-top:16px;
-  padding-top:10px;
-  opacity:0;transition:opacity 0.15s;
-}
-.project-entry:hover .project-footer{opacity:1;}
+.project-footer{display:none;}
 
 /* ── EMPTY STATE ── */
 .empty-note{
@@ -701,12 +693,10 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 <div id="main-masthead">
   <div class="masthead">
     <div class="masthead-inner">
-      <div style="display:flex;flex-direction:column;gap:2px;line-height:1;">
-        <span style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);">Scott Carlisle</span>
+      <div style="display:flex;flex-direction:column;gap:4px;line-height:1;">
         <span class="masthead-title">Project Board</span>
+        <span id="today-date" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);"></span>
       </div>
-      <span class="masthead-date" id="today-date" style="margin-left:32px;"></span>
-      <img class="masthead-logo" src="https://tscarlisle-ghub.github.io/Project-Board/Logo_Only.png" alt="CMA" onerror="this.style.display='none'" />
     </div>
   </div>
   <div class="navbar">
@@ -718,22 +708,22 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
       <button class="nav-link" id="nav-archive" onclick="showPage('archive')">Archive</button>
       <span class="nav-sep">·</span>
       <button class="nav-link" id="nav-summary" onclick="showPage('summary')">Summary</button>
-      <div class="nav-right">
-        <span class="sync-status" id="sync-status"></span>
-        <button class="nav-action" onclick="forceSave()">↕ Sync</button>
-        <button class="nav-action" onclick="triggerImport()">↑ Import</button>
-        <button class="nav-action" onclick="showSetup()">Settings</button>
-        <button class="nav-action primary" onclick="toggleNewProject()">+ New project</button>
-      </div>
-    </div>
-  </div>
-  <div class="staff-bar">
-    <div class="staff-bar-inner">
+      <span class="nav-sep" style="color:var(--rule-strong);margin:0 16px;">|</span>
       <button class="staff-btn active" id="sf-all" onclick="setStaffFilter(null)">All</button>
       <button class="staff-btn" id="sf-Maddie" onclick="setStaffFilter('Maddie')">Maddie</button>
       <button class="staff-btn" id="sf-Kat" onclick="setStaffFilter('Kat')">Kat</button>
       <button class="staff-btn" id="sf-Kathleen" onclick="setStaffFilter('Kathleen')">Kathleen</button>
+      <div class="nav-right">
+        <span id="last-sync-label" style="font-family:'interstate-condensed',sans-serif;font-weight:400;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);margin-right:8px;"></span>
+        <span class="sync-status" id="sync-status"></span>
+        <button class="nav-action" onclick="forceSave()">↕ Sync</button>
+        <button class="nav-action" onclick="triggerImport()">↑ Import</button>
+        <button class="nav-action" onclick="showSetup()">Settings</button>
+      </div>
     </div>
+  </div>
+  <div class="sub-navbar">
+    <button class="nav-action primary" onclick="toggleNewProject()">+ New project</button>
   </div>
 </div>
 
@@ -755,7 +745,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
       <button class="back-btn" style="margin-left:auto;" onclick="showPage('board')">← Board</button>
     </div>
   </div>
-  <div style="padding:24px 40px 80px;">
+  <div style="padding:24px 40px 80px;width:100%;overflow-x:auto;">
     <div class="gantt-wrap"><table class="gantt-table" id="gantt-table"></table></div>
   </div>
 </div>
@@ -928,7 +918,9 @@ async function saveToGitHub(){
     if(!r.ok)throw new Error(r.status);
     const j=await r.json();ghFileSha=j.content.sha;
     localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
-    setStatus('Saved ✓','ok',3000);
+    const _sn=new Date();localStorage.setItem('pb_last_sync',_sn.toISOString());
+    const _sl=document.getElementById('last-sync-label');if(_sl)_sl.textContent='Synced '+_sn.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    setStatus('✓','ok',3000);
   }catch(e){setStatus('Save failed','err');localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));}
 }
 function scheduleSave(){localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(ghToken)saveToGitHub();},1500);}
@@ -1512,6 +1504,9 @@ document.addEventListener('keydown',e=>{
 });
 
 /* ── INIT ── */
+const _ls=localStorage.getItem('pb_last_sync');
+const _lsl=document.getElementById('last-sync-label');
+if(_lsl&&_ls){const _d=new Date(_ls);_lsl.textContent='Last synced '+_d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
 document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
 </script>
