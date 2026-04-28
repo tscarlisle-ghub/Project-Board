@@ -131,3 +131,22 @@ Three coordinated changes per Scott's request ("more like sparklines with small 
 
 Verification: extracted the inline JS, ran `node --check` — clean. Bumped APP_VERSION 1.15 → 1.16 with timestamp. Force-reload reminder: append `?v=16` (or any new value) to the URL on Safari.
 
+
+---
+
+**v1.17 — phase-by-phase % readout, 2-column compact sliders** (`Apr 28, 2026 · 6:05 PM`). `node --check`: OK. `index.html` 81,138 bytes.
+
+Two follow-up tweaks per Scott's request: "I want the percentage next to the project name to be sd%, dd%, etc." and "make the sliders two columns and more compact."
+
+1. **Per-phase readout next to name.** Replaced `projTotalPct(p)` with `projPhaseSummary(p)` which returns `"SD 75% · DD 50% · CD 0% · CA 0%"` (joined by middle-dots). The `.project-total-pct` element now renders this string, with CSS swapped from 22px Interstate Condensed to 15px ff-meta-web-pro-condensed bold uppercase, `--ink-light` so it stays subordinate to the 26px project name. flex-wrap on the head row lets it drop below the name on narrow widths instead of overflowing. Live-update handler also switched to `projPhaseSummary`.
+2. **Two-column compact slider grid.** `.dp-wrap` is now `display:grid; grid-template-columns:1fr 1fr; gap:2px 18px;` so SD+DD share one row and CD+CA share the next. Tightened the row internals: label flex 28→22px, label font 12→11px, gap 12→8px, track height 22→20px, hairline at top 14→13, input top 7→6, thumb 9×9 → 8×8 with margin-top 2.5→3, floating % font 9→8px. Net effect: the slider block now takes about half the vertical space it used to and reads as a tighter "phase dashboard."
+
+Verification: extracted JS, ran `node --check` — clean. Bumped APP_VERSION 1.16 → 1.17. Force-reload `?v=17` in Safari.
+
+
+## 2026-04-28 — v1.18: today as default add-task date + lighter phase % readout
+- New tasks: the **+ Add task** form now defaults the due date to **today** (was: 7 days out). Used local date (year/month/day) so the boundary near midnight stays correct in Birmingham time.
+- Project name % readout: changed to non-bold (font-weight 400, was 700) and reformatted from "SD 75%" to "SD:75%" with a colon between phase and percent.
+- Bumped APP_VERSION → 1.18.
+- Verified: `node --check` passed.
+- Force-reload: append `?v=18` to the URL after pushing.

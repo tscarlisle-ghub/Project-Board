@@ -330,7 +330,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 /* Per-phase % readout shown next to project name */
 .project-total-pct{
   font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;
+  font-weight:400;
   font-size:15px;
   letter-spacing:0.06em;
   color:var(--ink-light);
@@ -930,8 +930,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.17';
-const APP_VERSION_DATE='Apr 28, 2026 · 6:05 PM';
+const APP_VERSION='1.18';
+const APP_VERSION_DATE='Apr 28, 2026 · 7:45 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -997,11 +997,11 @@ function ensurePhasePercents(p){
   p.phasePercents=pp;
 }
 function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return Math.round(raw/5)*5;}
-// Per-phase % readout (e.g. "SD 75% · DD 50% · CD 0% · CA 0%") shown next to project name
+// Per-phase % readout (e.g. "SD:75% · DD:50% · CD:0% · CA:0%") shown next to project name
 function projPhaseSummary(p){
   ensurePhasePercents(p);
   const pp=p.phasePercents;
-  return DP_BANDS.map(b=>`${b.key} ${pp[b.key]||0}%`).join(' · ');
+  return DP_BANDS.map(b=>`${b.key}:${pp[b.key]||0}%`).join(' · ');
 }
 function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const p=projects.find(x=>x.id===projId);if(!p)return;
@@ -1383,7 +1383,8 @@ function buildEditForm(proj,t){
 
 function buildAddForm(proj){
   const form=document.createElement('div');form.className='inline-form';
-  const defDate=new Date(Date.now()+7*86400000).toISOString().split('T')[0];
+  const _td=new Date();
+  const defDate=`${_td.getFullYear()}-${String(_td.getMonth()+1).padStart(2,'0')}-${String(_td.getDate()).padStart(2,'0')}`;
   const defFmt=new Date(defDate+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   form.innerHTML=`<input type="text" id="ntf-name-${proj.id}" placeholder="Task name…" style="margin-bottom:12px;" />
     <button class="cal-trigger-tf" id="ntf-days-${proj.id}" data-date="${defDate}" onclick="openCalForEl(this)">${defFmt}</button>
