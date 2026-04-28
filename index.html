@@ -258,46 +258,50 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .proj-act-btn.danger{color:#c09090;}
 .proj-act-btn.danger:hover{color:var(--red);}
 
-/* ── DESIGN PHASE SLIDERS (sparkline w/ colored dot, % floats above dot) ── */
-.dp-wrap{margin:12px 0 18px;padding:0;display:flex;flex-direction:column;gap:8px;}
-.dp-row{display:flex;align-items:center;gap:12px;}
+/* ── DESIGN PHASE SLIDERS (sparkline w/ colored dot, % floats above dot, 2-col) ── */
+.dp-wrap{
+  margin:10px 0 14px;padding:0;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:2px 18px;
+}
+.dp-row{display:flex;align-items:center;gap:8px;min-width:0;}
 .dp-row-label{
-  flex:0 0 28px;
+  flex:0 0 22px;
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
-  font-size:12px;
-  letter-spacing:0.12em;
+  font-size:11px;
+  letter-spacing:0.10em;
   text-transform:uppercase;
   color:var(--ink);
   white-space:nowrap;
   line-height:1;
 }
-.dp-row-track{position:relative;flex:1;height:22px;}
+.dp-row-track{position:relative;flex:1;min-width:0;height:20px;}
 .dp-row-pct{
   position:absolute;top:0;
   transform:translateX(calc(-1% * var(--pct,0)));
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
-  font-size:9px;
-  letter-spacing:0.06em;
+  font-size:8px;
+  letter-spacing:0.04em;
   color:var(--ink-light);
   white-space:nowrap;
   line-height:1;
   pointer-events:none;
 }
 .dp-row-band{
-  position:absolute;left:0;right:0;top:14px;height:1px;
+  position:absolute;left:0;right:0;top:13px;height:1px;
   background:#d4cfc5;
   pointer-events:none;
 }
 .dp-row-fill{
-  position:absolute;left:0;top:14px;height:1px;
+  position:absolute;left:0;top:13px;height:1px;
   background:var(--phase-color,#888);
   pointer-events:none;
 }
 .dp-row-input{
   -webkit-appearance:none;appearance:none;
-  position:absolute;left:0;right:0;top:7px;
+  position:absolute;left:0;right:0;top:6px;
   width:100%;height:14px;
   background:transparent;margin:0;padding:0;cursor:pointer;
 }
@@ -306,16 +310,16 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .dp-row-input::-moz-range-track{height:14px;background:transparent;border:none;}
 .dp-row-input::-webkit-slider-thumb{
   -webkit-appearance:none;appearance:none;
-  width:9px;height:9px;
+  width:8px;height:8px;
   background:var(--phase-color,#888);
   border:1.5px solid white;
   border-radius:50%;
   cursor:pointer;
-  margin-top:2.5px;
+  margin-top:3px;
   box-shadow:0 0 0 0.5px var(--phase-color,#888);
 }
 .dp-row-input::-moz-range-thumb{
-  width:9px;height:9px;
+  width:8px;height:8px;
   background:var(--phase-color,#888);
   border:1.5px solid white;
   border-radius:50%;
@@ -323,14 +327,15 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   box-shadow:0 0 0 0.5px var(--phase-color,#888);
 }
 
-/* Project total % shown next to project name */
+/* Per-phase % readout shown next to project name */
 .project-total-pct{
-  font-family:"interstate-condensed",sans-serif;
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
-  font-size:22px;
-  letter-spacing:0.02em;
+  font-size:15px;
+  letter-spacing:0.06em;
   color:var(--ink-light);
-  line-height:1;
+  line-height:1.2;
+  text-transform:uppercase;
 }
 
 /* ── TASK LIST ── */
@@ -925,8 +930,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.16';
-const APP_VERSION_DATE='Apr 28, 2026 · 5:45 PM';
+const APP_VERSION='1.17';
+const APP_VERSION_DATE='Apr 28, 2026 · 6:05 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -992,11 +997,11 @@ function ensurePhasePercents(p){
   p.phasePercents=pp;
 }
 function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return Math.round(raw/5)*5;}
-// Weighted overall % across phases (matches band widths: SD 20, DD 20, CD 30, CA 30)
-function projTotalPct(p){
+// Per-phase % readout (e.g. "SD 75% · DD 50% · CD 0% · CA 0%") shown next to project name
+function projPhaseSummary(p){
   ensurePhasePercents(p);
   const pp=p.phasePercents;
-  return Math.round((pp.SD||0)*0.20+(pp.DD||0)*0.20+(pp.CD||0)*0.30+(pp.CA||0)*0.30);
+  return DP_BANDS.map(b=>`${b.key} ${pp[b.key]||0}%`).join(' · ');
 }
 function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const p=projects.find(x=>x.id===projId);if(!p)return;
@@ -1013,7 +1018,7 @@ function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const entry=inputEl?inputEl.closest('.project-entry'):null;
   if(entry){
     const totalEl=entry.querySelector('.project-total-pct');
-    if(totalEl)totalEl.textContent=projTotalPct(p)+'%';
+    if(totalEl)totalEl.textContent=projPhaseSummary(p);
   }
 }
 function updatePhasePercentSave(){scheduleSave();}
@@ -1242,11 +1247,11 @@ function buildProjectEntry(proj,phase){
   // Header row
   const head=document.createElement('div');
   head.className='project-head';
-  const totalPct=projTotalPct(proj);
+  const phaseSummary=projPhaseSummary(proj);
   head.innerHTML=`<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
       <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
         <span class="project-name" onclick="openProjEdit(${proj.id},this)">${proj.name}</span>
-        <span class="project-total-pct">${totalPct}%</span>
+        <span class="project-total-pct">${phaseSummary}</span>
       </div>
       <span class="project-staff">${proj.staff||DEFAULT_STAFF}</span>
     </div>
