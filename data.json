@@ -564,7 +564,7 @@
       "id": 43,
       "name": "DCS Montevallo",
       "colorIdx": 1,
-      "archived": false,
+      "archived": true,
       "type": "in-construction",
       "tasks": [],
       "staff": "Scott",
