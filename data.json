@@ -470,7 +470,7 @@
       "id": 38,
       "name": "Atkins Residence (Tuscaloosa)",
       "colorIdx": 8,
-      "archived": false,
+      "archived": true,
       "type": "in-construction",
       "tasks": [
         {
