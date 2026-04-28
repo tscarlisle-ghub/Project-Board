@@ -268,7 +268,7 @@
       "tasks": [
         {
           "id": 56,
-          "name": "Start Interiors",
+          "name": "Start interiors",
           "days": 1,
           "done": false,
           "due": "2026-04-27",
