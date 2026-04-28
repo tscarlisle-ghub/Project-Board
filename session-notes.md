@@ -118,3 +118,16 @@ Sanity-checked the math against all four bands; each one reaches every 5% increm
 
 - `index.html` — slider CSS, helpers, `buildProjectEntry`, load + create migrations
 - Version bumped to 1.15 · Apr 28, 2026 · 4:30 PM
+
+---
+
+**v1.16 — phase rows restyled as sparklines, project total % beside name** (`Apr 28, 2026 · 5:45 PM`). `node --check`: OK. `index.html` 81,043 bytes.
+
+Three coordinated changes per Scott's request ("more like sparklines with small dots, but I like the colors; show in larger type next to the project name the percent complete, and on the slider itself just above the dot, not next to the phase label"):
+
+1. **Sparkline rows.** The 4px filled bar with a 6×14 vertical-bar thumb is replaced by a 1px hairline (`#d4cfc5`) with a colored 9×9 round dot thumb. Phase color (SD light blue, DD mid blue, CD teal, CA red) now lives in the dot itself plus the fill segment from 0→value; the rest of the row is just a hairline. Track height grew 14→22px to make room for the floating label above.
+2. **Per-phase % moved above the dot.** Removed the `<span class="dp-pct">` from the `dp-row-label` (label is now just `SD`/`DD`/`CD`/`CA`, narrower flex 64→28px). Added a new absolutely-positioned `.dp-row-pct` element inside `.dp-row-track` whose `left:${v}%` and `transform:translateX(calc(-1% * var(--pct)))` keep it horizontally centered over the dot at any value (and snaps cleanly to the left edge at 0% / right edge at 100% so it never hangs into the project margins). Live updated on `oninput`.
+3. **Project total % next to project name.** Added `projTotalPct(p)` helper computing weighted overall % (SD 0.20 + DD 0.20 + CD 0.30 + CA 0.30 — matches band widths). Rendered as `<span class="project-total-pct">` in the project head, set to 22px Interstate Condensed Bold, `--ink-light` so it reads as subordinate to the 26px project name. Also live-updated whenever any phase slider moves.
+
+Verification: extracted the inline JS, ran `node --check` — clean. Bumped APP_VERSION 1.15 → 1.16 with timestamp. Force-reload reminder: append `?v=16` (or any new value) to the URL on Safari.
+

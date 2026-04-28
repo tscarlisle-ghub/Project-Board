@@ -258,36 +258,46 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .proj-act-btn.danger{color:#c09090;}
 .proj-act-btn.danger:hover{color:var(--red);}
 
-/* ── DESIGN PHASE SLIDERS (one per phase) ── */
-.dp-wrap{margin:12px 0 18px;padding:0;display:flex;flex-direction:column;gap:6px;}
+/* ── DESIGN PHASE SLIDERS (sparkline w/ colored dot, % floats above dot) ── */
+.dp-wrap{margin:12px 0 18px;padding:0;display:flex;flex-direction:column;gap:8px;}
 .dp-row{display:flex;align-items:center;gap:12px;}
 .dp-row-label{
-  flex:0 0 64px;
+  flex:0 0 28px;
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
+  font-size:12px;
   letter-spacing:0.12em;
   text-transform:uppercase;
-  color:var(--ink-light);
+  color:var(--ink);
   white-space:nowrap;
-  display:flex;align-items:baseline;gap:5px;
   line-height:1;
 }
-.dp-row-label .dp-key{font-size:12px;color:var(--ink);}
-.dp-row-label .dp-pct{font-size:9px;color:var(--ink-light);font-weight:700;letter-spacing:0.06em;}
-.dp-row-track{position:relative;flex:1;height:14px;}
+.dp-row-track{position:relative;flex:1;height:22px;}
+.dp-row-pct{
+  position:absolute;top:0;
+  transform:translateX(calc(-1% * var(--pct,0)));
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
+  font-weight:700;
+  font-size:9px;
+  letter-spacing:0.06em;
+  color:var(--ink-light);
+  white-space:nowrap;
+  line-height:1;
+  pointer-events:none;
+}
 .dp-row-band{
-  position:absolute;left:0;right:0;top:5px;height:4px;
-  background:#e5e2db;
-  border-radius:1px;pointer-events:none;
+  position:absolute;left:0;right:0;top:14px;height:1px;
+  background:#d4cfc5;
+  pointer-events:none;
 }
 .dp-row-fill{
-  position:absolute;left:0;top:5px;height:4px;
+  position:absolute;left:0;top:14px;height:1px;
   background:var(--phase-color,#888);
-  border-radius:1px;pointer-events:none;
+  pointer-events:none;
 }
 .dp-row-input{
   -webkit-appearance:none;appearance:none;
-  position:absolute;left:0;right:0;top:0;
+  position:absolute;left:0;right:0;top:7px;
   width:100%;height:14px;
   background:transparent;margin:0;padding:0;cursor:pointer;
 }
@@ -296,14 +306,31 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .dp-row-input::-moz-range-track{height:14px;background:transparent;border:none;}
 .dp-row-input::-webkit-slider-thumb{
   -webkit-appearance:none;appearance:none;
-  width:6px;height:14px;
-  background:var(--ink);border:1px solid white;border-radius:1px;cursor:pointer;
-  box-shadow:0 0 0 1px var(--ink);
+  width:9px;height:9px;
+  background:var(--phase-color,#888);
+  border:1.5px solid white;
+  border-radius:50%;
+  cursor:pointer;
+  margin-top:2.5px;
+  box-shadow:0 0 0 0.5px var(--phase-color,#888);
 }
 .dp-row-input::-moz-range-thumb{
-  width:6px;height:14px;
-  background:var(--ink);border:1px solid white;border-radius:1px;cursor:pointer;
-  box-shadow:0 0 0 1px var(--ink);
+  width:9px;height:9px;
+  background:var(--phase-color,#888);
+  border:1.5px solid white;
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 0 0 0.5px var(--phase-color,#888);
+}
+
+/* Project total % shown next to project name */
+.project-total-pct{
+  font-family:"interstate-condensed",sans-serif;
+  font-weight:700;
+  font-size:22px;
+  letter-spacing:0.02em;
+  color:var(--ink-light);
+  line-height:1;
 }
 
 /* ── TASK LIST ── */
@@ -898,8 +925,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.15';
-const APP_VERSION_DATE='Apr 28, 2026 · 4:30 PM';
+const APP_VERSION='1.16';
+const APP_VERSION_DATE='Apr 28, 2026 · 5:45 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -965,6 +992,12 @@ function ensurePhasePercents(p){
   p.phasePercents=pp;
 }
 function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return Math.round(raw/5)*5;}
+// Weighted overall % across phases (matches band widths: SD 20, DD 20, CD 30, CA 30)
+function projTotalPct(p){
+  ensurePhasePercents(p);
+  const pp=p.phasePercents;
+  return Math.round((pp.SD||0)*0.20+(pp.DD||0)*0.20+(pp.CD||0)*0.30+(pp.CA||0)*0.30);
+}
 function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const p=projects.find(x=>x.id===projId);if(!p)return;
   ensurePhasePercents(p);
@@ -973,8 +1006,14 @@ function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   if(inputEl&&Number(inputEl.value)!==snapped)inputEl.value=snapped;
   const row=inputEl?inputEl.closest('.dp-row'):null;
   if(row){
-    const pctEl=row.querySelector('.dp-pct');if(pctEl)pctEl.textContent=snapped+'%';
+    const pctEl=row.querySelector('.dp-row-pct');
+    if(pctEl){pctEl.textContent=snapped+'%';pctEl.style.left=snapped+'%';pctEl.style.setProperty('--pct',snapped);}
     const fillEl=row.querySelector('.dp-row-fill');if(fillEl)fillEl.style.width=snapped+'%';
+  }
+  const entry=inputEl?inputEl.closest('.project-entry'):null;
+  if(entry){
+    const totalEl=entry.querySelector('.project-total-pct');
+    if(totalEl)totalEl.textContent=projTotalPct(p)+'%';
   }
 }
 function updatePhasePercentSave(){scheduleSave();}
@@ -1203,24 +1242,27 @@ function buildProjectEntry(proj,phase){
   // Header row
   const head=document.createElement('div');
   head.className='project-head';
+  const totalPct=projTotalPct(proj);
   head.innerHTML=`<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
-      <div style="display:flex;align-items:baseline;flex-wrap:wrap;">
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
         <span class="project-name" onclick="openProjEdit(${proj.id},this)">${proj.name}</span>
+        <span class="project-total-pct">${totalPct}%</span>
       </div>
       <span class="project-staff">${proj.staff||DEFAULT_STAFF}</span>
     </div>
 `;
   entry.appendChild(head);
 
-  // Design phase sliders — one per phase
+  // Design phase sliders — sparkline rows w/ small dot, % floats above dot
   const dpWrap=document.createElement('div');
   dpWrap.className='dp-wrap';
   dpWrap.innerHTML=DP_BANDS.map(b=>{
     const v=Math.max(0,Math.min(100,Number(proj.phasePercents[b.key])||0));
     const fill=PHASE_FILL[b.key]||'#888';
     return `<div class="dp-row" data-phase="${b.key}" style="--phase-color:${fill};">
-      <div class="dp-row-label"><span class="dp-key">${b.key}</span><span class="dp-pct">${v}%</span></div>
+      <div class="dp-row-label">${b.key}</div>
       <div class="dp-row-track">
+        <div class="dp-row-pct" style="left:${v}%;--pct:${v};">${v}%</div>
         <div class="dp-row-band"></div>
         <div class="dp-row-fill" style="width:${v}%;"></div>
         <input class="dp-row-input" type="range" min="0" max="100" step="5" value="${v}"
