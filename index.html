@@ -209,7 +209,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .project-entry{position:relative;padding:20px 18px;margin-bottom:0;border-radius:0;outline:3px solid white;}.phase-new-construction{background:#f4f8f9;}
 .phase-renovation{background:#fdfbf3;}
-.phase-in-construction{background:#f2f7fb;}
+.phase-in-construction{background:#ecf6ee;}
 .phase-prospect{background:#fdf5f3;}
 .phase-unassigned{background:#f0f0f0;}
 .phase-rule{display:none;}
@@ -258,51 +258,52 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .proj-act-btn.danger{color:#c09090;}
 .proj-act-btn.danger:hover{color:var(--red);}
 
-/* ── DESIGN PHASE SLIDER ── */
-.dp-wrap{margin:14px 0 18px;padding:0;}
-.dp-track-row{position:relative;height:22px;}
-.dp-bands{
-  position:absolute;left:0;right:0;top:6px;height:10px;
-  background:linear-gradient(to right,
-    #cfe1ed 0%, #cfe1ed 20%,
-    #9ec0d4 20%, #9ec0d4 40%,
-    #4e7a90 40%, #4e7a90 70%,
-    #d04030 70%, #d04030 100%);
+/* ── DESIGN PHASE SLIDERS (one per phase) ── */
+.dp-wrap{margin:12px 0 18px;padding:0;display:flex;flex-direction:column;gap:6px;}
+.dp-row{display:flex;align-items:center;gap:12px;}
+.dp-row-label{
+  flex:0 0 64px;
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--ink-light);
+  white-space:nowrap;
+  display:flex;align-items:baseline;gap:5px;
+  line-height:1;
+}
+.dp-row-label .dp-key{font-size:12px;color:var(--ink);}
+.dp-row-label .dp-pct{font-size:9px;color:var(--ink-light);font-weight:700;letter-spacing:0.06em;}
+.dp-row-track{position:relative;flex:1;height:14px;}
+.dp-row-band{
+  position:absolute;left:0;right:0;top:5px;height:4px;
+  background:#e5e2db;
   border-radius:1px;pointer-events:none;
 }
-.dp-input{
+.dp-row-fill{
+  position:absolute;left:0;top:5px;height:4px;
+  background:var(--phase-color,#888);
+  border-radius:1px;pointer-events:none;
+}
+.dp-row-input{
   -webkit-appearance:none;appearance:none;
   position:absolute;left:0;right:0;top:0;
-  width:100%;height:22px;
+  width:100%;height:14px;
   background:transparent;margin:0;padding:0;cursor:pointer;
 }
-.dp-input:focus{outline:none;}
-.dp-input::-webkit-slider-runnable-track{height:22px;background:transparent;border:none;}
-.dp-input::-moz-range-track{height:22px;background:transparent;border:none;}
-.dp-input::-webkit-slider-thumb{
+.dp-row-input:focus{outline:none;}
+.dp-row-input::-webkit-slider-runnable-track{height:14px;background:transparent;border:none;}
+.dp-row-input::-moz-range-track{height:14px;background:transparent;border:none;}
+.dp-row-input::-webkit-slider-thumb{
   -webkit-appearance:none;appearance:none;
-  width:6px;height:22px;
+  width:6px;height:14px;
   background:var(--ink);border:1px solid white;border-radius:1px;cursor:pointer;
   box-shadow:0 0 0 1px var(--ink);
 }
-.dp-input::-moz-range-thumb{
-  width:6px;height:22px;
+.dp-row-input::-moz-range-thumb{
+  width:6px;height:14px;
   background:var(--ink);border:1px solid white;border-radius:1px;cursor:pointer;
   box-shadow:0 0 0 1px var(--ink);
-}
-.dp-band-labels{
-  position:relative;height:14px;margin-top:3px;
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
-  color:var(--ink-light);
-}
-.dp-band-label{position:absolute;top:0;}
-.proj-phase-label{
-  font-family:"interstate-condensed",sans-serif;
-  font-weight:400;font-size:26px;letter-spacing:0.03em;text-transform:uppercase;
-  color:var(--ink-light);
-  margin-left:24px;white-space:nowrap;
-  line-height:1.1;
 }
 
 /* ── TASK LIST ── */
@@ -897,8 +898,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.14';
-const APP_VERSION_DATE='Apr 28, 2026 · 1:56 PM';
+const APP_VERSION='1.15';
+const APP_VERSION_DATE='Apr 28, 2026 · 4:30 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -941,49 +942,42 @@ function timeLabel(v){return v<1?'½ day':v===1?'1 day':v<7?v+'days':v===7?'1 we
 
 /* ── DESIGN PHASE HELPERS ── */
 const DP_BANDS=[
-  {key:'SD',name:'Schematic Design',start:0,end:20},
-  {key:'DD',name:'Design Development',start:20,end:40},
-  {key:'CD',name:'Construction Drawings',start:40,end:70},
-  {key:'CA',name:'Construction Admin',start:70,end:100},
+  {key:'SD',name:'Schematic Design'},
+  {key:'DD',name:'Design Development'},
+  {key:'CD',name:'Construction Drawings'},
+  {key:'CA',name:'Construction Admin'},
 ];
-function designBand(pct){
-  pct=Math.max(0,Math.min(100,Number(pct)||0));
-  if(pct<20)return DP_BANDS[0];
-  if(pct<40)return DP_BANDS[1];
-  if(pct<70)return DP_BANDS[2];
-  return DP_BANDS[3];
+const PHASE_FILL={SD:'#cfe1ed',DD:'#9ec0d4',CD:'#4e7a90',CA:'#d04030'};
+// Migrate legacy single designPercent (0-100 across SD/DD/CD/CA bands) into per-phase percents
+function ensurePhasePercents(p){
+  if(p.phasePercents&&typeof p.phasePercents==='object'){
+    DP_BANDS.forEach(b=>{p.phasePercents[b.key]=Math.max(0,Math.min(100,Number(p.phasePercents[b.key])||0));});
+    return;
+  }
+  const dp=Math.max(0,Math.min(100,Number(p.designPercent)||0));
+  const pp={SD:0,DD:0,CD:0,CA:0};
+  if(dp<=0){/* all zero */}
+  else if(dp<20){pp.SD=Math.round(dp/20*100/5)*5;}
+  else if(dp<40){pp.SD=100;pp.DD=Math.round((dp-20)/20*100/5)*5;}
+  else if(dp<70){pp.SD=100;pp.DD=100;pp.CD=Math.round((dp-40)/30*100/5)*5;}
+  else if(dp<100){pp.SD=100;pp.DD=100;pp.CD=100;pp.CA=Math.round((dp-70)/30*100/5)*5;}
+  else{pp.SD=100;pp.DD=100;pp.CD=100;pp.CA=100;}
+  p.phasePercents=pp;
 }
-function designPhaseLabel(pct){
-  const p=Math.max(0,Math.min(100,Number(pct)||0));
-  const band=designBand(p);
-  const span=band.end-band.start;
-  // Round to nearest 5% for a clean display
-  const inPhase=span>0?Math.round(((p-band.start)/span)*100/5)*5:0;
-  return band.key+' · '+inPhase+'%';
-}
-// Snap a raw 0-100 slider value to the nearest 5%-in-phase position within its current band
-function snapDesignPercent(raw){
-  raw=Math.max(0,Math.min(100,Number(raw)||0));
-  const band=designBand(raw);
-  const span=band.end-band.start;
-  if(span<=0)return raw;
-  const inPhase=Math.round(((raw-band.start)/span)*100/5)*5;
-  // Hitting 100% of a non-final band rolls to 0% of the next band (which is band.end)
-  if(inPhase>=100&&band.end<100)return band.end;
-  return band.start+(inPhase/100)*span;
-}
-function updateDesignPercentLive(projId,val,inputEl){
-  const p=projects.find(p=>p.id===projId);if(!p)return;
-  const snapped=snapDesignPercent(val);
-  p.designPercent=snapped;
+function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return Math.round(raw/5)*5;}
+function updatePhasePercentLive(projId,phaseKey,val,inputEl){
+  const p=projects.find(x=>x.id===projId);if(!p)return;
+  ensurePhasePercents(p);
+  const snapped=snapPhaseValue(val);
+  p.phasePercents[phaseKey]=snapped;
   if(inputEl&&Number(inputEl.value)!==snapped)inputEl.value=snapped;
-  const entry=inputEl?inputEl.closest('.project-entry'):null;
-  if(entry){
-    const lbl=entry.querySelector('.proj-phase-label');
-    if(lbl)lbl.textContent=designPhaseLabel(p.designPercent);
+  const row=inputEl?inputEl.closest('.dp-row'):null;
+  if(row){
+    const pctEl=row.querySelector('.dp-pct');if(pctEl)pctEl.textContent=snapped+'%';
+    const fillEl=row.querySelector('.dp-row-fill');if(fillEl)fillEl.style.width=snapped+'%';
   }
 }
-function updateDesignPercentSave(){scheduleSave();}
+function updatePhasePercentSave(){scheduleSave();}
 
 /* ── STATE ── */
 const TITLE_FS=28;
@@ -1027,7 +1021,7 @@ async function loadFromGitHub(){
     const j=await r.json();ghFileSha=j.sha;
     const data=JSON.parse(atob(j.content.replace(/\n/g,'')));
     projects=data.projects||[];nextId=data.nextId||20;
-    projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;p.designPercent=Number(p.designPercent)||0;});
+    projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;p.designPercent=Number(p.designPercent)||0;ensurePhasePercents(p);});
     setStatus('Synced ✓','ok',3000);renderProjects();
   }catch(e){setStatus('Sync failed','err');loadLocal();}
 }
@@ -1051,7 +1045,7 @@ function forceSave(){if(ghToken)saveToGitHub();else setStatus('No token','err',2
 function loadLocal(){
   try{const r=localStorage.getItem('pb_v3');if(r){const d=JSON.parse(r);projects=d.projects||JSON.parse(JSON.stringify(SAMPLE_PROJECTS));nextId=d.nextId||20;}else{projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}}
   catch(e){projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
-  projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;p.designPercent=Number(p.designPercent)||0;});
+  projects.forEach(p=>{p.tasks=p.tasks||[];p.type=p.type||'';p.staff=p.staff||DEFAULT_STAFF;p.colorIdx=p.colorIdx||0;p.designPercent=Number(p.designPercent)||0;ensurePhasePercents(p);});
   renderProjects();
 }
 function saveToken(){const t=document.getElementById('token-input').value.trim();if(t){ghToken=t;localStorage.setItem('pb_gh_token',t);}hideSetup();loadFromGitHub();}
@@ -1197,43 +1191,44 @@ function npSelectColor(i){selectedColorIdx=i;document.querySelectorAll('.np-swat
 function toggleNewProject(){showNewProject=!showNewProject;renderProjects();}
 function createProject(){
   const el=document.getElementById('np-name');const name=el?el.value.trim():'';if(!name)return;
-  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,type:npSelectedType||'',staff:DEFAULT_STAFF,designPercent:0,tasks:[]});
+  projects.push({id:nextId++,name,colorIdx:selectedColorIdx,archived:false,type:npSelectedType||'',staff:DEFAULT_STAFF,designPercent:0,phasePercents:{SD:0,DD:0,CD:0,CA:0},tasks:[]});
   showNewProject=false;npSelectedType='';scheduleSave();renderProjects();
 }
 
 function buildProjectEntry(proj,phase){
   const entry=document.createElement('div');
   entry.className='project-entry';
+  ensurePhasePercents(proj);
 
   // Header row
-  const dp=Number(proj.designPercent)||0;
   const head=document.createElement('div');
   head.className='project-head';
   head.innerHTML=`<div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;">
       <div style="display:flex;align-items:baseline;flex-wrap:wrap;">
         <span class="project-name" onclick="openProjEdit(${proj.id},this)">${proj.name}</span>
-        <span class="proj-phase-label">${designPhaseLabel(dp)}</span>
       </div>
       <span class="project-staff">${proj.staff||DEFAULT_STAFF}</span>
     </div>
 `;
   entry.appendChild(head);
 
-  // Design phase slider
+  // Design phase sliders — one per phase
   const dpWrap=document.createElement('div');
   dpWrap.className='dp-wrap';
-  dpWrap.innerHTML=`<div class="dp-track-row">
-      <div class="dp-bands"></div>
-      <input class="dp-input" type="range" min="0" max="100" step="any" value="${dp}"
-        oninput="updateDesignPercentLive(${proj.id},this.value,this)"
-        onchange="updateDesignPercentSave()" />
-    </div>
-    <div class="dp-band-labels">
-      <span class="dp-band-label" style="left:0%;">SD</span>
-      <span class="dp-band-label" style="left:20%;">DD</span>
-      <span class="dp-band-label" style="left:40%;">CD</span>
-      <span class="dp-band-label" style="left:70%;">CA</span>
+  dpWrap.innerHTML=DP_BANDS.map(b=>{
+    const v=Math.max(0,Math.min(100,Number(proj.phasePercents[b.key])||0));
+    const fill=PHASE_FILL[b.key]||'#888';
+    return `<div class="dp-row" data-phase="${b.key}" style="--phase-color:${fill};">
+      <div class="dp-row-label"><span class="dp-key">${b.key}</span><span class="dp-pct">${v}%</span></div>
+      <div class="dp-row-track">
+        <div class="dp-row-band"></div>
+        <div class="dp-row-fill" style="width:${v}%;"></div>
+        <input class="dp-row-input" type="range" min="0" max="100" step="5" value="${v}"
+          oninput="updatePhasePercentLive(${proj.id},'${b.key}',this.value,this)"
+          onchange="updatePhasePercentSave()" />
+      </div>
     </div>`;
+  }).join('');
   entry.appendChild(dpWrap);
 
   // Task list

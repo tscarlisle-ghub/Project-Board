@@ -111,3 +111,10 @@ Fix:
 - Also rounded `designPhaseLabel` output to nearest 5% so any pre-existing project values (saved before this change) display cleanly too. Stored values aren't rewritten on load — they just round in the label.
 
 Sanity-checked the math against all four bands; each one reaches every 5% increment from 0% through 95%, plus CA can hit 100%. Boundary transitions verified at 20/40/70.
+
+---
+
+**Per-phase sliders + minty in-construction tint** — Replaced the single 0–100% design-phase slider with 4 separate sliders (SD/DD/CD/CA), each with 5% increments. Each slider's label shows its phase letter with the current % in smaller text right next to it (e.g. `SD` then `75%`). Filled track color matches the phase: SD light blue, DD mid blue, CD teal, CA red. Existing `designPercent` values auto-migrate to `phasePercents` on load so nothing is lost. Also changed the In-Construction phase background tint from light blue to light minty green (`#ecf6ee`).
+
+- `index.html` — slider CSS, helpers, `buildProjectEntry`, load + create migrations
+- Version bumped to 1.15 · Apr 28, 2026 · 4:30 PM
