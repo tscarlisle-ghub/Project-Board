@@ -344,7 +344,7 @@
       "staff": "Kathleen",
       "designPercent": 0,
       "phasePercents": {
-        "SD": 0,
+        "SD": 100,
         "DD": 0,
         "CD": 0,
         "CA": 0
