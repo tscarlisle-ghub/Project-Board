@@ -897,8 +897,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.13';
-const APP_VERSION_DATE='Apr 28, 2026 · 1:48 PM';
+const APP_VERSION='1.14';
+const APP_VERSION_DATE='Apr 28, 2026 · 1:56 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -957,13 +957,27 @@ function designPhaseLabel(pct){
   const p=Math.max(0,Math.min(100,Number(pct)||0));
   const band=designBand(p);
   const span=band.end-band.start;
-  const inPhase=span>0?Math.round(((p-band.start)/span)*100):0;
+  // Round to nearest 5% for a clean display
+  const inPhase=span>0?Math.round(((p-band.start)/span)*100/5)*5:0;
   return band.key+' · '+inPhase+'%';
+}
+// Snap a raw 0-100 slider value to the nearest 5%-in-phase position within its current band
+function snapDesignPercent(raw){
+  raw=Math.max(0,Math.min(100,Number(raw)||0));
+  const band=designBand(raw);
+  const span=band.end-band.start;
+  if(span<=0)return raw;
+  const inPhase=Math.round(((raw-band.start)/span)*100/5)*5;
+  // Hitting 100% of a non-final band rolls to 0% of the next band (which is band.end)
+  if(inPhase>=100&&band.end<100)return band.end;
+  return band.start+(inPhase/100)*span;
 }
 function updateDesignPercentLive(projId,val,inputEl){
   const p=projects.find(p=>p.id===projId);if(!p)return;
-  p.designPercent=parseInt(val,10)||0;
-  const entry=inputEl.closest('.project-entry');
+  const snapped=snapDesignPercent(val);
+  p.designPercent=snapped;
+  if(inputEl&&Number(inputEl.value)!==snapped)inputEl.value=snapped;
+  const entry=inputEl?inputEl.closest('.project-entry'):null;
   if(entry){
     const lbl=entry.querySelector('.proj-phase-label');
     if(lbl)lbl.textContent=designPhaseLabel(p.designPercent);
@@ -1210,7 +1224,7 @@ function buildProjectEntry(proj,phase){
   dpWrap.className='dp-wrap';
   dpWrap.innerHTML=`<div class="dp-track-row">
       <div class="dp-bands"></div>
-      <input class="dp-input" type="range" min="0" max="100" step="5" value="${dp}"
+      <input class="dp-input" type="range" min="0" max="100" step="any" value="${dp}"
         oninput="updateDesignPercentLive(${proj.id},this.value,this)"
         onchange="updateDesignPercentSave()" />
     </div>

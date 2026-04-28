@@ -1,0 +1,113 @@
+# Project Board — Session Notes
+
+## 2026-04-28
+
+**Imported prior chat history** — Scott pasted in the full transcript of the original Claude.ai conversation (share link `2364ccad-...` was unreachable due to network allowlist). Conversation covered the entire build of the project board app from initial concept through V1 (full-featured) and into V2 (Tufte-inspired redesign).
+
+**State of the app at end of imported chat:**
+- V1 live at `https://tscarlisle-ghub.github.io/Project-Board/`
+- V2 live at `https://tscarlisle-ghub.github.io/Project-Board/project-board-v2.html`
+- Both share `data.json` in the same repo
+- V2 most recent change: two-column project grid + archive/delete in bottom right of card
+- Version constants in V2: `APP_VERSION = '1.00'`, `APP_VERSION_DATE = 'Apr 27, 2026 · 3:45 PM'`
+
+**Memory established:**
+- Scott's role + working style
+- Project Board app architecture and current state
+- Code delivery preferences (run `node --check`, full files, V1 vs V2 explicit)
+- Session notes preference (this file, written after every change)
+
+No code changes made this entry — purely context import and memory setup.
+
+---
+
+**Promoted V2 to be the new `index.html`** — Scott downloaded the live repo files into `TSC-BOARD/` and asked to make `project-board-v2.html` the main entry point.
+
+Actions taken:
+- Verified `index copy.html` (93,974 bytes) is preserved as the backup of the old V1.
+- Overwrote `index.html` with a byte-for-byte copy of `project-board-v2.html` (73,315 bytes). `cmp` confirmed identical.
+- Left `project-board-v2.html` in place so existing links to that URL keep working — can be deleted from the repo later if desired.
+- Confirmed no self-references inside V2 (no internal links to `project-board-v2.html` or `index.html`) needed rewriting.
+- Confirmed `data.json` is loaded via the GitHub API (`GH_USER`/`GH_REPO`/`GH_FILE` constants), not a relative path, so it works identically regardless of the host filename.
+- Ran `node --check` on the extracted inline `<script>` block (44,951 bytes) — OK.
+
+**Files in `TSC-BOARD/` after this change:**
+- `index.html` — now the V2 app (73,315 bytes)
+- `index copy.html` — backup of old V1 (93,974 bytes)
+- `project-board-v2.html` — duplicate of new `index.html` (73,315 bytes)
+- `data.json`, `Logo_Only.png` — unchanged
+
+Next step for Scott: upload the new `index.html` (and optionally remove `project-board-v2.html`) to the GitHub repo via the web UI. The live URL `https://tscarlisle-ghub.github.io/Project-Board/` will then serve the V2 app.
+
+---
+
+**Major redesign: phase header + design phase slider + Tasks-by-Due-Date page** — Bumped APP_VERSION to **1.10** (`Apr 28, 2026 · 1:13 PM`). Both `index.html` and `project-board-v2.html` updated and mirrored byte-identical (79,328 bytes). `node --check` on the inline script block: OK.
+
+Changes:
+
+- **Phase label moved to top of each block.** Was a 220px left-gutter label beside a 1fr project grid; now a newspaper-section header (small caps, hairline rule under) sitting above the projects. Removed `.phase-block-inner` grid. `.phase-projects` simplified, padding adjusted to keep breathing room around cards.
+- **2-column grid bug fixed.** Root cause: `renderProjects` was inserting an `<hr>` with `grid-column:1/-1` between every project, which forced each project onto its own row in the left column. Removed the HR insertion; bumped `.phase-projects` gap from 3px to 8px so cards still read as separate.
+- **Design phase slider added to every project card.** Range input (`step="5"`, 0–100) with proportionally-banded background — SD 0–20% (palest), DD 20–40%, CD 40–90% (largest band, deeper steel), CA 90–100% (brand red). Thin dark-ink thumb. Phase abbreviations (SD/DD/CD/CA) labeled under the bands at the band start positions. New `proj-phase-label` next to project name shows e.g. `CD · 65%`. Two handlers: `oninput` updates state + label live (no re-render, so dragging stays smooth); `onchange` calls `scheduleSave()` (1.5s debounce → GitHub). New `designPercent` field defaults to 0; back-filled in `loadFromGitHub`/`loadLocal`/`createProject`.
+- **Summary page replaced with "Tasks by Due Date".** Nav button: "Summary" → "Due". Page title: "Task Summary" → "Tasks by Due Date". `renderSummary()` rewritten — now buckets all open, dated tasks across active projects into Overdue (red, pinned at top) / Today / This Week (grouped by day) / Next Week (grouped by day) / Later (grouped by day). Each row: checkbox · task name (click → edit due date) · project (click → board) · staff · relative date chip ("3d ago · Apr 25", "Tomorrow · Apr 29", etc). Honors the active staff filter. Completed tasks excluded.
+- **Version label darkened.** `color:var(--ink-faint)` (#eeebe4, barely visible) → `var(--ink-light)` (#9a8e80).
+
+**Next-step suggestions parked for later** (per the design-review thread): client/site metadata strip on each card, design-phase pip indicator vs. slider trade-off, permit-status field, "last touched" relative-time signal, optional hero thumbnail per project. These touch the data model, so worth doing as a separate focused pass.
+
+---
+
+**Phase label restyled + slider bands rebalanced** — Bumped APP_VERSION to **1.11** (`Apr 28, 2026 · 1:26 PM`). Both `index.html` and `project-board-v2.html` mirrored byte-identical (79,344 bytes). `node --check`: OK.
+
+Changes (CSS + DP_BANDS only — same data model):
+
+- `.proj-phase-label` (the "CD · 65%" chip next to the project name) restyled: font-family bumped from `ff-meta-web-pro-condensed 11px` to `interstate-condensed 18px` (matching project-name family at ~60% larger than before), letter-spacing tightened to 0.03em to match project-name, color shifted from `--ink-mid` to `--ink-light` to keep it clearly subordinate to the name. `margin-left` 10→14px, added `line-height:1.1` so it sits on the project-name baseline cleanly.
+- Slider bands rebalanced so CD and CA are visually equal width. New layout: SD 0–20% (20pp), DD 20–40% (20pp), CD 40–70% (30pp), CA 70–100% (30pp). Updated in three coordinated places: gradient stops in `.dp-bands`, `DP_BANDS` array `end`/`start`, the `if(pct<70)` cutoff in `designBand()`, and the CA `dp-band-label` left position 90%→70%. Step stays at 5%, range 0–100, so the slider still increments in 5% jumps within every phase.
+
+Note that the underlying value is still 0–100 across the whole slider, so a project that's been pegged at "85%" pre-change will now read as `CA · 85%` instead of `CD · 85%`. If any projects are currently sitting above 70%, they'll jump from CD to CA. Worth a quick eye-check after the deploy.
+
+---
+
+**V2 retired** — moved `project-board-v2.html` to `TSC-BOARD/archive/project-board-v2.html`. Going forward, edits land in `index.html` only — no more byte-for-byte mirroring. `index copy.html` (the original V1 backup) is left in place at the top level for now; can be archived later if Scott wants.
+
+After Scott pushes this state to GitHub, the URL `https://tscarlisle-ghub.github.io/Project-Board/project-board-v2.html` will return 404 — that's expected. The live app remains at `https://tscarlisle-ghub.github.io/Project-Board/`.
+
+Memory updated to reflect single-file workflow. Also saved a deferred-feature note: Scott wants a Siri/Shortcuts "Add Project Task" voice command later — direct-voice flavor (no Reminders middleman), to revisit when he's ready.
+
+---
+
+**v1.12 — phase label rework + Gantt menu unified** (`Apr 28, 2026 · 1:38 PM`). `index.html` only (V2 retired). `node --check`: OK. File size 78,774 bytes.
+
+Changes:
+
+- **Phase chip next to project name now shows in-phase progress, not overall slider value.** `designPhaseLabel(pct)` was returning `KEY · ${pct}%` (e.g., `CD · 55%` for slider value 55). Rewrote it to compute `(pct - band.start) / (band.end - band.start) * 100` and round — so for slider 55 (which sits in CD's 40–70 band), the chip now reads `CD · 50%` (50% through CD). Boundary behavior: at slider 20/40/70, chip reads `0%` of the next phase; at 100, `CA · 100%`.
+- **Phase chip restyled to title sibling.** Was 18px bold condensed; now 26px (matching `.project-name`), `font-weight:400` (not bold), kept `--ink-light` color so it stays clearly subordinate to the bold name. `margin-left` 14→24px for breathing room.
+- **Gantt page now uses the main masthead/nav.** Previously the Gantt page hid `main-masthead` and rendered its own `.gantt-masthead` strip with title/date/back-button. Removed the gantt-masthead block, removed the `display='none'` toggle (now always `'block'`), and dropped the now-orphan `gantt-date-label` update from `showPage`. Net effect: the navbar (Board · Gantt · Archive · Due, plus staff filters and Sync/Import/Settings) stays visible on the Gantt page; clicking the **Board** nav link is the back-to-board action.
+
+Note for Scott: the standalone "← Board" pill is gone. The **Board** link in the nav now does double-duty as back-to-board. If you'd rather have an explicit chevron-back button in the nav row alongside the regular links, easy to add — say the word.
+
+Open thread: Scott reports he wants to be able to set/edit due dates on tasks and "thinks that used to be there." Investigating next — memory says the click-time-to-open-calendar popup should still exist; verifying whether it broke or is just not where he expects.
+
+---
+
+**v1.13 — task due-date editing made discoverable** (`Apr 28, 2026 · 1:48 PM`). `node --check`: OK. `index.html` now 79,025 bytes.
+
+The mechanic for editing due dates was actually still wired up — it just had no visible affordance for tasks that had no date set. `buildTaskRow` was rendering the `task-due` div *only* when `fmtDue(t)` returned a non-empty string (i.e., the task already had a date). For tasks with no date, the only path to set one was the right-click context menu's "Edit due date" item, which is invisible and unusable on iPad.
+
+Fix: always render the date row beneath every task. When the task has a due date, it shows the existing label as before ("Due in 3d · May 1", "Overdue · Apr 25", etc., color-coded); when it doesn't, it shows a faint italic "+ Set due date" placeholder that brightens on row hover. Either way, clicking opens the existing inline edit form with the calendar picker, and saveTaskTime persists `t.due` to `data.json` as before.
+
+Also added a subtle hover underline on the date label so it reads as a clickable target on desktop. Right-click context menu still works as a secondary path.
+
+**Tasks tracking review:** prior session tasks (#1–#8) all completed. None marked stale.
+
+---
+
+**v1.14 — slider snaps to 5% in-phase increments** (`Apr 28, 2026 · 1:56 PM`). `node --check`: OK. `index.html` 79,521 bytes.
+
+Previously the slider had `step="5"` on the raw 0–100 range. Because the bands have different widths (SD 20pp, DD 20pp, CD 30pp, CA 30pp), the displayed in-phase percentages weren't clean — CD walked through 0%, 17%, 33%, 50%, 67%, 83% instead of 5% steps.
+
+Fix:
+- Slider input: `step="5"` → `step="any"` so the underlying value can land on any decimal.
+- Added `snapDesignPercent(raw)` helper that, on every input event, looks up which band `raw` falls in, computes in-phase %, rounds to nearest 5%, and converts back to a raw value (e.g., 5% in CD = raw 41.5; 50% in CD = raw 55). The slider's `.value` is then forced to that snapped raw, so the thumb visibly clicks into 5%-spaced positions while dragging.
+- Special case: hitting 100% of a non-final band rolls to 0% of the next band (so you never display "SD · 100%" — you cross straight into "DD · 0%"). At the end of CA, you can land on "CA · 100%".
+- Also rounded `designPhaseLabel` output to nearest 5% so any pre-existing project values (saved before this change) display cleanly too. Stored values aren't rewritten on load — they just round in the label.
+
+Sanity-checked the math against all four bands; each one reaches every 5% increment from 0% through 95%, plus CA can hit 100%. Boundary transitions verified at 20/40/70.
