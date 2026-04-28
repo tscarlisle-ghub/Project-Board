@@ -346,7 +346,7 @@
       "phasePercents": {
         "SD": 100,
         "DD": 0,
-        "CD": 0,
+        "CD": 40,
         "CA": 0
       }
     },
