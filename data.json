@@ -114,7 +114,7 @@
       "designPercent": 50,
       "phasePercents": {
         "SD": 100,
-        "DD": 65,
+        "DD": 55,
         "CD": 35,
         "CA": 0
       }
