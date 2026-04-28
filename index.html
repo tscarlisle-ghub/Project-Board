@@ -266,8 +266,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   background:linear-gradient(to right,
     #cfe1ed 0%, #cfe1ed 20%,
     #9ec0d4 20%, #9ec0d4 40%,
-    #4e7a90 40%, #4e7a90 90%,
-    #d04030 90%, #d04030 100%);
+    #4e7a90 40%, #4e7a90 70%,
+    #d04030 70%, #d04030 100%);
   border-radius:1px;pointer-events:none;
 }
 .dp-input{
@@ -298,10 +298,11 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .dp-band-label{position:absolute;top:0;}
 .proj-phase-label{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
-  color:var(--ink-mid);
-  margin-left:10px;white-space:nowrap;
+  font-family:"interstate-condensed",sans-serif;
+  font-weight:700;font-size:18px;letter-spacing:0.03em;text-transform:uppercase;
+  color:var(--ink-light);
+  margin-left:14px;white-space:nowrap;
+  line-height:1.1;
 }
 
 /* ── TASK LIST ── */
@@ -909,8 +910,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.10';
-const APP_VERSION_DATE='Apr 28, 2026 · 1:13 PM';
+const APP_VERSION='1.11';
+const APP_VERSION_DATE='Apr 28, 2026 · 1:26 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -955,14 +956,14 @@ function timeLabel(v){return v<1?'½ day':v===1?'1 day':v<7?v+'days':v===7?'1 we
 const DP_BANDS=[
   {key:'SD',name:'Schematic Design',start:0,end:20},
   {key:'DD',name:'Design Development',start:20,end:40},
-  {key:'CD',name:'Construction Drawings',start:40,end:90},
-  {key:'CA',name:'Construction Admin',start:90,end:100},
+  {key:'CD',name:'Construction Drawings',start:40,end:70},
+  {key:'CA',name:'Construction Admin',start:70,end:100},
 ];
 function designBand(pct){
   pct=Math.max(0,Math.min(100,Number(pct)||0));
   if(pct<20)return DP_BANDS[0];
   if(pct<40)return DP_BANDS[1];
-  if(pct<90)return DP_BANDS[2];
+  if(pct<70)return DP_BANDS[2];
   return DP_BANDS[3];
 }
 function designPhaseLabel(pct){
@@ -1227,7 +1228,7 @@ function buildProjectEntry(proj,phase){
       <span class="dp-band-label" style="left:0%;">SD</span>
       <span class="dp-band-label" style="left:20%;">DD</span>
       <span class="dp-band-label" style="left:40%;">CD</span>
-      <span class="dp-band-label" style="left:90%;">CA</span>
+      <span class="dp-band-label" style="left:70%;">CA</span>
     </div>`;
   entry.appendChild(dpWrap);
 
