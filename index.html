@@ -299,9 +299,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .dp-band-label{position:absolute;top:0;}
 .proj-phase-label{
   font-family:"interstate-condensed",sans-serif;
-  font-weight:700;font-size:18px;letter-spacing:0.03em;text-transform:uppercase;
+  font-weight:400;font-size:26px;letter-spacing:0.03em;text-transform:uppercase;
   color:var(--ink-light);
-  margin-left:14px;white-space:nowrap;
+  margin-left:24px;white-space:nowrap;
   line-height:1.1;
 }
 
@@ -345,6 +345,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .task-due.overdue{color:var(--red);}
 .task-due.soon{color:var(--amber);}
+.task-due.empty{color:var(--ink-faint);font-style:italic;}
+.task-row:hover .task-due.empty{color:var(--ink-light);}
+.task-due:hover{text-decoration:underline;text-decoration-color:var(--ink-faint);}
 .task-del{
   background:none;border:none;
   font-size:16px;color:var(--ink-faint);
@@ -745,16 +748,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .back-page-title{font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);}
 
 /* ── GANTT PAGE ── */
-.gantt-masthead{
-  border-bottom:2px solid var(--ink);
-  padding:18px 0 10px;
-  position:sticky;top:0;z-index:200;
-  background:var(--page);
-}
-.gantt-masthead-inner{
-  max-width:100%;padding:0 40px;
-  display:flex;align-items:baseline;gap:16px;
-}
+/* gantt now uses the main masthead/nav; no separate masthead */
 
 /* ── RESTORE BTN ── */
 .restore-btn{
@@ -824,13 +818,6 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 
 <!-- ── GANTT PAGE ── -->
 <div id="gantt-page" style="display:none;">
-  <div class="gantt-masthead">
-    <div class="gantt-masthead-inner">
-      <span class="masthead-title">Project Timeline</span>
-      <span class="masthead-date" id="gantt-date-label"></span>
-      <button class="back-btn" style="margin-left:auto;" onclick="showPage('board')">← Board</button>
-    </div>
-  </div>
   <div style="padding:24px 40px 80px;width:100%;overflow-x:auto;">
     <div class="gantt-wrap"><table class="gantt-table" id="gantt-table"></table></div>
   </div>
@@ -910,8 +897,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.11';
-const APP_VERSION_DATE='Apr 28, 2026 · 1:26 PM';
+const APP_VERSION='1.13';
+const APP_VERSION_DATE='Apr 28, 2026 · 1:48 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -968,7 +955,10 @@ function designBand(pct){
 }
 function designPhaseLabel(pct){
   const p=Math.max(0,Math.min(100,Number(pct)||0));
-  return designBand(p).key+' · '+p+'%';
+  const band=designBand(p);
+  const span=band.end-band.start;
+  const inPhase=span>0?Math.round(((p-band.start)/span)*100):0;
+  return band.key+' · '+inPhase+'%';
 }
 function updateDesignPercentLive(projId,val,inputEl){
   const p=projects.find(p=>p.id===projId);if(!p)return;
@@ -1082,10 +1072,10 @@ function showPage(page){
   document.getElementById('gantt-page').style.display=page==='gantt'?'block':'none';
   document.getElementById('archive-page').style.display=page==='archive'?'block':'none';
   document.getElementById('summary-page').style.display=page==='summary'?'block':'none';
-  document.getElementById('main-masthead').style.display=page==='gantt'?'none':'block';
+  document.getElementById('main-masthead').style.display='block';
   ['board','gantt','archive','summary'].forEach(p=>{const el=document.getElementById('nav-'+p);if(el)el.classList.toggle('active',p===page);});
   if(page==='archive')renderArchive();
-  if(page==='gantt'){document.getElementById('gantt-date-label').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();renderGantt();}
+  if(page==='gantt')renderGantt();
   if(page==='summary')renderSummary();
 }
 
@@ -1303,13 +1293,14 @@ function buildTaskRow(proj,t){
 
   const due=document.createElement('div');
   const dc=dueClass(t);
-  due.className='task-due'+(dc?' '+dc:'');
-  due.textContent=fmtDue(t);
+  const dueText=fmtDue(t);
+  due.className='task-due'+(dc?' '+dc:'')+(dueText?'':' empty');
+  due.textContent=dueText||'+ Set due date';
   due.style.cursor='pointer';
   due.addEventListener('click',e=>{e.stopPropagation();openEdit(proj.id,t.id);});
 
   txt.appendChild(name);
-  if(fmtDue(t))txt.appendChild(due);
+  txt.appendChild(due);
 
   const del=document.createElement('button');
   del.className='task-del';del.innerHTML='✕';
