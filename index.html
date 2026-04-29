@@ -262,7 +262,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .dp-wrap{
   margin:10px 0 14px;padding:0;
   display:grid;grid-template-columns:1fr 1fr;
-  gap:2px 18px;
+  gap:8px 18px;
 }
 .dp-row{display:flex;align-items:center;gap:8px;min-width:0;}
 .dp-row-label{
@@ -276,13 +276,13 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   white-space:nowrap;
   line-height:1;
 }
-.dp-row-track{position:relative;flex:1;min-width:0;height:20px;}
+.dp-row-track{position:relative;flex:1;min-width:0;height:28px;}
 .dp-row-pct{
   position:absolute;top:0;
   transform:translateX(calc(-1% * var(--pct,0)));
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
-  font-size:8px;
+  font-size:13px;
   letter-spacing:0.04em;
   color:var(--ink-light);
   white-space:nowrap;
@@ -290,18 +290,18 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   pointer-events:none;
 }
 .dp-row-band{
-  position:absolute;left:0;right:0;top:13px;height:1px;
+  position:absolute;left:0;right:0;top:19px;height:1px;
   background:#d4cfc5;
   pointer-events:none;
 }
 .dp-row-fill{
-  position:absolute;left:0;top:13px;height:1px;
+  position:absolute;left:0;top:19px;height:1px;
   background:var(--phase-color,#888);
   pointer-events:none;
 }
 .dp-row-input{
   -webkit-appearance:none;appearance:none;
-  position:absolute;left:0;right:0;top:6px;
+  position:absolute;left:0;right:0;top:12px;
   width:100%;height:14px;
   background:transparent;margin:0;padding:0;cursor:pointer;
 }
@@ -366,7 +366,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   line-height:1.35;
   cursor:text;
 }
-.task-name.done{color:rgba(200,195,185,0.9);text-decoration:line-through;}
+.task-name.done{color:var(--ink);text-decoration:line-through;}
 .task-name.overdue{color:var(--red);}
 .task-due{
   font-family:"ff-meta-web-pro",sans-serif;
@@ -378,8 +378,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .task-due.overdue{color:var(--red);}
 .task-due.soon{color:var(--amber);}
-.task-due.empty{color:var(--ink-faint);font-style:italic;}
-.task-row:hover .task-due.empty{color:var(--ink-light);}
+.task-due.empty{color:var(--ink-light);font-style:italic;}
+.task-row:hover .task-due.empty{color:var(--ink-mid);}
 .task-due:hover{text-decoration:underline;text-decoration-color:var(--ink-faint);}
 .task-del{
   background:none;border:none;
@@ -930,8 +930,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.18';
-const APP_VERSION_DATE='Apr 28, 2026 · 7:45 PM';
+const APP_VERSION='1.20';
+const APP_VERSION_DATE='Apr 28, 2026 · 9:05 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1001,7 +1001,7 @@ function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return
 function projPhaseSummary(p){
   ensurePhasePercents(p);
   const pp=p.phasePercents;
-  return DP_BANDS.map(b=>`${b.key}:${pp[b.key]||0}%`).join(' · ');
+  return DP_BANDS.map(b=>`${b.key}:${pp[b.key]||0}<b>%</b>`).join(' · ');
 }
 function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const p=projects.find(x=>x.id===projId);if(!p)return;
@@ -1018,7 +1018,7 @@ function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const entry=inputEl?inputEl.closest('.project-entry'):null;
   if(entry){
     const totalEl=entry.querySelector('.project-total-pct');
-    if(totalEl)totalEl.textContent=projPhaseSummary(p);
+    if(totalEl)totalEl.innerHTML=projPhaseSummary(p);
   }
 }
 function updatePhasePercentSave(){scheduleSave();}
@@ -1322,7 +1322,7 @@ function buildProjectEntry(proj,phase){
 function buildTaskRow(proj,t){
   const row=document.createElement('div');
   row.className='task-row';
-  if(t.done)row.style.opacity='0.4';
+  if(t.done)row.style.opacity='0.56';
 
   const chk=document.createElement('button');
   chk.className='task-check'+(t.done?' done-check':'');
