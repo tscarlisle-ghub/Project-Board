@@ -164,7 +164,7 @@
           "id": 54,
           "name": "Check in with the davis's about david brush",
           "days": 17,
-          "done": false,
+          "done": true,
           "due": "2026-05-12",
           "createdAt": "2026-04-25T17:39:38.261Z"
         },
@@ -172,7 +172,7 @@
           "id": 55,
           "name": "Update billing",
           "days": 7,
-          "done": false,
+          "done": true,
           "due": "2026-05-02",
           "createdAt": "2026-04-25T17:16:26.176Z"
         },
