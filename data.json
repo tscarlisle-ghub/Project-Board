@@ -175,14 +175,6 @@
           "done": true,
           "due": "2026-05-02",
           "createdAt": "2026-04-25T17:16:26.176Z"
-        },
-        {
-          "id": 67,
-          "name": "Klhgkjhg",
-          "days": 1,
-          "done": false,
-          "createdAt": "2026-04-30T00:39:01.942Z",
-          "due": "2026-04-30"
         }
       ],
       "type": "new-construction",
