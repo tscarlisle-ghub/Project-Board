@@ -671,8 +671,17 @@
         "CD": 0,
         "CA": 0
       },
-      "tasks": []
+      "tasks": [
+        {
+          "id": 69,
+          "name": "Contract",
+          "days": 1,
+          "done": false,
+          "createdAt": "2026-05-18T13:50:55.244Z",
+          "due": "2026-05-18"
+        }
+      ]
     }
   ],
-  "nextId": 69
+  "nextId": 70
 }
