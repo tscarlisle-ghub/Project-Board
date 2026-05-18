@@ -656,7 +656,23 @@
         "CD": 0,
         "CA": 0
       }
+    },
+    {
+      "id": 68,
+      "name": "NEERHOF - MONTEVALLO ROAD",
+      "colorIdx": 0,
+      "archived": false,
+      "type": "new-construction",
+      "staff": "Scott",
+      "designPercent": 0,
+      "phasePercents": {
+        "SD": 0,
+        "DD": 0,
+        "CD": 0,
+        "CA": 0
+      },
+      "tasks": []
     }
   ],
-  "nextId": 68
+  "nextId": 69
 }
