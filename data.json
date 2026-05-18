@@ -51,7 +51,7 @@
           "id": 7,
           "name": "check drawings for permit issue",
           "days": 1,
-          "done": false
+          "done": true
         },
         {
           "id": 62,
