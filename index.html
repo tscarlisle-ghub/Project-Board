@@ -262,7 +262,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 .dp-wrap{
   margin:10px 0 14px;padding:0;
   display:grid;grid-template-columns:1fr 1fr;
-  gap:8px 18px;
+  gap:2px 18px;
 }
 .dp-row{display:flex;align-items:center;gap:8px;min-width:0;}
 .dp-row-label{
@@ -276,13 +276,13 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   white-space:nowrap;
   line-height:1;
 }
-.dp-row-track{position:relative;flex:1;min-width:0;height:28px;}
+.dp-row-track{position:relative;flex:1;min-width:0;height:20px;}
 .dp-row-pct{
   position:absolute;top:0;
   transform:translateX(calc(-1% * var(--pct,0)));
   font-family:"ff-meta-web-pro-condensed",sans-serif;
   font-weight:700;
-  font-size:13px;
+  font-size:8px;
   letter-spacing:0.04em;
   color:var(--ink-light);
   white-space:nowrap;
@@ -290,18 +290,18 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   pointer-events:none;
 }
 .dp-row-band{
-  position:absolute;left:0;right:0;top:19px;height:1px;
+  position:absolute;left:0;right:0;top:13px;height:1px;
   background:#d4cfc5;
   pointer-events:none;
 }
 .dp-row-fill{
-  position:absolute;left:0;top:19px;height:1px;
+  position:absolute;left:0;top:13px;height:1px;
   background:var(--phase-color,#888);
   pointer-events:none;
 }
 .dp-row-input{
   -webkit-appearance:none;appearance:none;
-  position:absolute;left:0;right:0;top:12px;
+  position:absolute;left:0;right:0;top:6px;
   width:100%;height:14px;
   background:transparent;margin:0;padding:0;cursor:pointer;
 }
@@ -366,7 +366,7 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   line-height:1.35;
   cursor:text;
 }
-.task-name.done{color:var(--ink);text-decoration:line-through;}
+.task-name.done{color:rgba(200,195,185,0.9);text-decoration:line-through;}
 .task-name.overdue{color:var(--red);}
 .task-due{
   font-family:"ff-meta-web-pro",sans-serif;
@@ -378,19 +378,20 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .task-due.overdue{color:var(--red);}
 .task-due.soon{color:var(--amber);}
-.task-due.empty{color:var(--ink-light);font-style:italic;}
-.task-row:hover .task-due.empty{color:var(--ink-mid);}
+.task-due.empty{color:var(--ink-faint);font-style:italic;}
+.task-row:hover .task-due.empty{color:var(--ink-light);}
 .task-due:hover{text-decoration:underline;text-decoration-color:var(--ink-faint);}
 .task-del{
   background:none;border:none;
   font-size:16px;color:var(--ink-faint);
   cursor:pointer;padding:2px 4px;
-  opacity:0;transition:opacity 0.15s;
+  opacity:0.4;transition:opacity 0.15s;
   flex-shrink:0;
   margin-top:2px;
 }
 .task-row:hover .task-del{opacity:1;}
 .task-del:hover{color:var(--red);}
+@media (hover:none){.task-del{opacity:0.6;}}
 
 /* ── ADD TASK ── */
 .add-task-btn{
@@ -722,13 +723,22 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .due-row{
   display:grid;
-  grid-template-columns:14px 1fr auto auto auto;
+  grid-template-columns:14px 1fr auto auto auto auto;
   align-items:baseline;
   gap:14px;
   padding:8px 0;
   border-bottom:1px dotted var(--ink-faint);
 }
 .due-row:hover{background:#fafafa;}
+.due-del{
+  background:none;border:none;
+  font-size:16px;color:var(--ink-faint);
+  cursor:pointer;padding:2px 4px;
+  opacity:0.4;transition:opacity 0.15s;
+}
+.due-row:hover .due-del{opacity:1;}
+.due-del:hover{color:var(--red);}
+@media (hover:none){.due-del{opacity:0.6;}}
 .due-row.overdue .due-task{color:var(--red);}
 .due-task{
   font-family:var(--font-body);font-size:18px;color:var(--ink);
@@ -800,6 +810,165 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   .phase-projects{grid-template-columns:1fr;padding:12px 8px;}
   .masthead-logo{display:none;}
 }
+
+/* ── DAILY LIST PAGE ── */
+#daily-page{padding:0;}
+.daily-wrap{
+  max-width:calc(var(--col-w) + var(--margin-w) * 2 + 80px);
+  margin:0 auto;
+  padding:36px 40px 80px;
+}
+.daily-add-wrap{
+  padding-bottom:8px;
+  border-bottom:1px dotted var(--rule-strong);
+  margin-bottom:22px;
+}
+.daily-add-input{
+  width:100%;
+  font-family:"interstate-condensed",sans-serif;
+  font-weight:400;
+  font-size:22px;
+  letter-spacing:0.04em;
+  text-transform:none;
+  color:var(--ink);
+  background:transparent;
+  border:none;
+  outline:none;
+  caret-color:var(--brand);
+  padding:6px 0;
+}
+.daily-add-input::placeholder{color:var(--ink-light);font-style:italic;}
+
+ul.daily-list{list-style:none;padding:0;margin:0;}
+
+li.daily-item{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:6px 0;
+  position:relative;
+}
+li.daily-item.done .daily-item-text{
+  text-decoration:line-through;
+  opacity:0.56;
+}
+
+.daily-check-btn{
+  flex-shrink:0;
+  width:18px;height:18px;
+  border-radius:50%;
+  border:1.5px solid var(--ink-mid);
+  background:transparent;
+  cursor:pointer;
+  margin-top:9px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.15s,border-color 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.daily-check-btn:hover,.daily-check-btn:active{background:var(--ink-mid);}
+li.daily-item.done .daily-check-btn{background:var(--ink-light);border-color:var(--ink-light);}
+.daily-check-dot{
+  width:38%;height:38%;
+  border-radius:50%;
+  background:var(--page);
+  display:none;
+}
+li.daily-item.done .daily-check-dot{display:block;}
+
+.daily-item-body{flex:1;min-width:0;}
+.daily-item-text{
+  font-family:"interstate-condensed",sans-serif;
+  font-weight:700;
+  font-size:26px;
+  letter-spacing:0.03em;
+  text-transform:uppercase;
+  color:var(--ink);
+  word-break:break-word;
+  line-height:1.2;
+  display:block;
+}
+
+.daily-item-actions{
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--ink-light);
+  margin-top:6px;
+  line-height:1.4;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.18s;
+}
+@media (hover:hover){
+  li.daily-item:hover .daily-item-actions{opacity:1;pointer-events:auto;}
+}
+li.daily-item.expanded .daily-item-actions{opacity:1;pointer-events:auto;}
+
+.daily-defer-sep{display:inline-block;margin:0 10px;color:var(--ink-light);opacity:0.55;}
+
+.daily-btn-defer{
+  font-family:inherit;font-weight:inherit;font-size:inherit;
+  letter-spacing:inherit;text-transform:inherit;
+  background:transparent;border:none;
+  color:var(--ink-mid);
+  cursor:pointer;padding:0;
+  -webkit-tap-highlight-color:transparent;
+  transition:color 0.15s;
+}
+.daily-btn-defer:hover,.daily-btn-defer:active{color:var(--green);}
+.daily-btn-defer.danger:hover,.daily-btn-defer.danger:active{color:var(--brand);}
+
+.daily-section-label{
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--ink-mid);
+  padding:0 0 7px;
+  border-bottom:1px solid var(--ink-light);
+  margin:36px 0 14px;
+}
+
+.daily-empty{
+  font-family:var(--font-body);
+  font-style:italic;
+  font-size:15px;
+  color:var(--ink-light);
+  padding:40px 0;
+}
+
+.daily-collapsible-section{margin-top:36px;}
+.daily-collapsible-toggle{
+  font-family:"ff-meta-web-pro-condensed",sans-serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--ink-mid);
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--ink-light);
+  width:100%;
+  text-align:left;
+  padding:0 0 7px;
+  margin-bottom:14px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.daily-collapsible-toggle:hover{color:var(--ink);}
+.daily-collapsible-list{display:none;}
+.daily-collapsible-list.open{display:block;}
+
+@media (max-width:560px){
+  .daily-wrap{padding:24px 22px 60px;}
+  .daily-item-text{font-size:22px;}
+  .daily-add-input{font-size:18px;}
+}
 </style>
 </head>
 <body>
@@ -815,7 +984,9 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   </div>
   <div class="navbar">
     <div class="navbar-inner">
-      <button class="nav-link active" id="nav-board" onclick="showPage('board')">Board</button>
+      <button class="nav-link active" id="nav-daily" onclick="showPage('daily')">Daily</button>
+      <span class="nav-sep">·</span>
+      <button class="nav-link" id="nav-board" onclick="showPage('board')">Board</button>
       <span class="nav-sep">·</span>
       <button class="nav-link" id="nav-gantt" onclick="showPage('gantt')">Gantt</button>
       <span class="nav-sep">·</span>
@@ -841,8 +1012,18 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   </div>
 </div>
 
+<!-- ── DAILY LIST PAGE ── -->
+<div id="daily-page">
+  <div class="daily-wrap">
+    <div class="daily-add-wrap">
+      <input type="text" class="daily-add-input" id="daily-new-item" placeholder="Add new item..." autocomplete="off" autocorrect="on" autocapitalize="sentences" spellcheck="true" />
+    </div>
+    <div id="daily-list-container"></div>
+  </div>
+</div>
+
 <!-- ── BOARD ── -->
-<div id="board-page">
+<div id="board-page" style="display:none;">
   <div class="page-body">
     <div class="margin-col" id="margin-col"></div>
     <div class="main-col" id="projects-main"></div>
@@ -930,8 +1111,8 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
    All functionality from V1, redesigned.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.20';
-const APP_VERSION_DATE='Apr 28, 2026 · 9:05 PM';
+const APP_VERSION='1.21';
+const APP_VERSION_DATE='May 22, 2026 · 12:30 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1001,7 +1182,7 @@ function snapPhaseValue(raw){raw=Math.max(0,Math.min(100,Number(raw)||0));return
 function projPhaseSummary(p){
   ensurePhasePercents(p);
   const pp=p.phasePercents;
-  return DP_BANDS.map(b=>`${b.key}:${pp[b.key]||0}<b>%</b>`).join(' · ');
+  return DP_BANDS.map(b=>`${b.key}:${pp[b.key]||0}%`).join(' · ');
 }
 function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const p=projects.find(x=>x.id===projId);if(!p)return;
@@ -1018,7 +1199,7 @@ function updatePhasePercentLive(projId,phaseKey,val,inputEl){
   const entry=inputEl?inputEl.closest('.project-entry'):null;
   if(entry){
     const totalEl=entry.querySelector('.project-total-pct');
-    if(totalEl)totalEl.innerHTML=projPhaseSummary(p);
+    if(totalEl)totalEl.textContent=projPhaseSummary(p);
   }
 }
 function updatePhasePercentSave(){scheduleSave();}
@@ -1026,7 +1207,7 @@ function updatePhasePercentSave(){scheduleSave();}
 /* ── STATE ── */
 const TITLE_FS=28;
 let nextId=20,editingTask=null,addingToProject=null,showNewProject=false,selectedColorIdx=0;
-let currentPage='board',activeStaffFilter=null;
+let currentPage='daily',activeStaffFilter=null;
 let projects=[],ghToken=localStorage.getItem('pb_gh_token')||'',ghFileSha='',saveTimer=null;
 
 const SAMPLE_PROJECTS=[
@@ -1120,15 +1301,20 @@ document.addEventListener('DOMContentLoaded',()=>{const ta=document.getElementBy
 /* ── PAGE NAVIGATION ── */
 function showPage(page){
   currentPage=page;
+  document.getElementById('daily-page').style.display=page==='daily'?'block':'none';
   document.getElementById('board-page').style.display=page==='board'?'block':'none';
   document.getElementById('gantt-page').style.display=page==='gantt'?'block':'none';
   document.getElementById('archive-page').style.display=page==='archive'?'block':'none';
   document.getElementById('summary-page').style.display=page==='summary'?'block':'none';
   document.getElementById('main-masthead').style.display='block';
-  ['board','gantt','archive','summary'].forEach(p=>{const el=document.getElementById('nav-'+p);if(el)el.classList.toggle('active',p===page);});
+  // hide the "+ New project" sub-navbar on the Daily page (it doesn't apply there)
+  const sub=document.querySelector('.sub-navbar');
+  if(sub)sub.style.display=page==='daily'?'none':'';
+  ['daily','board','gantt','archive','summary'].forEach(p=>{const el=document.getElementById('nav-'+p);if(el)el.classList.toggle('active',p===page);});
   if(page==='archive')renderArchive();
   if(page==='gantt')renderGantt();
   if(page==='summary')renderSummary();
+  if(page==='daily')renderDaily();
 }
 
 /* ── STAFF FILTER ── */
@@ -1322,7 +1508,7 @@ function buildProjectEntry(proj,phase){
 function buildTaskRow(proj,t){
   const row=document.createElement('div');
   row.className='task-row';
-  if(t.done)row.style.opacity='0.56';
+  if(t.done)row.style.opacity='0.4';
 
   const chk=document.createElement('button');
   chk.className='task-check'+(t.done?' done-check':'');
@@ -1466,7 +1652,7 @@ function saveTaskTime(pId,tId){
 }
 function markDone(pId,tId){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;editingTask=null;scheduleSave();renderProjects();}
 function markDoneCtx(pId,tId){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;scheduleSave();renderProjects();}
-function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(p)p.tasks=p.tasks.filter(t=>t.id!==tId);scheduleSave();renderProjects();}
+function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(!p)return;const t=p.tasks.find(t=>t.id===tId);if(!t)return;if(!confirm(`Delete task "${t.name}"?`))return;p.tasks=p.tasks.filter(t=>t.id!==tId);scheduleSave();if(currentPage==='summary')renderSummary();else renderProjects();}
 function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
 function deleteProject(id){const p=projects.find(p=>p.id===id);if(!p)return;if(!confirm(`Delete "${p.name}" permanently?`))return;projects=projects.filter(p=>p.id!==id);scheduleSave();renderProjects();}
 function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;scheduleSave();renderProjects();if(currentPage==='archive')renderArchive();}
@@ -1649,7 +1835,12 @@ function renderSummary(){
     date.className='due-date'+(cls?' '+cls:'');
     date.textContent=fmtDueRel(item);
 
-    row.appendChild(chk);row.appendChild(tname);row.appendChild(pname);row.appendChild(staff);row.appendChild(date);
+    const del=document.createElement('button');
+    del.className='due-del';del.innerHTML='✕';
+    del.title='Delete task';
+    del.addEventListener('click',e=>{e.stopPropagation();deleteTask(item.proj.id,item.task.id);});
+
+    row.appendChild(chk);row.appendChild(tname);row.appendChild(pname);row.appendChild(staff);row.appendChild(date);row.appendChild(del);
     return row;
   }
 
@@ -1747,6 +1938,196 @@ function openCalForEl(btn){
   showCalendar(btn,cur,picked=>{btn.dataset.date=picked;btn.textContent=new Date(picked+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});});
 }
 
+/* ════════════════════════════════════════════
+   DAILY LIST — separate model, shares ghToken
+   Data file: daily.json   Inbox folder: daily-inbox/
+   ════════════════════════════════════════════ */
+const DAILY_FILE='daily.json';
+const DAILY_INBOX='daily-inbox';
+const DAILY_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${DAILY_FILE}`;
+const DAILY_INBOX_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${DAILY_INBOX}`;
+const DAILY_CACHE_KEY='daily_v1_cache';
+const DAILY_RECENT_DONE_MS=30*1000;
+const DAILY_EXPAND_AUTO_HIDE_MS=4000;
+
+let dailyItems=[];
+let dailyRemoteSha=null;
+let dailySaveTimer=null;
+let dailyArchiveCleanupTimer=null;
+let dailyExpandTimer=null;
+
+function dailyLoadCache(){try{return JSON.parse(localStorage.getItem(DAILY_CACHE_KEY))||[];}catch(e){return[];}}
+function dailySaveCache(){localStorage.setItem(DAILY_CACHE_KEY,JSON.stringify(dailyItems));}
+
+function dailyB64ToUtf8(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))));}
+function dailyUtf8ToB64(s){return btoa(unescape(encodeURIComponent(s)));}
+
+async function dailyPull(){
+  if(!ghToken)throw new Error('no token');
+  const r=await fetch(DAILY_API,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});
+  if(r.status===404){dailyRemoteSha=null;return[];}
+  if(!r.ok)throw new Error('daily pull '+r.status);
+  const j=await r.json();
+  dailyRemoteSha=j.sha;
+  const txt=dailyB64ToUtf8(j.content);
+  const parsed=JSON.parse(txt);
+  return Array.isArray(parsed)?parsed:(parsed.items||[]);
+}
+
+async function dailyPush(){
+  if(!ghToken)return;
+  const body={message:`daily list ${new Date().toISOString()}`,content:dailyUtf8ToB64(JSON.stringify({items:dailyItems},null,2)),branch:GH_BRANCH};
+  if(dailyRemoteSha)body.sha=dailyRemoteSha;
+  const r=await fetch(DAILY_API,{method:'PUT',headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!r.ok)throw new Error('daily push '+r.status);
+  const j=await r.json();
+  if(j.content&&j.content.sha)dailyRemoteSha=j.content.sha;
+}
+
+async function dailyDrainInbox(){
+  if(!ghToken)return 0;
+  const r=await fetch(DAILY_INBOX_API,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});
+  if(r.status===404)return 0;
+  if(!r.ok)throw new Error('daily inbox '+r.status);
+  const files=await r.json();
+  if(!Array.isArray(files)||files.length===0)return 0;
+  let added=0;
+  const existing=new Set(dailyItems.map(i=>i.text.trim().toLowerCase()));
+  for(const f of files){
+    if(f.type!=='file'||!f.name.endsWith('.json'))continue;
+    const fr=await fetch(f.url,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});
+    if(!fr.ok)continue;
+    const fj=await fr.json();
+    let parsed;
+    try{parsed=JSON.parse(dailyB64ToUtf8(fj.content));}catch(e){continue;}
+    const incoming=Array.isArray(parsed)?parsed:(parsed.items||[]);
+    for(const raw of incoming){
+      const txt=(typeof raw==='string'?raw:(raw&&raw.text)||'').trim();
+      if(!txt)continue;
+      const key=txt.toLowerCase();
+      if(existing.has(key))continue;
+      existing.add(key);
+      dailyItems.unshift({id:Date.now()+Math.floor(Math.random()*1000),text:txt,done:false,deferUntil:null});
+      added++;
+    }
+    await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${DAILY_INBOX}/${encodeURIComponent(f.name)}`,{
+      method:'DELETE',
+      headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body:JSON.stringify({message:`consume daily inbox ${f.name}`,sha:fj.sha,branch:GH_BRANCH})
+    });
+  }
+  return added;
+}
+
+async function dailySyncAll(){
+  if(!ghToken){renderDaily();return;}
+  try{
+    const remote=await dailyPull();
+    dailyItems=remote;
+    const added=await dailyDrainInbox();
+    dailySaveCache();
+    if(added>0)await dailyPush();
+    renderDaily();
+  }catch(e){
+    console.error('daily sync',e);
+    renderDaily();
+  }
+}
+
+function dailyPushSoon(){
+  dailySaveCache();
+  if(!ghToken)return;
+  if(dailySaveTimer)clearTimeout(dailySaveTimer);
+  dailySaveTimer=setTimeout(async()=>{
+    try{await dailyPush();}catch(e){console.error('daily save',e);}
+  },1200);
+}
+
+function dailyAddDays(days){const d=new Date();d.setDate(d.getDate()+days);d.setHours(0,0,0,0);return d.getTime();}
+function dailyIsVisible(i){return!i.deferUntil||Date.now()>=i.deferUntil;}
+
+function dailyAdd(text){
+  if(!text.trim())return;
+  dailyItems.unshift({id:Date.now(),text:text.trim(),done:false,deferUntil:null});
+  dailyPushSoon();renderDaily();
+}
+function dailyToggleDone(id){
+  const i=dailyItems.find(x=>x.id===id);if(!i)return;
+  i.done=!i.done;
+  if(i.done){i.completedAt=Date.now();if(dailyArchiveCleanupTimer)clearTimeout(dailyArchiveCleanupTimer);dailyArchiveCleanupTimer=setTimeout(renderDaily,DAILY_RECENT_DONE_MS+200);}
+  else{i.completedAt=null;}
+  dailyPushSoon();renderDaily();
+}
+function dailyDelete(id){dailyItems=dailyItems.filter(i=>i.id!==id);dailyPushSoon();renderDaily();}
+function dailyDefer(id,days){const i=dailyItems.find(x=>x.id===id);if(i){i.deferUntil=dailyAddDays(days);i.done=false;i.completedAt=null;}dailyPushSoon();renderDaily();}
+function dailyBringToToday(id){const i=dailyItems.find(x=>x.id===id);if(i){i.deferUntil=null;i.done=false;i.completedAt=null;}dailyPushSoon();renderDaily();}
+
+function dailyToggleExpand(li){
+  if(li.classList.contains('expanded')){li.classList.remove('expanded');if(dailyExpandTimer){clearTimeout(dailyExpandTimer);dailyExpandTimer=null;}return;}
+  document.querySelectorAll('li.daily-item.expanded').forEach(o=>{if(o!==li)o.classList.remove('expanded');});
+  li.classList.add('expanded');
+  if(dailyExpandTimer)clearTimeout(dailyExpandTimer);
+  dailyExpandTimer=setTimeout(()=>{li.classList.remove('expanded');dailyExpandTimer=null;},DAILY_EXPAND_AUTO_HIDE_MS);
+}
+
+function dailyEsc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function dailyBuildList(list,kind){
+  if(!list.length)return'';
+  const isDone=kind==='recent'||kind==='archive';
+  return '<ul class="daily-list">'+list.map(item=>{
+    let actions='';
+    if(kind==='active'){
+      actions=`<div class="daily-item-actions"><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},1)">Tomorrow</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},7)">Next Week</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},30)">Next Month</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer danger" onclick="event.stopPropagation();dailyDelete(${item.id})">Delete</button></div>`;
+    }else if(kind==='deferred'){
+      actions=`<div class="daily-item-actions"><button class="daily-btn-defer" onclick="event.stopPropagation();dailyBringToToday(${item.id})">Today</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},1)">Tomorrow</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},7)">Next Week</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer" onclick="event.stopPropagation();dailyDefer(${item.id},30)">Next Month</button><span class="daily-defer-sep">·</span><button class="daily-btn-defer danger" onclick="event.stopPropagation();dailyDelete(${item.id})">Delete</button></div>`;
+    }else if(kind==='archive'){
+      actions=`<div class="daily-item-actions"><button class="daily-btn-defer danger" onclick="event.stopPropagation();dailyDelete(${item.id})">Delete</button></div>`;
+    }
+    return `<li class="daily-item${isDone?' done':''}"><button class="daily-check-btn" onclick="event.stopPropagation();dailyToggleDone(${item.id})"><span class="daily-check-dot"></span></button><div class="daily-item-body"><span class="daily-item-text">${dailyEsc(item.text)}</span>${actions}</div></li>`;
+  }).join('')+'</ul>';
+}
+
+function renderDaily(){
+  const c=document.getElementById('daily-list-container');
+  if(!c)return;
+  const now=Date.now();
+  const active=dailyItems.filter(i=>!i.done&&dailyIsVisible(i));
+  const recent=dailyItems.filter(i=>i.done&&i.completedAt&&(now-i.completedAt)<DAILY_RECENT_DONE_MS);
+  const archive=dailyItems.filter(i=>i.done&&(!i.completedAt||(now-i.completedAt)>=DAILY_RECENT_DONE_MS));
+  const deferred=dailyItems.filter(i=>!i.done&&!dailyIsVisible(i));
+  let html='';
+  if(!active.length&&!recent.length&&!archive.length&&!deferred.length){
+    html+='<div class="daily-empty">Nothing here yet.</div>';
+  }else{
+    html+=dailyBuildList(active,'active');
+  }
+  if(recent.length)html+=dailyBuildList(recent,'recent');
+  if(archive.length){
+    html+=`<div class="daily-collapsible-section"><button class="daily-collapsible-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.arrow').textContent=this.nextElementSibling.classList.contains('open')?'−':'+';"><span>Completed (${archive.length})</span><span class="arrow">+</span></button><div class="daily-collapsible-list">${dailyBuildList(archive,'archive')}</div></div>`;
+  }
+  if(deferred.length){
+    html+=`<div class="daily-collapsible-section"><button class="daily-collapsible-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.arrow').textContent=this.nextElementSibling.classList.contains('open')?'−':'+';"><span>Deferred (${deferred.length})</span><span class="arrow">+</span></button><div class="daily-collapsible-list">${dailyBuildList(deferred,'deferred')}</div></div>`;
+  }
+  c.innerHTML=html;
+  c.querySelectorAll('li.daily-item:not(.done)').forEach(li=>{
+    li.addEventListener('click',e=>{if(e.target.closest('button'))return;dailyToggleExpand(li);});
+  });
+}
+
+function dailyInit(){
+  dailyItems=dailyLoadCache();
+  renderDaily();
+  const inp=document.getElementById('daily-new-item');
+  if(inp){
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){dailyAdd(e.target.value);e.target.value='';}});
+  }
+  if(ghToken)dailySyncAll();
+  setInterval(renderDaily,60000);
+  setInterval(()=>{if(ghToken)dailySyncAll();},5*60*1000);
+  window.addEventListener('focus',()=>{if(ghToken)dailySyncAll();});
+}
+
 /* ── KEYBOARD ── */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){cancelEdit();cancelInlineAdd();hideSetup();hideImport();closeProjEdit();closeCalendar();}
@@ -1763,6 +2144,14 @@ if(_vl)_vl.textContent='v'+APP_VERSION+' · '+APP_VERSION_DATE;
 const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
+
+// Daily List boots after the project board's GH bootstrap. It pulls daily.json
+// and drains daily-inbox/ independently, so a missing/empty daily.json doesn't
+// disturb the project board state.
+dailyInit();
+// Hide the "+ New project" sub-navbar on the default Daily page; showPage() takes
+// over visibility from here.
+(function(){const sub=document.querySelector('.sub-navbar');if(sub)sub.style.display='none';})();
 </script>
 </body>
 </html>

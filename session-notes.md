@@ -150,3 +150,63 @@ Verification: extracted JS, ran `node --check` — clean. Bumped APP_VERSION 1.1
 - Bumped APP_VERSION → 1.18.
 - Verified: `node --check` passed.
 - Force-reload: append `?v=18` to the URL after pushing.
+
+## v1.19 · Apr 28, 2026 · 8:30 PM
+- **Phase % label above dot slider**: font-size 8px → 13px (60% larger); adjusted track height to 28px and repositioned band/input to match
+- **Phase summary next to project name**: `%` signs now bold (`<b>%</b>`), rendered via innerHTML
+- **More space between phases**: dp-wrap vertical gap 2px → 8px
+- **Completed tasks darker**: row opacity 0.4 → 0.56 (40% darker)
+
+## v1.20 · Apr 28, 2026 · 9:05 PM
+- **"+ Set due date" placeholder readable on tinted backgrounds**: `.task-due.empty` color `--ink-faint` (#eeebe4) → `--ink-light` (#9a8e80). Hover state `--ink-light` → `--ink-mid` (#6a5e50) to keep the affordance distinct. Was nearly invisible against the cream/mint/blush phase tints (#fdfbf3, #ecf6ee, #fdf5f3 etc.) since `--ink-faint` is itself a near-cream color.
+- **Completed task name no longer washed out**: `.task-name.done` color `rgba(200,195,185,0.9)` → `var(--ink)` (#2e2e2e). Row already fades to opacity 0.56 (set in v1.19), so the strikethrough text now renders as a clearly-readable muted dark gray instead of disappearing into the background. Strikethrough still applied.
+- `node --check` on extracted inline JS: OK. `index.html` 81,205 bytes.
+- Force-reload `?v=20` after pushing to GitHub.
+
+## 2026-05-18 — v1.19: task delete usable on iPad
+- The board page already had an ✕ delete button per task, but it was `opacity:0` until hover — invisible on iPad/iPhone Safari (no hover state).
+  - Now: faintly visible by default (opacity 0.4), full opacity on hover, and bumped to 0.6 on touch devices via `@media (hover:none)`.
+- Added a matching ✕ delete button on the **Tasks by Due Date** page rows (none existed before).
+- `deleteTask()` now shows a `confirm("Delete task ...?")` prompt to prevent accidental taps. It also re-renders the summary page if you're on it.
+- Bumped APP_VERSION → 1.19.
+- Verified: `node --check` passed.
+- Force-reload: append `?v=19`.
+
+## 2026-05-22 — v1.21: Daily List integrated as first page
+Followed the plan in `DAILY_LIST_HANDOFF.md`. The standalone Daily List (previously at `/Users/tscarlisle/Dropbox (Personal)/-Claude Cowork/DAILY LIST/`, since copied into `TSC-BOARD/DAILY LIST/` as reference) is now the **first page** of the project board site, sharing the masthead, navbar, type families, and color palette.
+
+**Nav order is now:** Daily · Board · Gantt · Archive · Due. Daily is the default landing page. The `+ New project` sub-navbar auto-hides on the Daily page since it doesn't apply there; `showPage()` toggles it back on for the other pages.
+
+**Type & color translation** (project-board language, not the brown/cream of the standalone Daily List):
+- Item text: `interstate-condensed` 26px bold uppercase, `var(--ink)` — matches `.project-name`.
+- Defer/Delete pills: `ff-meta-web-pro-condensed` 11px 0.14em uppercase — matches `.proj-act-btn`.
+- Section/collapsible labels (`Completed (n)` / `Deferred (n)`): same as `.phase-label` — `ff-meta-web-pro-condensed` 13px 0.18em uppercase with a 1px hairline under.
+- Check button: circular `var(--ink-mid)` 1.5px border, fills `var(--ink-light)` when done.
+- New-item input: `interstate-condensed` 22px with a dotted underline in `--rule-strong`.
+- Hairline color used inside Daily is `--rule` / `--ink-light` rather than the brown the standalone used.
+
+**Behavior preserved from the standalone app** (all of it):
+- Add via Enter on the input field. Spellcheck + autocapitalize-sentences + autocorrect on the input.
+- Click circle to mark done. Completed items linger inline for 30s, then collapse into a `Completed (n)` panel (deletion available from there).
+- Defer row appears on hover (desktop) or tap (mobile). Auto-hides after 4s if no action. Only one row expanded at a time.
+- Defer destinations: Tomorrow · Next Week · Next Month · Delete. Deferred items get an extra `Today` action.
+- `Deferred (n)` collapsible at the bottom for items waiting on a future date.
+
+**Sync setup** — reuses the project board's existing `ghToken` and `GH_USER`/`GH_REPO`/`GH_BRANCH` constants. No separate Settings panel.
+- Data file in the repo: **`daily.json`** (not `data.json` — that's the project board's).
+- Inbox folder for the iPhone Shortcut: **`daily-inbox/`** (not `inbox/`).
+- Pulls `daily.json` on init, after 5-minute interval, on window focus. Drains `daily-inbox/` (dedup by lowercased text), pushes the merged list back, deletes the consumed inbox files.
+- localStorage cache key: `daily_v1_cache` (doesn't collide with the board's `pb_v3`).
+- A missing `daily.json` is treated as an empty list (404 → no error). First save will create it.
+
+**iPhone Shortcut change needed:** the existing "Daily List" Shortcut needs to PUT into `daily-inbox/` in the `tscarlisle-ghub/Project-Board` repo (not the old `inbox/` in the standalone repo). Same JSON shape, same PAT.
+
+**Files touched:** `index.html` only. Added a CSS block (`#daily-page` and `.daily-*`) before `</style>`, added `<div id="daily-page">…</div>` before `#board-page` (with `style="display:none;"` added to `#board-page` so Daily is the default visible view), prepended the Daily nav button + separator, updated `showPage()` to toggle the new view + the sub-navbar visibility, changed `currentPage` default from `'board'` to `'daily'`, appended ~190 lines of Daily List JS module (sync, list ops, render, init) before the KEYBOARD section, and added a `dailyInit()` call after the existing GH bootstrap.
+
+**Verification:** extracted inline `<script>` block (60,618 bytes) and ran `node --check` — clean. Final `index.html` is 97,872 bytes / 2,157 lines.
+
+**Standalone `DAILY LIST/` folder** at `TSC-BOARD/DAILY LIST/` is preserved as reference. Once Scott confirms the integrated view works, that folder can be moved to `archive/daily-list/` (or deleted) — but its `SESSION_NOTES.md` should be kept somewhere since the design rationale for the typographic decisions lives there.
+
+**Bump:** APP_VERSION → 1.21 (skipped 1.20 since the May 18 iPad-delete entry above is labeled v1.19 but the live file's `APP_VERSION` constant was still `'1.19'` — picking 1.21 keeps the version line monotonic from the file's actual state).
+
+**Force-reload:** append `?v=21` to the URL in Safari after pushing to GitHub.
