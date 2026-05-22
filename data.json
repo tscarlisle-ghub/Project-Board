@@ -330,7 +330,7 @@
           "id": 56,
           "name": "Start interiors",
           "days": 1,
-          "done": true,
+          "done": false,
           "due": "2026-04-27",
           "createdAt": "2026-04-26T13:58:17.355Z"
         },
