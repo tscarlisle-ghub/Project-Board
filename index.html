@@ -424,6 +424,13 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
   border:1px solid var(--rule);background:none;color:var(--ink-light);
 }
 .pep-staff-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
+.pep-lead-btn{
+  font-family:"ff-meta-web-pro",sans-serif;font-weight:400;font-size:12px;
+  padding:4px 12px;border-radius:3px;cursor:pointer;
+  border:1px solid var(--rule);background:none;color:var(--ink-mid);
+}
+.pep-lead-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
+#proj-edit-popup{width:480px;max-width:92vw;}
 
 /* ── CONTEXT MENU ── */
 .ctx-menu{position:fixed;background:white;border:1px solid var(--rule);border-radius:3px;padding:4px 0;min-width:180px;z-index:9999;box-shadow:0 3px 16px rgba(0,0,0,0.1);}
@@ -702,10 +709,11 @@ body{background:var(--paper-0);}
 .v5-page-title{
   font-family:var(--ff-display);
   font-weight:400;
-  font-size:22px;
+  font-size:28px;
   text-transform:uppercase;
   letter-spacing:var(--tr-engraved);
   color:var(--v5-engraved);
+  line-height:1;
 }
 .v5-title-divider{width:1px;height:20px;background:var(--ink-5);margin:0 4px;}
 .v5-subline{
@@ -715,19 +723,28 @@ body{background:var(--paper-0);}
   color:var(--ink-3);
 }
 .v5-title-spacer{flex:1;}
+.v5-search-wrap{
+  display:inline-flex;align-items:center;gap:6px;
+  border-bottom:1px solid var(--ink-5);
+  padding:2px 0;
+  transition:border-color 0.15s;
+}
+.v5-search-wrap:focus-within{border-bottom-color:var(--forest-1);}
+.v5-search-icon{
+  width:13px;height:13px;
+  color:var(--ink-3);
+  flex-shrink:0;
+}
 .v5-search{
   font-family:var(--ff-sans);
   font-size:12px;
   color:var(--ink-1);
   background:transparent;
   border:none;
-  border-bottom:1px solid var(--ink-5);
   outline:none;
-  padding:4px 6px;
+  padding:2px 4px;
   width:200px;
-  transition:border-color 0.15s;
 }
-.v5-search:focus{border-bottom-color:var(--forest-1);}
 .v5-search::placeholder{color:var(--ink-4);font-style:italic;}
 .v5-newproj-btn{
   font-family:var(--ff-sans-cond);
@@ -762,25 +779,31 @@ body{background:var(--paper-0);}
   margin-right:6px;
 }
 .v5-chip{
-  font-family:var(--ff-sans);
-  font-size:12px;
+  font-family:var(--ff-sans-cond);
+  font-weight:600;
+  font-size:11px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
   color:var(--ink-2);
   background:transparent;
   border:none;
   cursor:pointer;
   padding:2px 0;
-  border-bottom:1px solid transparent;
+  border-bottom:1.5px solid transparent;
   margin-right:14px;
-  display:inline-flex;align-items:baseline;gap:5px;
+  display:inline-flex;align-items:baseline;gap:6px;
 }
 .v5-chip:hover{color:var(--ink-0);}
 .v5-chip.active{color:var(--ink-0);font-weight:700;border-bottom-color:var(--forest-1);}
+.v5-chip-phase{margin-right:28px;}
 .v5-chip-count{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:11px;
+  font-size:12px;
   color:var(--forest-1);
   font-weight:400;
+  letter-spacing:0;
+  text-transform:none;
 }
 .v5-chip-sep{color:var(--ink-4);margin-right:10px;font-size:11px;}
 
@@ -811,8 +834,11 @@ body{background:var(--paper-0);}
 .v5-row.expanded{
   background:var(--forest-4);
   border-left:2px solid var(--forest-1);
+  border-bottom-color:transparent;
   margin-left:-2px;
 }
+.v5-chev{display:flex;align-items:center;justify-content:flex-end;color:var(--ink-3);}
+.v5-row.expanded .v5-chev{color:var(--ink-1);}
 .v5-cell-num{text-align:right;font-family:var(--ff-mono);font-size:13px;color:var(--ink-1);font-variant-numeric:tabular-nums;}
 .v5-stamp{
   font-family:var(--ff-mono);
@@ -843,6 +869,13 @@ body{background:var(--paper-0);}
   color:var(--ink-3);
   margin-top:4px;
   letter-spacing:0.01em;
+}
+.v5-lead{
+  font-family:var(--ff-mono);
+  font-size:10px;
+  color:var(--ink-3);
+  margin-top:6px;
+  letter-spacing:0.02em;
 }
 .v5-tasks-col{display:flex;flex-direction:column;gap:3px;min-width:0;}
 .v5-task-line{display:grid;grid-template-columns:18px auto 1fr auto;align-items:baseline;gap:8px;min-width:0;}
@@ -920,13 +953,6 @@ body{background:var(--paper-0);}
 .v5-status.hold{color:var(--v5-warn);}
 .v5-status.done{color:var(--ink-4);}
 .v5-status.prospect{color:var(--v5-info);}
-.v5-chev{
-  text-align:right;
-  color:var(--ink-3);
-  font-size:13px;
-  user-select:none;
-  font-family:var(--ff-sans);
-}
 
 /* V5 Expanded detail */
 .v5-expand{
@@ -938,30 +964,38 @@ body{background:var(--paper-0);}
 }
 .v5-expand-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px 32px;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px 36px;
   margin-bottom:14px;
+  text-align:center;
+  border-bottom:1px solid var(--ink-5);
+  padding-bottom:14px;
 }
 .v5-meta-label{
   font-family:var(--ff-sans-cond);
   font-weight:600;
   font-size:9px;
-  letter-spacing:0.12em;
+  letter-spacing:0.14em;
   text-transform:uppercase;
   color:var(--ink-3);
-  margin-bottom:3px;
+  margin-bottom:5px;
 }
 .v5-meta-value{
   font-family:var(--ff-serif);
-  font-size:13px;
+  font-size:14px;
   color:var(--ink-0);
+}
+/* The middle (Lead) cell gets a forest underline beneath the value, like a focus
+   indicator — matches the screenshot. */
+.v5-meta-value-emph{
+  display:inline-block;
+  border-bottom:2px solid var(--forest-1);
+  padding-bottom:4px;
 }
 .v5-fee-blocks{
   display:flex;gap:36px;align-items:flex-start;
-  padding:12px 0 8px;
-  border-top:0.5px solid var(--ink-5);
-  border-bottom:0.5px solid var(--ink-5);
-  margin:8px 0 12px;
+  padding:14px 0 4px;
+  margin:0;
 }
 .v5-fee-block-label{
   font-family:var(--ff-sans-cond);
@@ -978,9 +1012,9 @@ body{background:var(--paper-0);}
   color:var(--ink-0);
   font-variant-numeric:tabular-nums;
 }
-.v5-fee-bar-wrap{margin:6px 0 4px;}
+.v5-fee-bar-wrap{margin:8px 0 6px;width:100%;}
 .v5-fee-bar{
-  height:4px;background:var(--paper-2);position:relative;overflow:hidden;
+  height:4px;background:var(--paper-2);position:relative;overflow:hidden;width:100%;
 }
 .v5-fee-bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--forest-1);}
 .v5-fee-bar-label{
@@ -988,8 +1022,9 @@ body{background:var(--paper-0);}
   font-size:10px;
   color:var(--ink-3);
   text-align:right;
-  margin-top:3px;
+  margin-top:4px;
   font-variant-numeric:tabular-nums;
+  letter-spacing:0.02em;
 }
 .v5-activity-label{
   font-family:var(--ff-sans-cond);
@@ -1169,8 +1204,11 @@ body{background:var(--paper-0);}
         <span class="v5-title-divider"></span>
         <span class="v5-subline" id="v5-subline"></span>
         <span class="v5-title-spacer"></span>
-        <input class="v5-search" id="v5-search" placeholder="Search client, address" oninput="v5SetQuery(this.value)" />
-        <button class="v5-newproj-btn" onclick="openNewProjectModal()">+ New Project</button>
+        <span class="v5-search-wrap">
+          <svg class="v5-search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><circle cx="9" cy="9" r="5"/><path d="M13 13l4 4"/></svg>
+          <input class="v5-search" id="v5-search" placeholder="Search client, address" oninput="v5SetQuery(this.value)" />
+        </span>
+        <button class="v5-newproj-btn" onclick="openNewProjectModal()">+ NEW PROJECT</button>
       </div>
       <div class="v5-strip" id="v5-phase-strip"></div>
       <div class="v5-strip" id="v5-staff-strip"></div>
@@ -1199,7 +1237,14 @@ body{background:var(--paper-0);}
       </select>
     </div>
     <div class="v5-modal-field">
-      <label>Lead designer</label>
+      <label>Principal lead</label>
+      <select id="v5np-lead">
+        <option value="TSC">TSC · T. Scott Carlisle</option>
+        <option value="BM">BM · Bill Moore</option>
+      </select>
+    </div>
+    <div class="v5-modal-field">
+      <label>Default assignee</label>
       <select id="v5np-staff">
         <option value="Scott">Scott</option>
         <option value="Maddie">Maddie</option>
@@ -1295,8 +1340,8 @@ body{background:var(--paper-0);}
    Sidebar nav, expandable rows, billing integration.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.24';
-const APP_VERSION_DATE='May 22, 2026 · 5:30 PM';
+const APP_VERSION='1.25';
+const APP_VERSION_DATE='May 22, 2026 · 6:15 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1313,14 +1358,15 @@ const TOOL_LINKS={
 };
 let billingMap={};  /* normalized-name -> {fee, billed, collected, invoices[]} */
 
-/* V5 phase enum (derived, not stored) */
+/* V5 phase enum (derived, not stored). Done is intentionally absent from this list —
+   the Phase strip filters only show 6 chips; "Done" projects surface via the
+   Sidebar's Complete filter. v5ComputePhase can still return 'Done' as a stamp. */
 const V5_PHASES=[
   {code:'PROS',name:'Prospects'},
   {code:'SD',name:'Schematic Design'},
   {code:'DD',name:'Design Development'},
   {code:'CD',name:'Construction Documents'},
-  {code:'CA',name:'Construction Administration'},
-  {code:'Done',name:'Complete'}
+  {code:'CA',name:'Construction Administration'}
 ];
 const V5_STAFF=['Maddie','Kathleen','Kat'];  /* design staff (Scott = principal) */
 
@@ -1441,6 +1487,10 @@ const SAMPLE_PROJECTS=[
 
 /* ── GITHUB ── */
 function setStatus(msg,type,dur=0){const el=document.getElementById('sync-status');if(!el)return;el.textContent=msg;el.className='sync-status '+(type||'');if(dur)setTimeout(()=>{el.textContent='';el.className='sync-status';},dur);}
+/* V5 — Principal lead (TSC = T. Scott Carlisle, BM = Bill Moore) */
+const LEAD_NAMES={TSC:'T. Scott Carlisle',BM:'Bill Moore'};
+function leadFull(code){return LEAD_NAMES[code]||code||'—';}
+
 function normalizeProjects(){
   projects.forEach(p=>{
     p.tasks=p.tasks||[];
@@ -1448,6 +1498,7 @@ function normalizeProjects(){
     p.staff=p.staff||DEFAULT_STAFF;
     p.colorIdx=p.colorIdx||0;
     p.designPercent=Number(p.designPercent)||0;
+    p.lead=p.lead||'TSC';  // V5: principal-in-charge defaults to T. Scott Carlisle
     ensurePhasePercents(p);
     // V5: per-task assignee — default each task's `who` to the project's staff if missing
     p.tasks.forEach(t=>{if(!t.who)t.who=p.staff||DEFAULT_STAFF;});
@@ -1730,17 +1781,18 @@ function renderV5Strips(){
   const c=v5Counts();
   const phaseEl=document.getElementById('v5-phase-strip');
   if(phaseEl){
+    /* Phase strip: chips separated by whitespace only (no middle dots) */
     let html=`<span class="v5-strip-label">Phase</span>`;
     const items=[{code:'all',name:'All',n:c.all}].concat(V5_PHASES.map(p=>({code:p.code,name:p.name,n:c[p.code]||0})));
-    items.forEach((it,i)=>{
+    items.forEach(it=>{
       const active=v5State.phase===it.code;
-      html+=`<button class="v5-chip${active?' active':''}" onclick="v5SetPhase('${it.code}')">${v5Escape(it.name)} <span class="v5-chip-count">${it.n}</span></button>`;
-      if(i<items.length-1)html+=`<span class="v5-chip-sep">·</span>`;
+      html+=`<button class="v5-chip v5-chip-phase${active?' active':''}" onclick="v5SetPhase('${it.code}')">${v5Escape(it.name)} <span class="v5-chip-count">${it.n}</span></button>`;
     });
     phaseEl.innerHTML=html;
   }
   const staffEl=document.getElementById('v5-staff-strip');
   if(staffEl){
+    /* Assigned strip: chips separated by middle dots */
     const sc=v5StaffCounts();
     const total=Object.values(sc).reduce((a,b)=>a+b,0);
     let html=`<span class="v5-strip-label">Assigned</span>`;
@@ -1800,17 +1852,26 @@ function v5ProjectRow(p){
     <div>
       <div class="v5-client">${v5Escape(p.name)}</div>
       <div class="v5-scope">${v5Escape(TYPE_LABELS[p.type]||'')}</div>
+      <div class="v5-lead">Lead · ${v5Escape(p.lead||'TSC')}</div>
     </div>
     <div class="v5-tasks-col">${tasksHtml}${moreHtml}</div>
     <span class="v5-cell-num">${open.length}</span>
     ${feeHtml}
     <span class="v5-status ${status}">${v5StatusWord(status)}</span>
-    <span class="v5-chev">${expanded?'▴':'▾'}</span>
+    <span class="v5-chev">${v5ChevronSvg(expanded)}</span>
   </div>${expanded?v5ExpandedDetail(p,billing):''}`;
 }
 
+function v5ChevronSvg(up){
+  return up
+    ? '<svg width="11" height="7" viewBox="0 0 11 7" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="square"><path d="M1 5.5L5.5 1L10 5.5"/></svg>'
+    : '<svg width="11" height="7" viewBox="0 0 11 7" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="square"><path d="M1 1.5L5.5 6L10 1.5"/></svg>';
+}
+
 function v5ExpandedDetail(p,billing){
-  const phaseName=(V5_PHASES.find(x=>x.code===v5ComputePhase(p))||{}).name||'—';
+  const phaseName=(V5_PHASES.find(x=>x.code===v5ComputePhase(p))||{name:v5ComputePhase(p)}).name;
+  const leadCode=p.lead||'TSC';
+  const addr='—';  // address not stored on project; placeholder for now
   /* Activity timeline — synthesize from tasks (done first, then by createdAt) */
   const acts=[];
   (p.tasks||[]).forEach(t=>{
@@ -1822,44 +1883,28 @@ function v5ExpandedDetail(p,billing){
     const dateStr=a.date?a.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
     return `<div class="v5-activity-row"><span class="a-date">${v5Escape(dateStr)}</span><span class="a-who">${v5Escape(a.who)}</span><span class="a-text">${v5Escape(a.text)}</span></div>`;
   }).join('')||'<div style="font-family:var(--ff-serif);font-style:italic;font-size:12px;color:var(--ink-3);">No activity yet.</div>';
-  /* Fee blocks if billing present */
-  let feeBlocks='';
+  /* Fee blocks + full-width progress bar */
+  let feeSection='';
   if(billing&&billing.fee>0){
     const remaining=Math.max(0,billing.fee-billing.billed);
     const pct=billing.fee?Math.min(100,Math.round((billing.billed/billing.fee)*100)):0;
-    feeBlocks=`<div class="v5-fee-blocks">
-      <div><div class="v5-fee-block-label">Fee</div><div class="v5-fee-block-value">${v5FmtMoney(billing.fee)}</div></div>
-      <div><div class="v5-fee-block-label">Billed</div><div class="v5-fee-block-value">${v5FmtMoney(billing.billed)}</div></div>
-      <div><div class="v5-fee-block-label">Remaining</div><div class="v5-fee-block-value">${v5FmtMoney(remaining)}</div></div>
-      <div style="flex:1;margin-top:14px;"><div class="v5-fee-bar-wrap"><div class="v5-fee-bar"><div class="v5-fee-bar-fill" style="width:${pct}%;"></div></div><div class="v5-fee-bar-label">${pct}% billed</div></div></div>
-    </div>`;
-  }
-  /* Design-phase slider — keep existing UI inside the expanded panel */
-  ensurePhasePercents(p);
-  const sliderHtml=`<div style="margin:8px 0 4px;"><div class="v5-meta-label" style="margin-bottom:6px;">Design progress</div>
-    <div class="dp-wrap">${DP_BANDS.map(b=>{
-      const v=Math.max(0,Math.min(100,Number(p.phasePercents[b.key])||0));
-      const fill=PHASE_FILL[b.key]||'#888';
-      return `<div class="dp-row" style="--phase-color:${fill};">
-        <div class="dp-row-label">${b.key}</div>
-        <div class="dp-row-track">
-          <div class="dp-row-pct" style="left:${v}%;--pct:${v};">${v}%</div>
-          <div class="dp-row-band"></div>
-          <div class="dp-row-fill" style="width:${v}%;"></div>
-          <input class="dp-row-input" type="range" min="0" max="100" step="5" value="${v}"
-            oninput="event.stopPropagation();updatePhasePercentLive(${p.id},'${b.key}',this.value,this)"
-            onchange="event.stopPropagation();updatePhasePercentSave()"
-            onclick="event.stopPropagation();" />
-        </div>
+    feeSection=`<div class="v5-fee-blocks">
+        <div><div class="v5-fee-block-label">Fee</div><div class="v5-fee-block-value">${v5FmtMoney(billing.fee)}</div></div>
+        <div><div class="v5-fee-block-label">Billed</div><div class="v5-fee-block-value">${v5FmtMoney(billing.billed)}</div></div>
+        <div><div class="v5-fee-block-label">Remaining</div><div class="v5-fee-block-value">${v5FmtMoney(remaining)}</div></div>
+      </div>
+      <div class="v5-fee-bar-wrap">
+        <div class="v5-fee-bar"><div class="v5-fee-bar-fill" style="width:${pct}%;"></div></div>
+        <div class="v5-fee-bar-label">${pct}% billed</div>
       </div>`;
-    }).join('')}</div></div>`;
+  }
   return `<div class="v5-expand" onclick="event.stopPropagation();">
     <div class="v5-expand-grid">
       <div><div class="v5-meta-label">Phase</div><div class="v5-meta-value">${v5Escape(phaseName)}</div></div>
+      <div><div class="v5-meta-label">Lead</div><div class="v5-meta-value v5-meta-value-emph">${v5Escape(leadFull(leadCode))}</div></div>
       <div><div class="v5-meta-label">Type</div><div class="v5-meta-value">${v5Escape(TYPE_LABELS[p.type]||'Unassigned')}</div></div>
     </div>
-    ${feeBlocks}
-    ${sliderHtml}
+    ${feeSection}
     <div class="v5-activity-label">Activity</div>
     ${actHtml}
     <button class="v5-add-task-btn" onclick="event.stopPropagation();openInlineAdd(${p.id})">+ Add task</button>
@@ -1954,7 +1999,8 @@ function submitNewProjectModal(){
   const name=document.getElementById('v5np-name').value.trim();if(!name)return;
   const type=document.getElementById('v5np-type').value;
   const staff=document.getElementById('v5np-staff').value;
-  projects.push({id:nextId++,name,colorIdx:0,archived:false,type:type||'',staff:staff||DEFAULT_STAFF,designPercent:0,phasePercents:{SD:0,DD:0,CD:0,CA:0},tasks:[]});
+  const lead=(document.getElementById('v5np-lead')||{}).value||'TSC';
+  projects.push({id:nextId++,name,colorIdx:0,archived:false,type:type||'',staff:staff||DEFAULT_STAFF,lead,designPercent:0,phasePercents:{SD:0,DD:0,CD:0,CA:0},tasks:[]});
   closeNewProjectModal();scheduleSave();renderProjects();
 }
 
@@ -1967,21 +2013,43 @@ function openProjEditFromRow(pid){
 /* (Legacy buildNewProjectPanel / buildProjectEntry / buildTaskRow / buildEditForm / buildAddForm
    removed in V5 — their work is now done by the v5* render functions above.) */
 
-/* ── PROJECT EDIT POPUP ── */
+/* ── PROJECT EDIT POPUP (V5: adds Lead toggle + design-phase sliders) ── */
 function openProjEdit(projId,el){
   const proj=projects.find(p=>p.id===projId);if(!proj)return;
+  ensurePhasePercents(proj);
   const existing=document.getElementById('proj-edit-popup');if(existing)existing.remove();
   const popup=document.createElement('div');popup.id='proj-edit-popup';
+  const sliderHtml=DP_BANDS.map(b=>{
+    const v=Math.max(0,Math.min(100,Number(proj.phasePercents[b.key])||0));
+    const fill=PHASE_FILL[b.key]||'#888';
+    return `<div class="dp-row" style="--phase-color:${fill};">
+      <div class="dp-row-label">${b.key}</div>
+      <div class="dp-row-track">
+        <div class="dp-row-pct" style="left:${v}%;--pct:${v};">${v}%</div>
+        <div class="dp-row-band"></div>
+        <div class="dp-row-fill" style="width:${v}%;"></div>
+        <input class="dp-row-input" type="range" min="0" max="100" step="5" value="${v}"
+          oninput="updatePhasePercentLive(${proj.id},'${b.key}',this.value,this)"
+          onchange="updatePhasePercentSave()" />
+      </div>
+    </div>`;
+  }).join('');
   popup.innerHTML=`<div class="pep-label">Project name</div>
     <input class="pep-input" id="pep-name" value="${proj.name}" />
     <div class="pep-label">Type</div>
     <div class="pep-type-btns">
       ${['','new-construction','renovation','in-construction','prospect'].map(t=>`<button class="pep-type-btn${proj.type===t?' active':''}" onclick="pepSetType('${t}')">${t?TYPE_LABELS[t]:'None'}</button>`).join('')}
     </div>
-    <div class="pep-label">Staff</div>
+    <div class="pep-label">Lead</div>
+    <div class="pep-staff-btns">
+      ${Object.keys(LEAD_NAMES).map(code=>`<button class="pep-lead-btn${(proj.lead||'TSC')===code?' active':''}" onclick="pepSetLead('${code}')">${code} · ${LEAD_NAMES[code]}</button>`).join('')}
+    </div>
+    <div class="pep-label">Staff (default assignee)</div>
     <div class="pep-staff-btns">
       ${STAFF_MEMBERS.map(s=>`<button class="pep-staff-btn${(proj.staff||DEFAULT_STAFF)===s?' active':''}" onclick="pepSetStaff('${s}')">${s}</button>`).join('')}
     </div>
+    <div class="pep-label">Design progress</div>
+    <div class="dp-wrap">${sliderHtml}</div>
     <div class="pep-label">Color</div>
     <div class="pep-swatches">${PALETTE.map((p,i)=>`<div class="pep-swatch${i===proj.colorIdx?' active':''}" style="background:${p.base}" onclick="pepSetColor(${i})"></div>`).join('')}</div>
     <div class="pep-btns">
@@ -1996,20 +2064,22 @@ function openProjEdit(projId,el){
   const inp=document.getElementById('pep-name');if(inp){inp.focus();inp.select();}
   inp&&inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveProjEdit(projId);}if(e.key==='Escape')closeProjEdit();});
 }
-let _pepType,_pepStaff,_pepColor;
+let _pepType,_pepStaff,_pepColor,_pepLead;
 function pepSetType(t){_pepType=t;document.querySelectorAll('.pep-type-btn').forEach(b=>b.classList.toggle('active',b.textContent===(t?TYPE_LABELS[t]:'None')));}
 function pepSetStaff(s){_pepStaff=s;document.querySelectorAll('.pep-staff-btn').forEach(b=>b.classList.toggle('active',b.textContent===s));}
 function pepSetColor(i){_pepColor=i;document.querySelectorAll('.pep-swatch').forEach((s,idx)=>s.classList.toggle('active',idx===i));}
+function pepSetLead(code){_pepLead=code;document.querySelectorAll('.pep-lead-btn').forEach(b=>b.classList.toggle('active',b.textContent.startsWith(code+' ')));}
 function saveProjEdit(projId){
   const proj=projects.find(p=>p.id===projId);if(!proj)return;
   const inp=document.getElementById('pep-name');if(inp&&inp.value.trim())proj.name=inp.value.trim();
   if(_pepType!==undefined)proj.type=_pepType;
   if(_pepStaff!==undefined)proj.staff=_pepStaff;
   if(_pepColor!==undefined)proj.colorIdx=_pepColor;
-  _pepType=_pepStaff=_pepColor=undefined;
+  if(_pepLead!==undefined)proj.lead=_pepLead;
+  _pepType=_pepStaff=_pepColor=_pepLead=undefined;
   closeProjEdit();scheduleSave();renderProjects();
 }
-function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p)p.remove();_pepType=_pepStaff=_pepColor=undefined;}
+function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p)p.remove();_pepType=_pepStaff=_pepColor=_pepLead=undefined;}
 document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.v5-client')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
 
 /* ── TASK ACTIONS ── */
