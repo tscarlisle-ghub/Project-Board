@@ -10,19 +10,22 @@
           "id": 3,
           "name": "Revise side elements",
           "days": 1,
-          "done": true
+          "done": true,
+          "who": "Kathleen"
         },
         {
           "id": 4,
           "name": "start interiors",
           "days": 3,
-          "done": false
+          "done": false,
+          "who": "Kathleen"
         },
         {
           "id": 11,
           "name": "Check with ivy for interior look book",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Kathleen"
         }
       ],
       "type": "new-construction",
@@ -45,19 +48,22 @@
           "id": 6,
           "name": "Interior redo",
           "days": 7,
-          "done": false
+          "done": false,
+          "who": "Kat"
         },
         {
           "id": 7,
           "name": "check drawings for permit issue",
           "days": 1,
-          "done": true
+          "done": true,
+          "who": "Kat"
         },
         {
           "id": 62,
           "name": "Finish construction drawings for permit",
           "days": 7,
-          "done": false
+          "done": false,
+          "who": "Kat"
         }
       ],
       "type": "new-construction",
@@ -82,7 +88,8 @@
           "days": 49,
           "done": false,
           "due": "2026-06-12",
-          "createdAt": "2026-04-24T17:46:46.833Z"
+          "createdAt": "2026-04-24T17:46:46.833Z",
+          "who": "Maddie"
         },
         {
           "id": 52,
@@ -90,7 +97,8 @@
           "days": 5,
           "done": true,
           "due": "2026-04-29",
-          "createdAt": "2026-04-24T17:46:55.638Z"
+          "createdAt": "2026-04-24T17:46:55.638Z",
+          "who": "Maddie"
         },
         {
           "id": 53,
@@ -98,7 +106,8 @@
           "days": 14,
           "done": false,
           "due": "2026-05-08",
-          "createdAt": "2026-04-24T17:47:06.273Z"
+          "createdAt": "2026-04-24T17:47:06.273Z",
+          "who": "Maddie"
         },
         {
           "id": 65,
@@ -106,7 +115,8 @@
           "days": 7,
           "done": false,
           "createdAt": "2026-04-24T17:57:43.511Z",
-          "due": "2026-05-01"
+          "due": "2026-05-01",
+          "who": "Maddie"
         }
       ],
       "type": "new-construction",
@@ -129,19 +139,22 @@
           "id": 12,
           "name": "Draw new floor plan",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Kat"
         },
         {
           "id": 18,
           "name": "Get new survey",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Kat"
         },
         {
           "id": 19,
           "name": "build 3d model of exterior",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Kat"
         }
       ],
       "type": "renovation",
@@ -166,7 +179,8 @@
           "days": 17,
           "done": true,
           "due": "2026-05-12",
-          "createdAt": "2026-04-25T17:39:38.261Z"
+          "createdAt": "2026-04-25T17:39:38.261Z",
+          "who": "Maddie"
         },
         {
           "id": 55,
@@ -174,7 +188,8 @@
           "days": 7,
           "done": true,
           "due": "2026-05-02",
-          "createdAt": "2026-04-25T17:16:26.176Z"
+          "createdAt": "2026-04-25T17:16:26.176Z",
+          "who": "Maddie"
         }
       ],
       "type": "new-construction",
@@ -197,19 +212,22 @@
           "id": 22,
           "name": "landscape architect",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         },
         {
           "id": 23,
           "name": "Design exterior",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         },
         {
           "id": 59,
           "name": "Check on interior designer",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         }
       ],
       "type": "new-construction",
@@ -232,19 +250,22 @@
           "id": 15,
           "name": "construction drawings",
           "days": 14,
-          "done": false
+          "done": false,
+          "who": "Kat"
         },
         {
           "id": 16,
           "name": "Setup zoom call",
           "days": 1,
-          "done": true
+          "done": true,
+          "who": "Kat"
         },
         {
           "id": 17,
           "name": "confirm contractor",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Kat"
         }
       ],
       "type": "renovation",
@@ -268,7 +289,8 @@
           "id": 58,
           "name": "New floor plans for various sites",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -307,7 +329,8 @@
           "id": 64,
           "name": "Check in with dorksy on pricing",
           "days": 5,
-          "done": true
+          "done": true,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -332,13 +355,15 @@
           "days": 1,
           "done": true,
           "due": "2026-04-27",
-          "createdAt": "2026-04-26T13:58:17.355Z"
+          "createdAt": "2026-04-26T13:58:17.355Z",
+          "who": "Kathleen"
         },
         {
           "id": 57,
           "name": "Get interior designers contact info",
           "days": 1,
-          "done": true
+          "done": true,
+          "who": "Kathleen"
         }
       ],
       "staff": "Kathleen",
@@ -363,7 +388,8 @@
           "days": 3,
           "done": false,
           "createdAt": "2026-05-18T13:52:30.049Z",
-          "due": "2026-05-21"
+          "due": "2026-05-21",
+          "who": "Kat"
         }
       ],
       "staff": "Kat",
@@ -402,13 +428,15 @@
           "id": 49,
           "name": "revise kitchen layout",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         },
         {
           "id": 50,
           "name": "start 3D model of exterior",
           "days": 3,
-          "done": false
+          "done": true,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -447,7 +475,8 @@
           "id": 63,
           "name": "check with Callahan's on Barn",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -486,7 +515,8 @@
           "id": 48,
           "name": "Site Visit May 5th",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -509,7 +539,8 @@
           "id": 61,
           "name": "review brick",
           "days": 1,
-          "done": false
+          "done": false,
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -598,7 +629,8 @@
           "days": 2,
           "done": true,
           "createdAt": "2026-04-27T19:01:42.540Z",
-          "due": "2026-04-29"
+          "due": "2026-04-29",
+          "who": "Maddie"
         }
       ],
       "staff": "Maddie",
@@ -679,7 +711,8 @@
           "days": 1,
           "done": false,
           "createdAt": "2026-05-18T13:50:55.244Z",
-          "due": "2026-05-18"
+          "due": "2026-05-18",
+          "who": "Scott"
         }
       ]
     },
