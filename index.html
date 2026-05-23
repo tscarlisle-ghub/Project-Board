@@ -1,1293 +1,73 @@
 <!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════════
+  CMA PROJECT BOARD — index.html
+  ════════════════════════════════════════════════════════════════════════
+  Carlisle Moore Architecture · single-page residential project tracker
+  Live at https://tscarlisle-ghub.github.io/Project-Board/
+  Data lives in tscarlisle-ghub/Project-Board/data.json (read/written via
+  the GitHub API using a fine-grained PAT stored in localStorage).
+
+  ────────────────────────────────────────────────────────────────────────
+  HOW THIS FILE IS ORGANIZED
+  ────────────────────────────────────────────────────────────────────────
+  This is a vanilla-JS single-page app. There's no build step. To edit:
+  open, change, push the file to GitHub via the web UI, and force-reload
+  the live page with the matching ?v=NN cache-buster.
+
+    SECTION                                 SEARCH-FOR
+    --------------------------------------  --------------------------
+    1. Design tokens (CSS vars, fonts)      :root {
+    2. Legacy V1/V2 chrome (still used by   ── MASTHEAD ──
+       Due / Archive / Gantt / Calendar /
+       modals)
+    3. V5 tab bar                           V5 TAB BAR
+    4. V5 board shell + sidebar             V5 BOARD SHELL
+    5. V5 title bar (search + new project)  V5 TITLE BAR
+    6. V5 strips (phase + assigned)         V5 STRIPS
+    7. V5 project list + section grouping   V5 PROJECT LIST
+    8. V5 expanded detail                   V5 EXPANDED DETAIL
+    9. V5 totals + empty + modal            V5 TOTALS / V5 NEW PROJECT
+   10. V5 responsive                        V5 RESPONSIVE
+   11. <body> HTML (top chrome, pages,      <body>
+       modals, calendar)
+   12. JS constants (GH, palette, sample)   const APP_VERSION
+   13. State (projects, ghToken)            let projects=
+   14. GitHub sync (load / save / token)    function loadFromGitHub
+   15. Page navigation                      function showPage
+   16. V5 render (sidebar/strips/list)      function renderProjects
+   17. Modals, calendar, edit popup         function openProjEditFromRow
+   18. Due / Archive / Gantt renderers     function renderSummary
+   19. Calendar popup                       function showCalendar
+   20. Init / bootstrap                     /* ── INIT ── */
+
+  ────────────────────────────────────────────────────────────────────────
+  EDIT CONVENTIONS
+  ────────────────────────────────────────────────────────────────────────
+  • Full-file replacements only; no patches.
+  • Always run `node --check` on the extracted inline script block
+    before delivering.
+  • Bump APP_VERSION + APP_VERSION_DATE on every change.
+  • When bumping APP_VERSION, ALSO bump the ?v=NN on the CSS link tag
+    (next line). They must stay in lock-step.
+  • Append a session-notes.md entry summarizing what changed.
+  ════════════════════════════════════════════════════════════════════════
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CMA Project Board</title>
+<!-- Favicon: engraved "PB" on paper with a forest-green underline accent.
+     Inline SVG so it picks up the color scheme without an extra file. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f7f3ea'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='500' text-anchor='middle' fill='%231a1814' letter-spacing='1'>PB</text><rect x='7' y='26' width='18' height='1.6' fill='%232f4b2a'/></svg>">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-
-/* ── VARIABLES ── */
-:root{
-  --ink:#2e2e2e;
-  --ink-mid:#6a5e50;
-  --ink-light:#9a8e80;
-  --ink-faint:#eeebe4;
-  --page:#ffffff;
-  --rule:#d8e4ec;
-  --rule-strong:#a0b4c8;
-  --brand:#d04030;
-  --brand-light:#ff7863;
-  --warm:#e9eced;
-  --tan:#b0c9df;
-  --red:#d04030;
-  --amber:#a06010;
-  --green:#3a7060;
-  --teal:#2a5a6a;
-  --col-w:680px;
-  --margin-w:140px;
-  --font-body:"warnock-pro",Georgia,serif;
-  --font-ui:"ff-meta-web-pro",sans-serif;
-  --font-condensed:"ff-meta-web-pro-condensed","ff-meta-web-pro",sans-serif;
-  --font-display:"interstate-condensed",sans-serif;
-
-  /* ── V5 DESIGN TOKENS (CMA, May 2026) ── */
-  /* Paper ramp */
-  --paper-0:#fbfaf6;--paper-1:#f5f2ea;--paper-2:#ede8db;--paper-3:#ddd6c4;
-  /* Ink ramp (warm near-black) */
-  --ink-0:#14110d;--ink-1:#2b271f;--ink-2:#57514a;--ink-3:#8a847b;--ink-4:#b6b0a6;--ink-5:#d5cfc3;
-  /* Forest accent */
-  --forest-0:#103627;--forest-1:#1f4d3a;--forest-2:#2f6b53;--forest-3:#b8cdb9;--forest-4:#e8efe5;
-  /* Engraved (letterhead black + rule) */
-  --v5-engraved:#1a1814;--v5-engraved-rule:#3b352c;
-  /* Semantic */
-  --v5-alert:#8a2a1f;--v5-alert-tint:#f4e3df;--v5-warn:#8b6a1a;--v5-warn-tint:#f3ead0;--v5-info:#2f4a6b;--v5-info-tint:#dbe4ef;
-  /* V5 type families (alias core kit faces) */
-  --ff-display:"columbia-titling","Trajan Pro 3","Cormorant Garamond","Times New Roman",serif;
-  --ff-serif:"miller-text",Charter,"Iowan Old Style",Georgia,serif;
-  --ff-sans:"ff-meta-web-pro","Meta Pro","Helvetica Neue",Arial,sans-serif;
-  --ff-sans-cond:"ff-meta-web-pro-condensed","ff-meta-web-pro","Helvetica Neue Condensed","Arial Narrow",sans-serif;
-  --ff-mono:"ff-meta-correspondence-web-p","iA Writer Mono S","JetBrains Mono",Menlo,monospace;
-  /* V5 tracking */
-  --tr-label:0.12em;--tr-engraved:0.22em;--tr-engraved-wide:0.32em;
-}
-
-html,body{min-height:100vh;background:var(--paper-0);color:var(--ink-1);}
-body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
-
-/* Sync-status text color — used in the V5 tab bar */
-.sync-status{font-family:var(--ff-mono);font-size:10px;letter-spacing:0.02em;transition:color 0.3s;}
-.sync-status.ok{color:var(--forest-1);}
-.sync-status.err{color:var(--v5-alert);}
-.sync-status.working{color:var(--v5-warn);}
-
-/* ── Archive card primitives (Archive page still renders project cards) ── */
-.project-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
-.project-name{
-  font-family:"interstate-condensed",sans-serif;
-  font-weight:700;
-  font-size:22px;
-  letter-spacing:0.03em;
-  text-transform:uppercase;
-  color:var(--ink-1);
-  line-height:1.1;
-}
-.project-staff{
-  font-family:var(--ff-mono);
-  font-size:11px;
-  color:var(--ink-3);
-  letter-spacing:0.02em;
-  white-space:nowrap;
-}
-.project-actions{margin-left:auto;display:flex;gap:10px;align-items:center;flex-shrink:0;}
-
-/* ── DESIGN PHASE SLIDERS (sparkline w/ colored dot, % floats above dot, 2-col) ── */
-.dp-wrap{
-  margin:10px 0 14px;padding:0;
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:2px 18px;
-}
-.dp-row{display:flex;align-items:center;gap:8px;min-width:0;}
-.dp-row-label{
-  flex:0 0 22px;
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:0.10em;
-  text-transform:uppercase;
-  color:var(--ink);
-  white-space:nowrap;
-  line-height:1;
-}
-.dp-row-track{position:relative;flex:1;min-width:0;height:20px;}
-.dp-row-pct{
-  position:absolute;top:0;
-  transform:translateX(calc(-1% * var(--pct,0)));
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;
-  font-size:8px;
-  letter-spacing:0.04em;
-  color:var(--ink-light);
-  white-space:nowrap;
-  line-height:1;
-  pointer-events:none;
-}
-.dp-row-band{
-  position:absolute;left:0;right:0;top:13px;height:1px;
-  background:#d4cfc5;
-  pointer-events:none;
-}
-.dp-row-fill{
-  position:absolute;left:0;top:13px;height:1px;
-  background:var(--phase-color,#888);
-  pointer-events:none;
-}
-.dp-row-input{
-  -webkit-appearance:none;appearance:none;
-  position:absolute;left:0;right:0;top:6px;
-  width:100%;height:14px;
-  background:transparent;margin:0;padding:0;cursor:pointer;
-}
-.dp-row-input:focus{outline:none;}
-.dp-row-input::-webkit-slider-runnable-track{height:14px;background:transparent;border:none;}
-.dp-row-input::-moz-range-track{height:14px;background:transparent;border:none;}
-.dp-row-input::-webkit-slider-thumb{
-  -webkit-appearance:none;appearance:none;
-  width:8px;height:8px;
-  background:var(--phase-color,#888);
-  border:1.5px solid white;
-  border-radius:50%;
-  cursor:pointer;
-  margin-top:3px;
-  box-shadow:0 0 0 0.5px var(--phase-color,#888);
-}
-.dp-row-input::-moz-range-thumb{
-  width:8px;height:8px;
-  background:var(--phase-color,#888);
-  border:1.5px solid white;
-  border-radius:50%;
-  cursor:pointer;
-  box-shadow:0 0 0 0.5px var(--phase-color,#888);
-}
-
-/* ── TASK LIST (used by archive page only) ── */
-.task-list{margin:12px 0 0 0;}
-.task-row{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:6px 0;
-}
-.task-check{
-  width:13px;height:13px;
-  border-radius:50%;
-  border:1px solid var(--rule-strong);
-  flex-shrink:0;
-  margin-top:5px;
-  cursor:pointer;
-  background:transparent;
-  transition:all 0.15s;
-}
-.task-check:hover{border-color:var(--ink-mid);}
-.task-check.done-check{background:var(--ink-faint);border-color:var(--ink-faint);}
-.task-text{flex:1;min-width:0;}
-.task-name{
-  font-family:var(--font-body);
-  font-size:20px;
-  color:var(--ink);
-  line-height:1.35;
-  cursor:text;
-}
-.task-name.done{color:rgba(200,195,185,0.9);text-decoration:line-through;}
-.task-name.overdue{color:var(--red);}
-.task-due{
-  font-family:"ff-meta-web-pro",sans-serif;
-  font-weight:400;
-  font-size:12px;
-  letter-spacing:0.04em;
-  color:var(--ink-light);
-  margin-top:1px;
-}
-.task-due.overdue{color:var(--red);}
-.task-due.soon{color:var(--amber);}
-.task-due.empty{color:var(--ink-faint);font-style:italic;}
-.task-row:hover .task-due.empty{color:var(--ink-light);}
-.task-due:hover{text-decoration:underline;text-decoration-color:var(--ink-faint);}
-.task-del{
-  background:none;border:none;
-  font-size:16px;color:var(--ink-faint);
-  cursor:pointer;padding:2px 4px;
-  opacity:0.4;transition:opacity 0.15s;
-  flex-shrink:0;
-  margin-top:2px;
-}
-.task-row:hover .task-del{opacity:1;}
-.task-del:hover{color:var(--red);}
-@media (hover:none){.task-del{opacity:0.6;}}
-
-/* ── INLINE ADD/EDIT (inside V5 expanded row) ── */
-.inline-form{
-  background:white;
-  border:1px solid var(--rule);
-  border-radius:3px;
-  padding:16px 18px;
-  margin:10px 0;
-}
-.inline-form input[type=text]{
-  font-family:var(--font-body);
-  font-size:16px;
-  color:var(--ink);
-  background:none;
-  border:none;
-  border-bottom:1px solid var(--rule);
-  outline:none;
-  width:100%;
-  padding:2px 0 6px;
-}
-.inline-form-label{
-  font-family:"ff-meta-web-pro",sans-serif;
-  font-weight:700;
-  font-size:12px;
-  letter-spacing:0.04em;
-  text-transform:uppercase;
-  color:var(--ink-mid);
-  margin-bottom:10px;
-}
-.cal-trigger-tf{
-  font-family:var(--font-body);
-  font-size:15px;
-  color:var(--ink);
-  background:white;
-  border:1px solid var(--rule);
-  border-radius:3px;
-  padding:7px 12px;
-  cursor:pointer;
-  text-align:left;
-  min-width:160px;
-}
-.inline-btns{display:flex;gap:12px;margin-top:14px;align-items:center;}
-.if-btn{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;
-  font-size:13px;
-  letter-spacing:0.08em;
-  text-transform:uppercase;
-  padding:8px 20px;
-  border-radius:3px;
-  cursor:pointer;
-  border:none;
-}
-.if-btn.save{background:var(--brand);color:#fafad2;}
-.if-btn.save:hover{background:#6b0000;}
-.if-btn.alt{background:var(--green);color:#fff;}
-.if-btn.alt:hover{background:#2a5020;}
-.if-btn.cancel{background:none;border:1px solid var(--rule);color:var(--ink-light);font-size:18px;padding:5px 12px;}
-.if-btn.cancel:hover{color:var(--red);}
-
-/* ── GANTT ── */
-.gantt-wrap{overflow-x:auto;margin-top:24px;}
-.gantt-table{border-collapse:collapse;font-size:13px;}
-.gantt-table thead th{
-  font-family:var(--font-condensed);
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-light);
-  padding:6px 8px 4px;
-  text-align:left;
-  border-bottom:1px solid var(--rule);
-  white-space:nowrap;
-  position:sticky;top:0;
-  background:var(--page);
-  z-index:10;
-}
-.gantt-section-hdr td{
-  font-family:var(--font-condensed);
-  font-weight:700;
-  font-size:11px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color:var(--ink-light);
-  padding:18px 0 6px;
-  border-bottom:1px solid var(--rule);
-}
-.gantt-proj-row{border-bottom:1px solid var(--ink-faint);}
-.gantt-proj-name{
-  font-family:var(--font-compressed);
-  font-size:16px;
-  letter-spacing:0.04em;
-  text-transform:uppercase;
-  color:var(--ink);
-  padding:8px 16px 8px 0;
-  white-space:nowrap;
-}
-.gantt-bar-cell{position:relative;height:34px;padding:0;}
-
-/* ── CALENDAR ── */
-#cal-popup{
-  position:fixed;z-index:9999;
-  background:white;
-  border:1px solid var(--rule);
-  border-radius:4px;
-  box-shadow:0 4px 24px rgba(0,0,0,0.12);
-  padding:20px;
-  width:320px;
-}
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.cal-month-label{
-  font-family:"warnock-pro",serif;
-  font-weight:700;font-size:22px;
-  letter-spacing:0.01em;text-transform:none;
-  color:var(--ink);
-}
-.cal-nav{background:none;border:none;cursor:pointer;font-size:22px;color:var(--ink-light);padding:2px 10px;border-radius:3px;}
-.cal-nav:hover{background:var(--page);color:var(--ink);}
-.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:6px;}
-.cal-dow span{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;
-  font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
-  color:var(--ink-light);text-align:center;padding:3px 0;
-}
-.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-.cal-day{
-  font-family:"warnock-pro",serif;font-weight:400;font-size:15px;
-  text-align:center;padding:7px 2px;border-radius:3px;
-  cursor:pointer;border:none;background:none;color:var(--ink);width:100%;
-}
-.cal-day:hover:not(.past){background:var(--page);}
-.cal-day.today{font-weight:700;color:var(--red);}
-.cal-day.selected{background:var(--brand);color:#fafad2!important;}
-.cal-day.other-month,.cal-day.past{color:var(--ink-faint);cursor:default;}
-.cal-selected-display{
-  font-family:var(--font-body);font-size:13px;
-  color:var(--ink-mid);margin-top:12px;text-align:center;
-  border-top:1px solid var(--rule);padding-top:10px;
-}
-.cal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px;}
-.cal-btn-cancel{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;
-  font-size:12px;letter-spacing:0.08em;text-transform:uppercase;
-  background:none;border:1px solid var(--rule);color:var(--ink-light);
-  padding:8px 18px;border-radius:3px;cursor:pointer;
-}
-.cal-btn-ok{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;
-  font-size:13px;letter-spacing:0.08em;text-transform:uppercase;
-  background:var(--brand);border:none;color:#fafad2;
-  padding:8px 22px;border-radius:3px;cursor:pointer;
-}
-
-/* ── MODALS ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:10000;display:flex;align-items:center;justify-content:center;}
-.modal{
-  background:white;
-  border-radius:4px;
-  padding:36px;
-  width:480px;max-width:92vw;
-  display:flex;flex-direction:column;gap:16px;
-  border:1px solid var(--rule);
-}
-.modal-title{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;font-size:26px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink);
-}
-.modal-sub{font-family:var(--font-body);font-size:14px;color:var(--ink-mid);line-height:1.5;}
-.modal label{font-family:var(--font-condensed);font-weight:700;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-light);}
-.modal input[type=text],.modal input[type=password],.modal textarea{
-  font-family:var(--font-body);font-size:15px;background:#fafafa;
-  border:1px solid var(--rule);color:var(--ink);
-  padding:9px 12px;border-radius:3px;width:100%;
-}
-.modal textarea{resize:vertical;min-height:180px;font-size:13px;font-family:monospace;}
-.modal pre{background:#f4f2ef;padding:14px;border-radius:3px;font-size:12px;color:var(--ink-mid);line-height:1.6;overflow-x:auto;}
-.btn-save{background:var(--brand);color:#fafad2;border:none;border-radius:3px;padding:9px 22px;font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;}
-.btn-save:hover{background:#6b0000;}
-.btn-cancel{background:none;border:1px solid var(--rule);color:var(--ink-light);border-radius:3px;padding:9px 18px;font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;}
-.btn-cancel:hover{color:var(--ink);}
-.btn-done-tog{background:var(--green);color:#fff;border:none;border-radius:3px;padding:9px 18px;font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;}
-
-/* ── EDIT POPUP ── */
-#proj-edit-popup{
-  position:absolute;z-index:500;
-  background:white;border:1px solid var(--rule);
-  border-radius:4px;padding:20px 24px;
-  display:flex;flex-direction:column;gap:14px;
-  min-width:320px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.1);
-}
-.pep-label{font-family:"ff-meta-web-pro",sans-serif;font-weight:700;font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);}
-.pep-input{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:30px;letter-spacing:0.04em;text-transform:uppercase;
-  color:var(--ink);background:none;border:none;border-bottom:1.5px solid var(--brand);
-  outline:none;width:100%;padding:2px 0;
-}
-.pep-btns{display:flex;gap:8px;}
-.pep-type-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.pep-type-btn{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;
-  letter-spacing:0.08em;text-transform:uppercase;
-  padding:4px 12px;border-radius:3px;cursor:pointer;
-  border:1px solid var(--rule);background:none;color:var(--ink-light);
-  transition:all 0.15s;
-}
-.pep-type-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
-.pep-swatches{display:flex;gap:8px;flex-wrap:wrap;}
-.pep-swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;}
-.pep-swatch.active{border-color:var(--ink);}
-.pep-staff-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.pep-staff-btn{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;
-  letter-spacing:0.08em;text-transform:uppercase;
-  padding:4px 12px;border-radius:3px;cursor:pointer;
-  border:1px solid var(--rule);background:none;color:var(--ink-light);
-}
-.pep-staff-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
-.pep-lead-btn{
-  font-family:"ff-meta-web-pro",sans-serif;font-weight:400;font-size:12px;
-  padding:4px 12px;border-radius:3px;cursor:pointer;
-  border:1px solid var(--rule);background:none;color:var(--ink-mid);
-}
-.pep-lead-btn.active{border-color:var(--ink);background:var(--ink);color:white;}
-#proj-edit-popup{width:480px;max-width:92vw;}
-
-/* ── CONTEXT MENU ── */
-.ctx-menu{position:fixed;background:white;border:1px solid var(--rule);border-radius:3px;padding:4px 0;min-width:180px;z-index:9999;box-shadow:0 3px 16px rgba(0,0,0,0.1);}
-.ctx-item{font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:9px 18px;cursor:pointer;color:var(--ink-mid);}
-.ctx-item:hover{background:var(--page);color:var(--ink);}
-.ctx-item.del-item{color:#b08080;}
-.ctx-item.del-item:hover{color:var(--red);}
-
-/* ── TASKS BY DUE DATE PAGE ── */
-.due-page-content{padding:36px 40px 80px;max-width:calc(var(--col-w) + var(--margin-w) * 2 + 80px);margin:0 auto;}
-.due-section{margin-bottom:36px;}
-.due-section-hdr{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;
-  font-weight:700;font-size:13px;letter-spacing:0.18em;text-transform:uppercase;
-  color:var(--ink-mid);
-  border-bottom:1px solid var(--ink-light);
-  padding-bottom:6px;margin-bottom:10px;
-  display:flex;align-items:baseline;gap:10px;
-}
-.due-section-hdr.overdue{color:var(--red);border-bottom-color:var(--red);}
-.due-section-count{
-  font-family:var(--font-body);font-weight:400;font-size:13px;
-  color:var(--ink-light);letter-spacing:0;text-transform:none;
-}
-.due-day-hdr{
-  font-family:"warnock-pro",serif;
-  font-weight:400;font-style:italic;font-size:14px;
-  color:var(--ink-light);
-  margin:14px 0 2px;
-}
-.due-row{
-  display:grid;
-  grid-template-columns:14px 1fr auto auto auto auto;
-  align-items:baseline;
-  gap:14px;
-  padding:8px 0;
-  border-bottom:1px dotted var(--ink-faint);
-}
-.due-row:hover{background:#fafafa;}
-.due-del{
-  background:none;border:none;
-  font-size:16px;color:var(--ink-faint);
-  cursor:pointer;padding:2px 4px;
-  opacity:0.4;transition:opacity 0.15s;
-}
-.due-row:hover .due-del{opacity:1;}
-.due-del:hover{color:var(--red);}
-@media (hover:none){.due-del{opacity:0.6;}}
-.due-row.overdue .due-task{color:var(--red);}
-.due-task{
-  font-family:var(--font-body);font-size:18px;color:var(--ink);
-  cursor:pointer;line-height:1.3;
-}
-.due-task:hover{color:var(--brand);}
-.due-proj{
-  font-family:"interstate-condensed",sans-serif;
-  font-weight:700;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;
-  color:var(--ink-mid);cursor:pointer;
-}
-.due-proj:hover{color:var(--brand);}
-.due-staff{
-  font-family:"ff-meta-web-pro",sans-serif;
-  font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--ink-light);
-  white-space:nowrap;
-}
-.due-date{
-  font-family:"ff-meta-web-pro",sans-serif;
-  font-size:11px;letter-spacing:0.04em;text-transform:uppercase;
-  color:var(--ink-light);
-  white-space:nowrap;
-}
-.due-date.overdue{color:var(--red);font-weight:700;}
-.due-date.soon{color:var(--amber);}
-.due-no-tasks{
-  font-family:var(--font-body);font-size:16px;color:var(--ink-light);font-style:italic;
-  padding:60px 0;text-align:center;
-}
-.due-row .task-check{margin-top:6px;}
-
-/* ── ARCHIVE & SUMMARY PAGES ── */
-.back-bar{
-  border-bottom:1px solid var(--rule);
-  padding:8px 0;
-  background:var(--page);
-  position:sticky;top:0;z-index:300;
-}
-.back-bar-inner{
-  max-width:calc(var(--col-w) + var(--margin-w) * 2 + 80px);
-  margin:0 auto;padding:0 40px;
-  display:flex;align-items:baseline;gap:12px;
-}
-.back-btn{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;
-  font-size:13px;letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--brand);background:none;border:none;cursor:pointer;
-}
-.back-page-title{font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-light);}
-
-/* ── GANTT PAGE ── */
-/* gantt now uses the main masthead/nav; no separate masthead */
-
-/* ── RESTORE BTN ── */
-.restore-btn{
-  font-family:"ff-meta-web-pro-condensed",sans-serif;font-weight:700;font-size:11px;
-  letter-spacing:0.08em;text-transform:uppercase;
-  color:var(--ink-light);background:none;border:1px solid var(--rule);
-  border-radius:3px;padding:3px 10px;cursor:pointer;
-}
-.restore-btn:hover{color:var(--ink);border-color:var(--ink-mid);}
-
-/* ── ARCHIVE PROJ CARD ── */
-.arch-entry{opacity:0.65;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--ink-faint);}
-
-/* ════════════════════════════════════════════
-   V5 — Engraved masthead, sidebar, expandable row board.
-   ════════════════════════════════════════════ */
-
-body{background:var(--paper-0);}
-
-/* V5 Masthead */
-.v5-masthead{
-  border-bottom:1px solid var(--v5-engraved-rule);
-  padding:10px 24px 8px;
-  display:flex;align-items:baseline;justify-content:space-between;gap:24px;
-  background:var(--paper-0);
-  position:sticky;top:0;z-index:200;
-}
-.v5-mast-inner{
-  max-width:1400px;
-  margin:0 auto;
-  width:100%;
-  display:flex;align-items:baseline;justify-content:space-between;gap:24px;
-}
-.v5-firm{
-  font-family:var(--ff-display);
-  font-weight:400;
-  font-size:20px;
-  text-transform:uppercase;
-  letter-spacing:var(--tr-engraved);
-  color:var(--v5-engraved);
-}
-.v5-eyebrow{
-  font-family:var(--ff-display);
-  font-weight:400;
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:var(--tr-engraved-wide);
-  color:var(--ink-3);
-  margin-left:18px;
-}
-.v5-mast-right{display:flex;align-items:center;gap:14px;}
-.v5-mast-meta{
-  font-family:var(--ff-mono);
-  font-size:11px;
-  color:var(--ink-4);
-  letter-spacing:0.02em;
-}
-
-/* V5 Tab bar (top-level views: Board / Gantt / Archive / Due) */
-.v5-tabbar{
-  border-bottom:1px solid var(--ink-5);
-  padding:5px 24px;
-  display:flex;align-items:center;gap:0;
-  background:var(--paper-0);
-  position:sticky;top:42px;z-index:199;
-}
-.v5-tabbar-inner{
-  max-width:1400px;margin:0 auto;width:100%;
-  display:flex;align-items:center;
-}
-.v5-tab{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:13px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  background:transparent;
-  border:none;
-  cursor:pointer;
-  padding:8px 0 6px;
-  margin-right:24px;
-  border-bottom:1.5px solid transparent;
-  transition:color 0.15s,border-color 0.15s;
-}
-.v5-tab:hover{color:var(--ink-1);}
-.v5-tab.active{color:var(--ink-0);border-bottom-color:var(--forest-1);}
-.v5-tab-spacer{flex:1;}
-.v5-tab-meta{
-  font-family:var(--ff-mono);
-  font-size:11px;
-  color:var(--ink-3);
-  margin-left:12px;
-  letter-spacing:0.02em;
-}
-.v5-tab-action{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:12px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  background:transparent;
-  border:none;
-  cursor:pointer;
-  padding:4px 8px;
-  margin-left:6px;
-}
-.v5-tab-action:hover{color:var(--ink-0);}
-.v5-tab-action.danger{color:var(--v5-alert);}
-
-/* V5 Board page layout: sidebar + main, capped width so the table doesn't sprawl on wide monitors */
-.v5-shell{
-  display:flex;
-  min-height:calc(100vh - 76px);
-  background:var(--paper-0);
-  max-width:1400px;
-  margin:0 auto;
-  width:100%;
-}
-.v5-sidebar{
-  width:220px;flex-shrink:0;
-  background:var(--paper-1);
-  border-right:1px solid var(--ink-5);
-  padding:18px 0;
-  overflow-y:auto;
-  display:flex;flex-direction:column;
-}
-.v5-sb-group-label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:10px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  padding:0 22px 6px;
-}
-.v5-sb-item{
-  display:flex;align-items:center;gap:8px;width:100%;
-  text-align:left;
-  padding:6px 22px;
-  background:transparent;
-  border:none;
-  border-left:2px solid transparent;
-  font-family:var(--ff-sans);
-  font-size:14px;
-  color:var(--ink-1);
-  cursor:pointer;
-  transition:background 0.12s,color 0.12s;
-}
-.v5-sb-item:hover{background:rgba(0,0,0,0.02);color:var(--ink-0);}
-.v5-sb-item.active{background:var(--paper-0);border-left-color:var(--forest-1);color:var(--ink-0);font-weight:600;}
-.v5-sb-item.alert,.v5-sb-item.alert .v5-sb-count{color:var(--v5-alert);}
-.v5-sb-item .v5-sb-label{flex:1;}
-.v5-sb-count{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--ink-3);
-  font-variant-numeric:tabular-nums;
-}
-.v5-sb-rule{border:0;border-top:0.5px solid var(--ink-5);margin:14px 18px;}
-.v5-sb-tool{
-  display:flex;align-items:center;width:100%;
-  text-align:left;
-  padding:6px 22px;
-  background:transparent;
-  border:none;
-  font-family:var(--ff-sans);
-  font-size:14px;
-  color:var(--ink-1);
-  cursor:pointer;
-  text-decoration:none;
-}
-.v5-sb-tool:hover{color:var(--forest-2);}
-.v5-sb-footer{
-  margin-top:auto;
-  padding:18px 22px 4px;
-  font-family:var(--ff-mono);
-  font-size:10px;
-  letter-spacing:0.04em;
-  color:var(--ink-4);
-  border-top:0.5px solid var(--ink-5);
-}
-
-/* V5 Main column */
-.v5-main{flex:1;display:flex;flex-direction:column;min-width:0;}
-
-/* V5 Page-title bar (now: only search + + New Project) */
-.v5-titlebar{
-  display:flex;align-items:center;gap:16px;
-  padding:14px 24px 12px;
-  border-bottom:1px solid var(--ink-5);
-  background:var(--paper-0);
-  flex-wrap:wrap;
-}
-.v5-title-spacer{flex:1;}
-.v5-search-wrap{
-  display:inline-flex;align-items:center;gap:10px;
-  border-bottom:1.5px solid var(--ink-5);
-  padding:8px 0;
-  transition:border-color 0.15s;
-  flex:1;max-width:520px;
-}
-.v5-search-wrap:focus-within{border-bottom-color:var(--forest-1);}
-.v5-search-icon{
-  width:18px;height:18px;
-  color:var(--ink-3);
-  flex-shrink:0;
-}
-.v5-search{
-  font-family:var(--ff-sans);
-  font-size:16px;
-  color:var(--ink-1);
-  background:transparent;
-  border:none;
-  outline:none;
-  padding:2px 4px;
-  width:100%;flex:1;
-}
-.v5-search::placeholder{color:var(--ink-4);font-style:italic;}
-.v5-newproj-btn{
-  font-family:var(--ff-sans-cond);
-  font-weight:700;
-  font-size:13px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  background:var(--ink-0);
-  color:var(--paper-0);
-  border:none;
-  padding:12px 22px;
-  cursor:pointer;
-  transition:background 0.15s;
-}
-.v5-newproj-btn:hover{background:var(--forest-1);}
-
-/* V5 Phase strip + Staff strip */
-.v5-strip{
-  display:flex;align-items:center;gap:12px;
-  padding:7px 24px;
-  border-bottom:1px solid var(--ink-5);
-  background:var(--paper-0);
-  flex-wrap:wrap;
-}
-.v5-strip-label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:11px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  margin-right:6px;
-}
-.v5-chip{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:13px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-2);
-  background:transparent;
-  border:none;
-  cursor:pointer;
-  padding:2px 0;
-  border-bottom:1.5px solid transparent;
-  margin-right:14px;
-  display:inline-flex;align-items:baseline;gap:6px;
-}
-.v5-chip:hover{color:var(--ink-0);}
-.v5-chip.active{color:var(--ink-0);font-weight:700;border-bottom-color:var(--forest-1);}
-.v5-chip-phase{margin-right:28px;}
-.v5-chip-count{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:14px;
-  color:var(--forest-1);
-  font-weight:400;
-  letter-spacing:0;
-  text-transform:none;
-}
-.v5-chip-sep{color:var(--ink-4);margin-right:10px;font-size:12px;}
-
-/* V5 Project list (the table) */
-.v5-list{flex:1;overflow-y:auto;background:var(--paper-0);}
-.v5-row-grid{
-  display:grid;
-  grid-template-columns:42px 1.7fr 2fr 0.5fr 0.95fr 0.75fr 24px;
-  gap:0 14px;
-  align-items:baseline;
-  padding:12px 24px;
-  border-bottom:0.5px solid var(--ink-5);
-}
-.v5-header-row{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:12px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  padding:8px 24px 6px;
-  border-bottom:1px solid var(--ink-0);
-  background:var(--paper-0);
-  position:sticky;top:0;z-index:5;
-}
-.v5-row{cursor:pointer;background:transparent;transition:background 0.12s;position:relative;}
-.v5-row:hover{background:rgba(0,0,0,0.015);}
-.v5-row.expanded{
-  background:var(--forest-4);
-  border-left:2px solid var(--forest-1);
-  border-bottom-color:transparent;
-  margin-left:-2px;
-}
-.v5-chev{display:flex;align-items:center;justify-content:flex-end;color:var(--ink-3);}
-.v5-row.expanded .v5-chev{color:var(--ink-1);}
-.v5-cell-num{text-align:right;font-family:var(--ff-mono);font-size:15px;color:var(--ink-1);font-variant-numeric:tabular-nums;}
-.v5-stamp{
-  font-family:var(--ff-mono);
-  font-size:13px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--forest-1);
-}
-.v5-client{
-  font-family:var(--ff-display);
-  font-weight:500;
-  font-size:17px;
-  letter-spacing:0.07em;
-  text-transform:uppercase;
-  color:var(--v5-engraved);
-  line-height:1.15;
-}
-.v5-scope{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:15px;
-  color:var(--ink-2);
-  margin-top:2px;
-  line-height:1.25;
-}
-.v5-addr{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--ink-3);
-  margin-top:4px;
-  letter-spacing:0.01em;
-}
-.v5-lead{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--ink-3);
-  margin-top:5px;
-  letter-spacing:0.02em;
-}
-.v5-tasks-col{display:flex;flex-direction:column;gap:4px;min-width:0;}
-.v5-task-line{display:grid;grid-template-columns:18px auto 1fr auto;align-items:baseline;gap:10px;min-width:0;}
-.v5-task-line.dimmed{opacity:0.35;}
-.v5-task-chk{
-  width:14px;height:14px;
-  border:1px solid var(--ink-3);
-  background:transparent;
-  cursor:pointer;
-  display:grid;place-items:center;
-  margin-top:2px;
-  padding:0;
-}
-.v5-task-chk.done{background:var(--forest-1);border-color:var(--forest-1);}
-.v5-task-chk svg{display:none;}
-.v5-task-chk.done svg{display:block;}
-.v5-task-date{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--ink-3);
-  white-space:nowrap;
-  letter-spacing:0.01em;
-}
-.v5-task-date.alert{color:var(--v5-alert);}
-.v5-task-title{
-  font-family:var(--ff-sans);
-  font-size:14px;
-  color:var(--ink-0);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  min-width:0;cursor:text;
-}
-.v5-task-title.done{text-decoration:line-through;color:var(--ink-3);}
-.v5-task-who{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--forest-1);
-  letter-spacing:0.01em;
-  white-space:nowrap;
-}
-.v5-more-tasks{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:13px;
-  color:var(--ink-3);
-  margin-top:2px;
-}
-.v5-fee-stack{display:flex;flex-direction:column;align-items:flex-end;}
-.v5-fee-amt{
-  font-family:var(--ff-mono);
-  font-size:15px;
-  color:var(--ink-1);
-  font-variant-numeric:tabular-nums;
-}
-.v5-fee-billed{
-  font-family:var(--ff-mono);
-  font-size:12px;
-  color:var(--ink-3);
-  margin-top:2px;
-  font-variant-numeric:tabular-nums;
-}
-.v5-fee-pending{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:13px;
-  color:var(--ink-4);
-}
-.v5-status{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:15px;
-  text-align:right;
-}
-.v5-status.active{color:var(--forest-1);}
-.v5-status.alert{color:var(--v5-alert);}
-.v5-status.hold{color:var(--v5-warn);}
-.v5-status.done{color:var(--ink-4);}
-.v5-status.prospect{color:var(--v5-info);}
-
-/* V5 Expanded detail */
-.v5-expand{
-  background:var(--forest-4);
-  border-left:2px solid var(--forest-1);
-  border-bottom:0.5px solid var(--ink-5);
-  margin-left:-2px;
-  padding:14px 24px 20px;
-}
-.v5-expand-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:14px 36px;
-  margin-bottom:14px;
-  text-align:center;
-  border-bottom:1px solid var(--ink-5);
-  padding-bottom:14px;
-}
-.v5-meta-label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:9px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  margin-bottom:5px;
-}
-.v5-meta-value{
-  font-family:var(--ff-serif);
-  font-size:14px;
-  color:var(--ink-0);
-}
-/* The middle (Lead) cell gets a forest underline beneath the value, like a focus
-   indicator — matches the screenshot. */
-.v5-meta-value-emph{
-  display:inline-block;
-  border-bottom:2px solid var(--forest-1);
-  padding-bottom:4px;
-}
-.v5-fee-blocks{
-  display:flex;gap:36px;align-items:flex-start;
-  padding:14px 0 4px;
-  margin:0;
-}
-.v5-fee-block-label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:9px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  margin-bottom:3px;
-}
-.v5-fee-block-value{
-  font-family:var(--ff-mono);
-  font-size:14px;
-  color:var(--ink-0);
-  font-variant-numeric:tabular-nums;
-}
-.v5-fee-bar-wrap{margin:8px 0 6px;width:100%;}
-.v5-fee-bar{
-  height:4px;background:var(--paper-2);position:relative;overflow:hidden;width:100%;
-}
-.v5-fee-bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--forest-1);}
-.v5-fee-bar-label{
-  font-family:var(--ff-mono);
-  font-size:10px;
-  color:var(--ink-3);
-  text-align:right;
-  margin-top:4px;
-  font-variant-numeric:tabular-nums;
-  letter-spacing:0.02em;
-}
-.v5-activity-label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:10px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  margin:14px 0 6px;
-}
-.v5-activity-row{
-  display:grid;
-  grid-template-columns:60px 80px 1fr;
-  gap:10px;
-  align-items:baseline;
-  padding:3px 0;
-  font-size:12px;
-}
-.v5-activity-row .a-date,.v5-activity-row .a-who{font-family:var(--ff-mono);font-size:11px;color:var(--ink-3);}
-.v5-activity-row .a-text{font-family:var(--ff-sans);font-size:12px;color:var(--ink-1);}
-.v5-add-task-btn{
-  margin-top:10px;
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:10px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  background:transparent;
-  border:1px dashed var(--ink-4);
-  padding:6px 14px;
-  cursor:pointer;
-  transition:color 0.15s,border-color 0.15s;
-}
-.v5-add-task-btn:hover{color:var(--forest-1);border-color:var(--forest-1);}
-.v5-expand-actions{
-  display:flex;gap:10px;align-items:center;
-  margin-top:14px;padding-top:10px;
-  border-top:0.5px solid var(--ink-5);
-}
-.v5-expand-actions .v5-tab-action{margin-left:0;}
-
-/* V5 Totals footer */
-.v5-totals{
-  display:grid;
-  grid-template-columns:44px 1.6fr 2.1fr 0.55fr 0.95fr 0.75fr 24px;
-  gap:0 16px;
-  padding:12px 24px;
-  border-top:3px double var(--ink-0);
-  background:var(--paper-0);
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:10px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-2);
-}
-.v5-totals .v5-cell-num{color:var(--ink-0);font-family:var(--ff-mono);font-weight:600;letter-spacing:0;text-transform:none;font-size:13px;}
-
-/* V5 empty state */
-.v5-empty{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:14px;
-  color:var(--ink-3);
-  padding:40px 24px;
-}
-
-/* V5 New Project modal — Columbia spaced title, hairline fields */
-.v5-modal-title{
-  font-family:var(--ff-display);
-  font-weight:400;
-  font-size:14px;
-  text-transform:uppercase;
-  letter-spacing:var(--tr-engraved-wide);
-  color:var(--v5-engraved);
-  padding-bottom:8px;
-  border-bottom:1px solid var(--v5-engraved-rule);
-  margin-bottom:14px;
-}
-.v5-modal-field{
-  display:flex;flex-direction:column;gap:4px;margin-bottom:14px;
-}
-.v5-modal-field label{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:9px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-}
-.v5-modal-field input,.v5-modal-field select{
-  font-family:var(--ff-sans);
-  font-size:14px;
-  color:var(--ink-0);
-  background:transparent;
-  border:none;border-bottom:1px solid var(--ink-5);
-  padding:4px 0;
-  outline:none;
-  transition:border-color 0.15s;
-}
-.v5-modal-field input:focus,.v5-modal-field select:focus{border-bottom-color:var(--forest-1);}
-.v5-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
-.v5-btn-ghost{
-  font-family:var(--ff-sans-cond);
-  font-weight:600;
-  font-size:10px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  background:transparent;
-  border:1px solid var(--ink-3);
-  color:var(--ink-2);
-  padding:7px 16px;
-  cursor:pointer;
-}
-.v5-btn-ghost:hover{color:var(--ink-0);border-color:var(--ink-0);}
-.v5-btn-ink{
-  font-family:var(--ff-sans-cond);
-  font-weight:700;
-  font-size:10px;
-  letter-spacing:0.14em;
-  text-transform:uppercase;
-  background:var(--ink-0);
-  color:var(--paper-0);
-  border:none;
-  padding:7px 16px;
-  cursor:pointer;
-}
-.v5-btn-ink:hover{background:var(--forest-1);}
-
-/* ── V5 narrow (tablet, ~700–1000px) ─────────────────────
-   Sidebar collapses to a scrolling row above the list. Hide
-   the fee column to keep the grid breathable. */
-@media(max-width:1000px){
-  .v5-shell{flex-direction:column;}
-  .v5-sidebar{
-    width:100%;border-right:none;border-bottom:1px solid var(--ink-5);
-    flex-direction:row;flex-wrap:wrap;align-items:center;
-    padding:8px 12px;gap:4px 8px;overflow-x:auto;
-  }
-  .v5-sb-group-label{display:none;}
-  .v5-sb-rule{display:none;}
-  .v5-sb-item{
-    width:auto;padding:6px 10px;border-left:none;border-bottom:1.5px solid transparent;
-  }
-  .v5-sb-item.active{border-left:none;border-bottom-color:var(--forest-1);background:transparent;}
-  .v5-sb-tool{width:auto;padding:6px 10px;font-size:13px;}
-  .v5-sb-footer{
-    width:100%;margin-top:0;padding:6px 10px 0;border-top:none;text-align:right;
-  }
-  .v5-row-grid,.v5-totals,.v5-header-row{
-    grid-template-columns:36px 1.4fr 1.8fr 0.5fr 0.7fr 24px;
-    gap:0 12px;padding:12px 18px;
-  }
-  /* hide Fee · billed column on tablet */
-  .v5-row-grid > :nth-child(5),.v5-totals > :nth-child(5),.v5-header-row > :nth-child(5){display:none;}
-}
-
-/* ── V5 phone (<700px) ───────────────────────────────────
-   Project rows go full-card: identity on top with stamp inline,
-   tasks below, a compact footer row with open/fee/status.
-   Stripped some columns, bumped readable type. */
-@media(max-width:700px){
-  .v5-masthead{padding:8px 14px 6px;}
-  .v5-firm{font-size:16px;}
-  .v5-eyebrow{display:none;}
-  .v5-mast-meta{font-size:10px;}
-
-  .v5-tabbar{padding:4px 10px;overflow-x:auto;flex-wrap:nowrap;}
-  .v5-tabbar-inner{flex-wrap:nowrap;}
-  .v5-tab{margin-right:18px;font-size:12px;}
-  .v5-tab-meta{display:none;}
-  .v5-tab-action{font-size:11px;padding:4px 4px;margin-left:4px;}
-
-  .v5-titlebar{padding:10px 14px 8px;gap:10px;}
-  .v5-search-wrap{flex:1 1 100%;max-width:none;padding:6px 0;}
-  .v5-search{font-size:15px;}
-  .v5-search-icon{width:16px;height:16px;}
-  .v5-newproj-btn{flex:1 1 100%;text-align:center;font-size:12px;padding:11px 14px;}
-
-  .v5-strip{padding:6px 14px;gap:8px;}
-  .v5-strip-label{font-size:10px;margin-right:2px;}
-  .v5-chip{margin-right:10px;font-size:12px;}
-  .v5-chip-phase{margin-right:14px;}
-  .v5-chip-count{font-size:13px;}
-
-  .v5-header-row{display:none;}
-  .v5-list{overflow-y:visible;}
-
-  /* card-style row: 3-grid layout */
-  .v5-row-grid{
-    display:grid;
-    grid-template-columns:38px 1fr auto;
-    grid-template-areas:
-      "stamp identity chev"
-      ".     tasks    tasks"
-      ".     footer   footer";
-    gap:6px 12px;
-    align-items:start;
-    padding:14px 16px;
-  }
-  .v5-row-grid > :nth-child(1){grid-area:stamp;}
-  .v5-row-grid > :nth-child(2){grid-area:identity;min-width:0;}
-  .v5-row-grid > :nth-child(3){grid-area:tasks;}
-  .v5-row-grid > :nth-child(4),
-  .v5-row-grid > :nth-child(5),
-  .v5-row-grid > :nth-child(6){grid-area:footer;}
-  .v5-row-grid > :nth-child(4){display:inline-block;margin-right:14px;}
-  .v5-row-grid > :nth-child(5){display:inline-block;margin-right:14px;}
-  .v5-row-grid > :nth-child(6){display:inline-block;float:right;}
-  .v5-row-grid > :nth-child(7){grid-area:chev;}
-  /* mobile footer wrapper visual: a tiny flex row */
-  .v5-row-grid::after{display:none;}
-
-  .v5-client{font-size:16px;letter-spacing:0.05em;line-height:1.18;}
-  .v5-scope{font-size:14px;}
-  .v5-addr,.v5-lead{font-size:12px;}
-  .v5-task-line{grid-template-columns:16px auto 1fr;gap:8px;}
-  .v5-task-line > .v5-task-who{display:none;}
-  .v5-task-title{white-space:normal;overflow:visible;text-overflow:clip;font-size:14px;}
-  .v5-task-date{font-size:12px;}
-  .v5-cell-num{font-size:14px;text-align:left;}
-  .v5-fee-stack{align-items:flex-start;}
-  .v5-fee-amt{font-size:14px;}
-  .v5-fee-billed{font-size:11px;}
-  .v5-status{font-size:14px;text-align:left;}
-  .v5-stamp{font-size:12px;letter-spacing:0.14em;}
-
-  .v5-totals{
-    grid-template-columns:1fr;gap:6px;padding:14px 16px;font-size:11px;
-  }
-  .v5-totals > :nth-child(1){display:none;}
-  .v5-totals > :nth-child(7){display:none;}
-
-  .v5-expand{padding:12px 14px 16px;}
-  .v5-expand-grid{grid-template-columns:1fr;gap:10px;text-align:left;}
-  .v5-fee-blocks{flex-wrap:wrap;gap:18px;}
-}
-
-</style>
+<link rel="stylesheet" href="cma-board.css?v=27">
 </head>
 <body>
 
-<!-- ── V5 MASTHEAD ── -->
+<!-- ── V5 TOP CHROME ── (masthead removed; tabbar is the only top bar now) -->
 <div id="main-masthead">
-  <header class="v5-masthead">
-    <div class="v5-mast-inner">
-      <div style="display:flex;align-items:baseline;">
-        <span class="v5-firm">Carlisle Moore</span>
-        <span class="v5-eyebrow">R&thinsp;e&thinsp;s&thinsp;i&thinsp;d&thinsp;e&thinsp;n&thinsp;t&thinsp;i&thinsp;a&thinsp;l &nbsp; A&thinsp;r&thinsp;c&thinsp;h&thinsp;i&thinsp;t&thinsp;e&thinsp;c&thinsp;t&thinsp;u&thinsp;r&thinsp;e</span>
-      </div>
-      <div class="v5-mast-right">
-        <span class="v5-mast-meta" id="today-date"></span>
-      </div>
-    </div>
-  </header>
   <nav class="v5-tabbar">
     <div class="v5-tabbar-inner">
       <button class="v5-tab active" id="nav-board" onclick="showPage('board')">Board</button>
@@ -1442,13 +222,27 @@ body{background:var(--paper-0);}
 <input type="file" id="import-file-input" accept=".txt" style="display:none;" onchange="handleImportFile(event)" />
 
 <script>
-/* ════════════════════════════════════════════
-   CMA PROJECT BOARD  — V5 (Engraved Edition)
-   Sidebar nav, expandable rows, billing integration.
-   ════════════════════════════════════════════ */
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  CMA PROJECT BOARD — V5 (Engraved Edition)                       ║
+   ║  Sidebar nav · expandable rows · billing integration             ║
+   ║  See the top-of-file comment for the section map.                ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
 
-const APP_VERSION='1.26';
-const APP_VERSION_DATE='May 22, 2026 · 9:00 PM';
+/* ──────────────────────────────────────────────────────────────────
+   §12 CONSTANTS
+   App version, GitHub sync targets, design constants, sample data,
+   and human-facing labels all live here so anything you'd want to
+   tweak is in one block at the top.
+   ────────────────────────────────────────────────────────────────── */
+
+const APP_VERSION='1.27';
+const APP_VERSION_DATE='May 22, 2026 · 10:30 PM';
+// ──────────────────────────────────────────────────────────────
+// IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
+// in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
+// at the top of <head>. They must stay in lock-step or Safari
+// will serve the old CSS against the new JS.
+// ──────────────────────────────────────────────────────────────
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1565,6 +359,9 @@ function updatePhasePercentSave(){scheduleSave();}
 const TITLE_FS=28;
 let nextId=20,editingTask=null,addingToProject=null;
 let currentPage='board';
+/* ──────────────────────────────────────────────────────────────────
+   §13 STATE
+   ────────────────────────────────────────────────────────────────── */
 let projects=[],ghToken=localStorage.getItem('pb_gh_token')||'',ghFileSha='',saveTimer=null;
 
 const SAMPLE_PROJECTS=[
@@ -1612,6 +409,9 @@ function normalizeProjects(){
   });
 }
 function setLastSyncLabel(d){const el=document.getElementById('last-sync-label');if(el)el.textContent='Synced '+d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+/* ──────────────────────────────────────────────────────────────────
+   §14 GITHUB SYNC  (load · save · token · billing fetch)
+   ────────────────────────────────────────────────────────────────── */
 async function loadFromGitHub(){
   if(!ghToken)return;
   setStatus('Loading…','working');
@@ -1675,6 +475,9 @@ document.addEventListener('DOMContentLoaded',()=>{const ta=document.getElementBy
 
 /* ── PAGE NAVIGATION ── */
 const PAGES=['board','gantt','archive','summary'];
+/* ──────────────────────────────────────────────────────────────────
+   §15 PAGE NAVIGATION  (showPage + staff filter)
+   ────────────────────────────────────────────────────────────────── */
 function showPage(page){
   currentPage=page;
   PAGES.forEach(p=>{
@@ -1754,6 +557,11 @@ function v5BillingFor(p){
 }
 
 /* Derive design phase from the existing phasePercents + type. */
+/* ──────────────────────────────────────────────────────────────────
+   §16 V5 RENDER  (sidebar · strips · list · totals · row · expand)
+   Derivation helpers (phase, status, billing match) live up top,
+   then the renderers in roughly the order they paint to the page.
+   ────────────────────────────────────────────────────────────────── */
 function v5ComputePhase(p){
   if(!p)return 'SD';
   if(p.type==='prospect')return 'PROS';
@@ -1871,11 +679,13 @@ function renderV5Sidebar(){
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.billing}" target="_blank" rel="noopener">Billing ↗</a>`;
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.cost}" target="_blank" rel="noopener">Cost estimator ↗</a>`;
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.quest}" target="_blank" rel="noopener">Questionnaire ↗</a>`;
-  // Version label lives at the bottom of the sidebar (pushed by flex). The
-  // bootstrap script sets its text once APP_VERSION_DATE is in scope.
-  html+=`<div class="v5-sb-footer"><span id="version-label"></span></div>`;
+  // Footer at the bottom of the sidebar carries today's date + the app version.
+  // Replaces what used to live in the masthead (now removed).
+  html+=`<div class="v5-sb-footer"><span class="sb-date" id="today-date"></span><span class="sb-version" id="version-label"></span></div>`;
   sb.innerHTML=html;
-  // Re-apply the version text after re-render since the element gets replaced.
+  // Re-apply text after every re-render since the elements get replaced.
+  const _td=document.getElementById('today-date');
+  if(_td)_td.textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
   const _vl2=document.getElementById('version-label');
   if(_vl2)_vl2.textContent='v'+APP_VERSION+' · '+APP_VERSION_DATE;
 }
@@ -1920,7 +730,7 @@ function renderV5Strips(){
 }
 
 function v5HeaderRow(){
-  return `<div class="v5-header-row" style="display:grid;grid-template-columns:44px 1.6fr 2.1fr 0.55fr 0.95fr 0.75fr 24px;gap:0 16px;">
+  return `<div class="v5-header-row" style="display:grid;grid-template-columns:46px 1.7fr 2fr 0.5fr 0.95fr 0.75fr 28px;gap:0 16px;">
     <span></span>
     <span>Client / Scope</span>
     <span>Tasks</span>
@@ -2074,15 +884,40 @@ function v5InlineAddOrEdit(p){
   return '';
 }
 
+// Type-section grouping. Order: NEW CONSTRUCTION first, then renovation,
+// in-construction, prospect. Each group renders an engraved section header
+// and wraps its rows in a tinted .v5-section.<type> container.
+const V5_TYPE_ORDER=['new-construction','renovation','in-construction','prospect',''];
+const V5_TYPE_NAMES={
+  'new-construction':'New Construction',
+  'renovation':'Renovation',
+  'in-construction':'In Construction',
+  'prospect':'Prospect',
+  '':'Unassigned'
+};
+
 function renderV5List(){
   const el=document.getElementById('v5-list');if(!el)return;
   const rows=v5Filtered();
   let html=v5HeaderRow();
   if(!rows.length){
     html+=`<div class="v5-empty">No projects match the current filters.</div>`;
-  }else{
-    html+=rows.map(v5ProjectRow).join('');
+    el.innerHTML=html;return;
   }
+  // bucket by type, preserving the order we want on the page
+  const groups={};V5_TYPE_ORDER.forEach(k=>{groups[k]=[];});
+  rows.forEach(p=>{
+    const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
+    groups[k].push(p);
+  });
+  V5_TYPE_ORDER.forEach(type=>{
+    const items=groups[type];
+    if(!items.length)return;
+    const typeCls=type?`type-${type}`:'type-unassigned';
+    const name=V5_TYPE_NAMES[type]||type;
+    html+=`<div class="v5-section-header"><span class="v5-section-name">${v5Escape(name)}</span><span class="v5-section-count">${items.length} ${items.length===1?'project':'projects'}</span></div>`;
+    html+=`<div class="v5-section ${typeCls}">`+items.map(v5ProjectRow).join('')+`</div>`;
+  });
   el.innerHTML=html;
 }
 
@@ -2118,6 +953,9 @@ function submitNewProjectModal(){
 }
 
 /* Edit-project popup launcher from inside an expanded row */
+/* ──────────────────────────────────────────────────────────────────
+   §17 MODALS · EDIT POPUP · CALENDAR  (UI dialogs and pickers)
+   ────────────────────────────────────────────────────────────────── */
 function openProjEditFromRow(pid){
   const row=document.querySelector(`.v5-row[data-pid="${pid}"] .v5-client`);
   if(row)openProjEdit(pid,row);
@@ -2249,6 +1087,11 @@ function closeCtx(){document.getElementById('ctx-menu').style.display='none';}
 document.addEventListener('click',closeCtx);
 
 /* ── ARCHIVE ── */
+/* ──────────────────────────────────────────────────────────────────
+   §18 LEGACY PAGE RENDERERS  (Archive · Gantt · Due / Summary)
+   These views still use the V2-era styling and helpers; the V5
+   redesign only replaced the Board view.
+   ────────────────────────────────────────────────────────────────── */
 function renderArchive(){
   const list=document.getElementById('archive-list');
   const cnt=document.getElementById('archive-count');
@@ -2456,6 +1299,9 @@ function renderSummary(){
 
 /* ── CALENDAR ── */
 let calState={month:0,year:0,selected:'',onPick:null};
+/* ──────────────────────────────────────────────────────────────────
+   §19 CALENDAR POPUP  (date picker used by tasks)
+   ────────────────────────────────────────────────────────────────── */
 function showCalendar(anchorEl,currentVal,onPick){
   let popup=document.getElementById('cal-popup');
   if(!popup){popup=document.createElement('div');popup.id='cal-popup';document.body.appendChild(popup);}
@@ -2523,12 +1369,13 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&addingToProject!==null)submitInlineTask(addingToProject);
 });
 
-/* ── INIT ── */
+/* ╔══════════════════════════════════════════════════════════════════╗
+   ║  §20 INIT — bootstrap the app                                    ║
+   ╚══════════════════════════════════════════════════════════════════╝ */
 const _ls=localStorage.getItem('pb_last_sync');
 if(_ls)setLastSyncLabel(new Date(_ls));
-document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}).toUpperCase();
-const _vl=document.getElementById('version-label');
-if(_vl)_vl.textContent='v'+APP_VERSION+' · '+APP_VERSION_DATE;
+// today-date and version-label live in the sidebar footer now; renderV5Sidebar
+// writes their text on every render, so no bootstrap write is needed here.
 const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
