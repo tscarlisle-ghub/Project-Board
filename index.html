@@ -554,15 +554,21 @@ body{background:var(--paper-0);}
 /* V5 Masthead */
 .v5-masthead{
   border-bottom:1px solid var(--v5-engraved-rule);
-  padding:12px 28px 10px;
+  padding:10px 24px 8px;
   display:flex;align-items:baseline;justify-content:space-between;gap:24px;
   background:var(--paper-0);
   position:sticky;top:0;z-index:200;
 }
+.v5-mast-inner{
+  max-width:1400px;
+  margin:0 auto;
+  width:100%;
+  display:flex;align-items:baseline;justify-content:space-between;gap:24px;
+}
 .v5-firm{
   font-family:var(--ff-display);
   font-weight:400;
-  font-size:18px;
+  font-size:20px;
   text-transform:uppercase;
   letter-spacing:var(--tr-engraved);
   color:var(--v5-engraved);
@@ -570,22 +576,16 @@ body{background:var(--paper-0);}
 .v5-eyebrow{
   font-family:var(--ff-display);
   font-weight:400;
-  font-size:10px;
+  font-size:11px;
   text-transform:uppercase;
   letter-spacing:var(--tr-engraved-wide);
   color:var(--ink-3);
   margin-left:18px;
 }
-.v5-address{
-  font-family:var(--ff-mono);
-  font-size:11px;
-  color:var(--ink-3);
-  white-space:nowrap;
-}
 .v5-mast-right{display:flex;align-items:center;gap:14px;}
 .v5-mast-meta{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:11px;
   color:var(--ink-4);
   letter-spacing:0.02em;
 }
@@ -593,15 +593,19 @@ body{background:var(--paper-0);}
 /* V5 Tab bar (top-level views: Board / Gantt / Archive / Due) */
 .v5-tabbar{
   border-bottom:1px solid var(--ink-5);
-  padding:6px 28px;
+  padding:5px 24px;
   display:flex;align-items:center;gap:0;
   background:var(--paper-0);
-  position:sticky;top:44px;z-index:199;
+  position:sticky;top:42px;z-index:199;
+}
+.v5-tabbar-inner{
+  max-width:1400px;margin:0 auto;width:100%;
+  display:flex;align-items:center;
 }
 .v5-tab{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:11px;
+  font-size:13px;
   letter-spacing:0.14em;
   text-transform:uppercase;
   color:var(--ink-3);
@@ -618,7 +622,7 @@ body{background:var(--paper-0);}
 .v5-tab-spacer{flex:1;}
 .v5-tab-meta{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:11px;
   color:var(--ink-3);
   margin-left:12px;
   letter-spacing:0.02em;
@@ -626,7 +630,7 @@ body{background:var(--paper-0);}
 .v5-tab-action{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:10px;
+  font-size:12px;
   letter-spacing:0.14em;
   text-transform:uppercase;
   color:var(--ink-3);
@@ -639,19 +643,27 @@ body{background:var(--paper-0);}
 .v5-tab-action:hover{color:var(--ink-0);}
 .v5-tab-action.danger{color:var(--v5-alert);}
 
-/* V5 Board page layout: sidebar + main */
-.v5-shell{display:flex;min-height:calc(100vh - 80px);background:var(--paper-0);}
+/* V5 Board page layout: sidebar + main, capped width so the table doesn't sprawl on wide monitors */
+.v5-shell{
+  display:flex;
+  min-height:calc(100vh - 76px);
+  background:var(--paper-0);
+  max-width:1400px;
+  margin:0 auto;
+  width:100%;
+}
 .v5-sidebar{
   width:220px;flex-shrink:0;
   background:var(--paper-1);
   border-right:1px solid var(--ink-5);
   padding:18px 0;
   overflow-y:auto;
+  display:flex;flex-direction:column;
 }
 .v5-sb-group-label{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:9px;
+  font-size:10px;
   letter-spacing:0.16em;
   text-transform:uppercase;
   color:var(--ink-3);
@@ -660,12 +672,12 @@ body{background:var(--paper-0);}
 .v5-sb-item{
   display:flex;align-items:center;gap:8px;width:100%;
   text-align:left;
-  padding:5px 22px;
+  padding:6px 22px;
   background:transparent;
   border:none;
   border-left:2px solid transparent;
   font-family:var(--ff-sans);
-  font-size:13px;
+  font-size:14px;
   color:var(--ink-1);
   cursor:pointer;
   transition:background 0.12s,color 0.12s;
@@ -676,7 +688,7 @@ body{background:var(--paper-0);}
 .v5-sb-item .v5-sb-label{flex:1;}
 .v5-sb-count{
   font-family:var(--ff-mono);
-  font-size:11px;
+  font-size:12px;
   color:var(--ink-3);
   font-variant-numeric:tabular-nums;
 }
@@ -684,78 +696,72 @@ body{background:var(--paper-0);}
 .v5-sb-tool{
   display:flex;align-items:center;width:100%;
   text-align:left;
-  padding:5px 22px;
+  padding:6px 22px;
   background:transparent;
   border:none;
   font-family:var(--ff-sans);
-  font-size:13px;
+  font-size:14px;
   color:var(--ink-1);
   cursor:pointer;
   text-decoration:none;
 }
 .v5-sb-tool:hover{color:var(--forest-2);}
+.v5-sb-footer{
+  margin-top:auto;
+  padding:18px 22px 4px;
+  font-family:var(--ff-mono);
+  font-size:10px;
+  letter-spacing:0.04em;
+  color:var(--ink-4);
+  border-top:0.5px solid var(--ink-5);
+}
 
 /* V5 Main column */
 .v5-main{flex:1;display:flex;flex-direction:column;min-width:0;}
 
-/* V5 Page-title bar */
+/* V5 Page-title bar (now: only search + + New Project) */
 .v5-titlebar{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 24px 10px;
+  display:flex;align-items:center;gap:16px;
+  padding:14px 24px 12px;
   border-bottom:1px solid var(--ink-5);
   background:var(--paper-0);
   flex-wrap:wrap;
 }
-.v5-page-title{
-  font-family:var(--ff-display);
-  font-weight:400;
-  font-size:28px;
-  text-transform:uppercase;
-  letter-spacing:var(--tr-engraved);
-  color:var(--v5-engraved);
-  line-height:1;
-}
-.v5-title-divider{width:1px;height:20px;background:var(--ink-5);margin:0 4px;}
-.v5-subline{
-  font-family:var(--ff-serif);
-  font-style:italic;
-  font-size:13px;
-  color:var(--ink-3);
-}
 .v5-title-spacer{flex:1;}
 .v5-search-wrap{
-  display:inline-flex;align-items:center;gap:6px;
-  border-bottom:1px solid var(--ink-5);
-  padding:2px 0;
+  display:inline-flex;align-items:center;gap:10px;
+  border-bottom:1.5px solid var(--ink-5);
+  padding:8px 0;
   transition:border-color 0.15s;
+  flex:1;max-width:520px;
 }
 .v5-search-wrap:focus-within{border-bottom-color:var(--forest-1);}
 .v5-search-icon{
-  width:13px;height:13px;
+  width:18px;height:18px;
   color:var(--ink-3);
   flex-shrink:0;
 }
 .v5-search{
   font-family:var(--ff-sans);
-  font-size:12px;
+  font-size:16px;
   color:var(--ink-1);
   background:transparent;
   border:none;
   outline:none;
   padding:2px 4px;
-  width:200px;
+  width:100%;flex:1;
 }
 .v5-search::placeholder{color:var(--ink-4);font-style:italic;}
 .v5-newproj-btn{
   font-family:var(--ff-sans-cond);
   font-weight:700;
-  font-size:10px;
+  font-size:13px;
   letter-spacing:0.14em;
   text-transform:uppercase;
   background:var(--ink-0);
   color:var(--paper-0);
   border:none;
-  padding:7px 16px;
+  padding:12px 22px;
   cursor:pointer;
   transition:background 0.15s;
 }
@@ -764,7 +770,7 @@ body{background:var(--paper-0);}
 /* V5 Phase strip + Staff strip */
 .v5-strip{
   display:flex;align-items:center;gap:12px;
-  padding:8px 24px;
+  padding:7px 24px;
   border-bottom:1px solid var(--ink-5);
   background:var(--paper-0);
   flex-wrap:wrap;
@@ -772,7 +778,7 @@ body{background:var(--paper-0);}
 .v5-strip-label{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:9px;
+  font-size:11px;
   letter-spacing:0.16em;
   text-transform:uppercase;
   color:var(--ink-3);
@@ -781,7 +787,7 @@ body{background:var(--paper-0);}
 .v5-chip{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:11px;
+  font-size:13px;
   letter-spacing:0.12em;
   text-transform:uppercase;
   color:var(--ink-2);
@@ -799,28 +805,28 @@ body{background:var(--paper-0);}
 .v5-chip-count{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:12px;
+  font-size:14px;
   color:var(--forest-1);
   font-weight:400;
   letter-spacing:0;
   text-transform:none;
 }
-.v5-chip-sep{color:var(--ink-4);margin-right:10px;font-size:11px;}
+.v5-chip-sep{color:var(--ink-4);margin-right:10px;font-size:12px;}
 
 /* V5 Project list (the table) */
 .v5-list{flex:1;overflow-y:auto;background:var(--paper-0);}
 .v5-row-grid{
   display:grid;
-  grid-template-columns:44px 1.6fr 2.1fr 0.55fr 0.95fr 0.75fr 24px;
-  gap:0 16px;
+  grid-template-columns:42px 1.7fr 2fr 0.5fr 0.95fr 0.75fr 24px;
+  gap:0 14px;
   align-items:baseline;
-  padding:14px 24px;
+  padding:12px 24px;
   border-bottom:0.5px solid var(--ink-5);
 }
 .v5-header-row{
   font-family:var(--ff-sans-cond);
   font-weight:600;
-  font-size:10px;
+  font-size:12px;
   letter-spacing:0.12em;
   text-transform:uppercase;
   color:var(--ink-3);
@@ -839,19 +845,19 @@ body{background:var(--paper-0);}
 }
 .v5-chev{display:flex;align-items:center;justify-content:flex-end;color:var(--ink-3);}
 .v5-row.expanded .v5-chev{color:var(--ink-1);}
-.v5-cell-num{text-align:right;font-family:var(--ff-mono);font-size:13px;color:var(--ink-1);font-variant-numeric:tabular-nums;}
+.v5-cell-num{text-align:right;font-family:var(--ff-mono);font-size:15px;color:var(--ink-1);font-variant-numeric:tabular-nums;}
 .v5-stamp{
   font-family:var(--ff-mono);
-  font-size:11px;
-  letter-spacing:0.18em;
+  font-size:13px;
+  letter-spacing:0.16em;
   text-transform:uppercase;
   color:var(--forest-1);
 }
 .v5-client{
   font-family:var(--ff-display);
   font-weight:500;
-  font-size:15px;
-  letter-spacing:0.14em;
+  font-size:17px;
+  letter-spacing:0.07em;
   text-transform:uppercase;
   color:var(--v5-engraved);
   line-height:1.15;
@@ -859,29 +865,30 @@ body{background:var(--paper-0);}
 .v5-scope{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:13px;
+  font-size:15px;
   color:var(--ink-2);
-  margin-top:1px;
+  margin-top:2px;
+  line-height:1.25;
 }
 .v5-addr{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:12px;
   color:var(--ink-3);
   margin-top:4px;
   letter-spacing:0.01em;
 }
 .v5-lead{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:12px;
   color:var(--ink-3);
-  margin-top:6px;
+  margin-top:5px;
   letter-spacing:0.02em;
 }
-.v5-tasks-col{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.v5-task-line{display:grid;grid-template-columns:18px auto 1fr auto;align-items:baseline;gap:8px;min-width:0;}
+.v5-tasks-col{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.v5-task-line{display:grid;grid-template-columns:18px auto 1fr auto;align-items:baseline;gap:10px;min-width:0;}
 .v5-task-line.dimmed{opacity:0.35;}
 .v5-task-chk{
-  width:13px;height:13px;
+  width:14px;height:14px;
   border:1px solid var(--ink-3);
   background:transparent;
   cursor:pointer;
@@ -894,7 +901,7 @@ body{background:var(--paper-0);}
 .v5-task-chk.done svg{display:block;}
 .v5-task-date{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:12px;
   color:var(--ink-3);
   white-space:nowrap;
   letter-spacing:0.01em;
@@ -902,7 +909,7 @@ body{background:var(--paper-0);}
 .v5-task-date.alert{color:var(--v5-alert);}
 .v5-task-title{
   font-family:var(--ff-sans);
-  font-size:12px;
+  font-size:14px;
   color:var(--ink-0);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   min-width:0;cursor:text;
@@ -910,7 +917,7 @@ body{background:var(--paper-0);}
 .v5-task-title.done{text-decoration:line-through;color:var(--ink-3);}
 .v5-task-who{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:12px;
   color:var(--forest-1);
   letter-spacing:0.01em;
   white-space:nowrap;
@@ -918,34 +925,34 @@ body{background:var(--paper-0);}
 .v5-more-tasks{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:11px;
+  font-size:13px;
   color:var(--ink-3);
   margin-top:2px;
 }
 .v5-fee-stack{display:flex;flex-direction:column;align-items:flex-end;}
 .v5-fee-amt{
   font-family:var(--ff-mono);
-  font-size:13px;
+  font-size:15px;
   color:var(--ink-1);
   font-variant-numeric:tabular-nums;
 }
 .v5-fee-billed{
   font-family:var(--ff-mono);
-  font-size:10px;
+  font-size:12px;
   color:var(--ink-3);
-  margin-top:1px;
+  margin-top:2px;
   font-variant-numeric:tabular-nums;
 }
 .v5-fee-pending{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:12px;
+  font-size:13px;
   color:var(--ink-4);
 }
 .v5-status{
   font-family:var(--ff-serif);
   font-style:italic;
-  font-size:13px;
+  font-size:15px;
   text-align:right;
 }
 .v5-status.active{color:var(--forest-1);}
@@ -1155,12 +1162,113 @@ body{background:var(--paper-0);}
 }
 .v5-btn-ink:hover{background:var(--forest-1);}
 
-/* V5 — narrow viewport */
-@media(max-width:900px){
+/* ── V5 narrow (tablet, ~700–1000px) ─────────────────────
+   Sidebar collapses to a scrolling row above the list. Hide
+   the fee column to keep the grid breathable. */
+@media(max-width:1000px){
   .v5-shell{flex-direction:column;}
-  .v5-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--ink-5);max-height:240px;}
-  .v5-row-grid,.v5-totals,.v5-header-row{grid-template-columns:30px 1.4fr 1.6fr 0.5fr 0.7fr 24px;gap:0 10px;padding:12px 16px;}
+  .v5-sidebar{
+    width:100%;border-right:none;border-bottom:1px solid var(--ink-5);
+    flex-direction:row;flex-wrap:wrap;align-items:center;
+    padding:8px 12px;gap:4px 8px;overflow-x:auto;
+  }
+  .v5-sb-group-label{display:none;}
+  .v5-sb-rule{display:none;}
+  .v5-sb-item{
+    width:auto;padding:6px 10px;border-left:none;border-bottom:1.5px solid transparent;
+  }
+  .v5-sb-item.active{border-left:none;border-bottom-color:var(--forest-1);background:transparent;}
+  .v5-sb-tool{width:auto;padding:6px 10px;font-size:13px;}
+  .v5-sb-footer{
+    width:100%;margin-top:0;padding:6px 10px 0;border-top:none;text-align:right;
+  }
+  .v5-row-grid,.v5-totals,.v5-header-row{
+    grid-template-columns:36px 1.4fr 1.8fr 0.5fr 0.7fr 24px;
+    gap:0 12px;padding:12px 18px;
+  }
+  /* hide Fee · billed column on tablet */
   .v5-row-grid > :nth-child(5),.v5-totals > :nth-child(5),.v5-header-row > :nth-child(5){display:none;}
+}
+
+/* ── V5 phone (<700px) ───────────────────────────────────
+   Project rows go full-card: identity on top with stamp inline,
+   tasks below, a compact footer row with open/fee/status.
+   Stripped some columns, bumped readable type. */
+@media(max-width:700px){
+  .v5-masthead{padding:8px 14px 6px;}
+  .v5-firm{font-size:16px;}
+  .v5-eyebrow{display:none;}
+  .v5-mast-meta{font-size:10px;}
+
+  .v5-tabbar{padding:4px 10px;overflow-x:auto;flex-wrap:nowrap;}
+  .v5-tabbar-inner{flex-wrap:nowrap;}
+  .v5-tab{margin-right:18px;font-size:12px;}
+  .v5-tab-meta{display:none;}
+  .v5-tab-action{font-size:11px;padding:4px 4px;margin-left:4px;}
+
+  .v5-titlebar{padding:10px 14px 8px;gap:10px;}
+  .v5-search-wrap{flex:1 1 100%;max-width:none;padding:6px 0;}
+  .v5-search{font-size:15px;}
+  .v5-search-icon{width:16px;height:16px;}
+  .v5-newproj-btn{flex:1 1 100%;text-align:center;font-size:12px;padding:11px 14px;}
+
+  .v5-strip{padding:6px 14px;gap:8px;}
+  .v5-strip-label{font-size:10px;margin-right:2px;}
+  .v5-chip{margin-right:10px;font-size:12px;}
+  .v5-chip-phase{margin-right:14px;}
+  .v5-chip-count{font-size:13px;}
+
+  .v5-header-row{display:none;}
+  .v5-list{overflow-y:visible;}
+
+  /* card-style row: 3-grid layout */
+  .v5-row-grid{
+    display:grid;
+    grid-template-columns:38px 1fr auto;
+    grid-template-areas:
+      "stamp identity chev"
+      ".     tasks    tasks"
+      ".     footer   footer";
+    gap:6px 12px;
+    align-items:start;
+    padding:14px 16px;
+  }
+  .v5-row-grid > :nth-child(1){grid-area:stamp;}
+  .v5-row-grid > :nth-child(2){grid-area:identity;min-width:0;}
+  .v5-row-grid > :nth-child(3){grid-area:tasks;}
+  .v5-row-grid > :nth-child(4),
+  .v5-row-grid > :nth-child(5),
+  .v5-row-grid > :nth-child(6){grid-area:footer;}
+  .v5-row-grid > :nth-child(4){display:inline-block;margin-right:14px;}
+  .v5-row-grid > :nth-child(5){display:inline-block;margin-right:14px;}
+  .v5-row-grid > :nth-child(6){display:inline-block;float:right;}
+  .v5-row-grid > :nth-child(7){grid-area:chev;}
+  /* mobile footer wrapper visual: a tiny flex row */
+  .v5-row-grid::after{display:none;}
+
+  .v5-client{font-size:16px;letter-spacing:0.05em;line-height:1.18;}
+  .v5-scope{font-size:14px;}
+  .v5-addr,.v5-lead{font-size:12px;}
+  .v5-task-line{grid-template-columns:16px auto 1fr;gap:8px;}
+  .v5-task-line > .v5-task-who{display:none;}
+  .v5-task-title{white-space:normal;overflow:visible;text-overflow:clip;font-size:14px;}
+  .v5-task-date{font-size:12px;}
+  .v5-cell-num{font-size:14px;text-align:left;}
+  .v5-fee-stack{align-items:flex-start;}
+  .v5-fee-amt{font-size:14px;}
+  .v5-fee-billed{font-size:11px;}
+  .v5-status{font-size:14px;text-align:left;}
+  .v5-stamp{font-size:12px;letter-spacing:0.14em;}
+
+  .v5-totals{
+    grid-template-columns:1fr;gap:6px;padding:14px 16px;font-size:11px;
+  }
+  .v5-totals > :nth-child(1){display:none;}
+  .v5-totals > :nth-child(7){display:none;}
+
+  .v5-expand{padding:12px 14px 16px;}
+  .v5-expand-grid{grid-template-columns:1fr;gap:10px;text-align:left;}
+  .v5-fee-blocks{flex-wrap:wrap;gap:18px;}
 }
 
 </style>
@@ -1170,27 +1278,29 @@ body{background:var(--paper-0);}
 <!-- ── V5 MASTHEAD ── -->
 <div id="main-masthead">
   <header class="v5-masthead">
-    <div style="display:flex;align-items:baseline;">
-      <span class="v5-firm">Carlisle Moore</span>
-      <span class="v5-eyebrow">R&thinsp;e&thinsp;s&thinsp;i&thinsp;d&thinsp;e&thinsp;n&thinsp;t&thinsp;i&thinsp;a&thinsp;l &nbsp; A&thinsp;r&thinsp;c&thinsp;h&thinsp;i&thinsp;t&thinsp;e&thinsp;c&thinsp;t&thinsp;u&thinsp;r&thinsp;e</span>
-    </div>
-    <div class="v5-mast-right">
-      <span class="v5-address">2402-½ Canterbury Lane · Mountain Brook, AL</span>
-      <span class="v5-mast-meta" id="today-date"></span>
-      <span class="v5-mast-meta" id="version-label"></span>
+    <div class="v5-mast-inner">
+      <div style="display:flex;align-items:baseline;">
+        <span class="v5-firm">Carlisle Moore</span>
+        <span class="v5-eyebrow">R&thinsp;e&thinsp;s&thinsp;i&thinsp;d&thinsp;e&thinsp;n&thinsp;t&thinsp;i&thinsp;a&thinsp;l &nbsp; A&thinsp;r&thinsp;c&thinsp;h&thinsp;i&thinsp;t&thinsp;e&thinsp;c&thinsp;t&thinsp;u&thinsp;r&thinsp;e</span>
+      </div>
+      <div class="v5-mast-right">
+        <span class="v5-mast-meta" id="today-date"></span>
+      </div>
     </div>
   </header>
   <nav class="v5-tabbar">
-    <button class="v5-tab active" id="nav-board" onclick="showPage('board')">Board</button>
-    <button class="v5-tab" id="nav-gantt" onclick="showPage('gantt')">Gantt</button>
-    <button class="v5-tab" id="nav-archive" onclick="showPage('archive')">Archive</button>
-    <button class="v5-tab" id="nav-summary" onclick="showPage('summary')">Due</button>
-    <span class="v5-tab-spacer"></span>
-    <span class="v5-tab-meta" id="last-sync-label"></span>
-    <span class="v5-tab-meta sync-status" id="sync-status"></span>
-    <button class="v5-tab-action" onclick="forceSave()">↕ Sync</button>
-    <button class="v5-tab-action" onclick="triggerImport()">↑ Import</button>
-    <button class="v5-tab-action" onclick="showSetup()">Settings</button>
+    <div class="v5-tabbar-inner">
+      <button class="v5-tab active" id="nav-board" onclick="showPage('board')">Board</button>
+      <button class="v5-tab" id="nav-gantt" onclick="showPage('gantt')">Gantt</button>
+      <button class="v5-tab" id="nav-archive" onclick="showPage('archive')">Archive</button>
+      <button class="v5-tab" id="nav-summary" onclick="showPage('summary')">Due</button>
+      <span class="v5-tab-spacer"></span>
+      <span class="v5-tab-meta" id="last-sync-label"></span>
+      <span class="v5-tab-meta sync-status" id="sync-status"></span>
+      <button class="v5-tab-action" onclick="forceSave()">↕ Sync</button>
+      <button class="v5-tab-action" onclick="triggerImport()">↑ Import</button>
+      <button class="v5-tab-action" onclick="showSetup()">Settings</button>
+    </div>
   </nav>
 </div>
 
@@ -1200,14 +1310,11 @@ body{background:var(--paper-0);}
     <aside class="v5-sidebar" id="v5-sidebar"></aside>
     <div class="v5-main">
       <div class="v5-titlebar">
-        <span class="v5-page-title">Project Board</span>
-        <span class="v5-title-divider"></span>
-        <span class="v5-subline" id="v5-subline"></span>
-        <span class="v5-title-spacer"></span>
         <span class="v5-search-wrap">
           <svg class="v5-search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><circle cx="9" cy="9" r="5"/><path d="M13 13l4 4"/></svg>
           <input class="v5-search" id="v5-search" placeholder="Search client, address" oninput="v5SetQuery(this.value)" />
         </span>
+        <span class="v5-title-spacer"></span>
         <button class="v5-newproj-btn" onclick="openNewProjectModal()">+ NEW PROJECT</button>
       </div>
       <div class="v5-strip" id="v5-phase-strip"></div>
@@ -1340,8 +1447,8 @@ body{background:var(--paper-0);}
    Sidebar nav, expandable rows, billing integration.
    ════════════════════════════════════════════ */
 
-const APP_VERSION='1.25';
-const APP_VERSION_DATE='May 22, 2026 · 6:15 PM';
+const APP_VERSION='1.26';
+const APP_VERSION_DATE='May 22, 2026 · 9:00 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1764,7 +1871,13 @@ function renderV5Sidebar(){
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.billing}" target="_blank" rel="noopener">Billing ↗</a>`;
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.cost}" target="_blank" rel="noopener">Cost estimator ↗</a>`;
   html+=`<a class="v5-sb-tool" href="${TOOL_LINKS.quest}" target="_blank" rel="noopener">Questionnaire ↗</a>`;
+  // Version label lives at the bottom of the sidebar (pushed by flex). The
+  // bootstrap script sets its text once APP_VERSION_DATE is in scope.
+  html+=`<div class="v5-sb-footer"><span id="version-label"></span></div>`;
   sb.innerHTML=html;
+  // Re-apply the version text after re-render since the element gets replaced.
+  const _vl2=document.getElementById('version-label');
+  if(_vl2)_vl2.textContent='v'+APP_VERSION+' · '+APP_VERSION_DATE;
 }
 
 function renderV5TitleBar(){
