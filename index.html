@@ -62,7 +62,7 @@
      Inline SVG so it picks up the color scheme without an extra file. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f7f3ea'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='500' text-anchor='middle' fill='%231a1814' letter-spacing='1'>PB</text><rect x='7' y='26' width='18' height='1.6' fill='%232f4b2a'/></svg>">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
-<link rel="stylesheet" href="cma-board.css?v=27">
+<link rel="stylesheet" href="cma-board.css?v=28">
 </head>
 <body>
 
@@ -235,8 +235,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.27';
-const APP_VERSION_DATE='May 22, 2026 · 10:30 PM';
+const APP_VERSION='1.28';
+const APP_VERSION_DATE='May 22, 2026 · 10:55 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -541,9 +541,16 @@ function buildBillingMap(data){
     const invoices=Array.isArray(c.invoices)?c.invoices:[];
     const billed=invoices.reduce((s,i)=>s+(i.sent||i.paid?Number(i.amount)||0:0),0);
     const collected=invoices.reduce((s,i)=>s+(i.paid?Number(i.amount)||0:0),0);
-    const fee=Number(c.currentFee||c.fee||c.originalFee||0);
+    // TSC-BILLING nests the fee at c.fee_basis.current_fee (snake_case).
+    // Older shapes used flat c.currentFee / c.fee / c.originalFee.
+    const fb=c.fee_basis||c.feeBasis||null;
+    const fee=Number(
+      (fb&&(fb.current_fee||fb.currentFee||fb.starting_fee||fb.startingFee))||
+      c.currentFee||c.current_fee||c.fee||c.originalFee||c.original_fee||0
+    );
     const rec={fee,billed,collected,outstanding:billed-collected,invoices};
-    [c.shortName,c.fullName,c.name,c.client,c.clientName,c.projectName].forEach(n=>{
+    // TSC-BILLING uses c.full_name (snake_case). Older shapes used c.fullName.
+    [c.shortName,c.short_name,c.fullName,c.full_name,c.name,c.client,c.clientName,c.client_name,c.projectName,c.project_name].forEach(n=>{
       const k=v5NormName(n);if(k)billingMap[k]=rec;
     });
   });
