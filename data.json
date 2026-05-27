@@ -31,7 +31,7 @@
           "id": 72,
           "name": "Prepare contract",
           "days": 1,
-          "done": false,
+          "done": true,
           "createdAt": "2026-05-23T03:40:02.316Z",
           "due": "2026-05-23",
           "who": "Kathleen"
