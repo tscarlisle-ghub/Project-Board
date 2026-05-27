@@ -745,7 +745,7 @@
           "id": 69,
           "name": "Contract",
           "days": 1,
-          "done": false,
+          "done": true,
           "createdAt": "2026-05-18T13:50:55.244Z",
           "due": "2026-05-18",
           "who": "Scott"
