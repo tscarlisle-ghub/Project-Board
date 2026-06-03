@@ -822,3 +822,52 @@ If the .woff2 isn't dropped in yet, the page won't break — it falls through to
 
 ### Push
 Push `index.html` + `cma-board.css` + the new `fonts/Cyan-Capitals.woff2` (or whichever variant filename). Reload with `?v=31`.
+
+## 2026-06-03 — v1.32: client name → Trade Gothic LT Std Bold Condensed No. 20, +15%
+- **`.v5-client` font-family** now leads with `"TradeGothicLTStd-BdCn20"` (exact PostScript name from Adobe Fonts), falling through `trade-gothic-next-condensed` / `trade-gothic` family names, then the v1.31 Cyan/Interstate stack. The font ships on Adobe Fonts (Typekit). If it isn't in kit `ikf0hkb` yet, browse to fonts.adobe.com, find "Trade Gothic LT Std", add the "Bold Condensed No. 20" cut to the kit, and publish.
+- **Font-size 30 → 35px** (+15%). Letter-spacing tightened 0.02em → 0.01em (Trade Gothic is already a tight condensed face). Weight 400 → 700 (Bold Condensed).
+- **Mobile breakpoint** (`<700px`) bumped proportionally: client name 18px → 21px, letter-spacing 0.05em → 0.03em.
+- Color stays `var(--v5-engraved)` (engraved ink), nowrap + ellipsis preserved.
+
+### Files touched
+- `index.html` — APP_VERSION 1.31 → 1.32, CSS cache-buster `?v=31` → `?v=32`.
+- `cma-board.css` — `.v5-client` rewritten; mobile `.v5-client` rule bumped.
+
+### Verification
+- Extracted inline `<script>`, `node --check`: clean (no JS changes this round).
+- `grep TradeGothicLTStd-BdCn20 cma-board.css`: 1 hit in `.v5-client`.
+
+### What Scott needs to do
+1. Confirm "Trade Gothic LT Std Bold Condensed No. 20" is active in Typekit kit `ikf0hkb` at fonts.adobe.com. If not: add the cut, save, publish.
+2. Push `index.html` + `cma-board.css` to GitHub.
+3. Force-reload Safari with `?v=32`.
+
+If the font isn't in the kit yet, the page falls back to Cyan Capitals (if that .woff2 was pushed) or Interstate Bold Compressed.
+
+## 2026-06-03 — v1.33: self-host Trade Gothic from fonts/
+Scott confirmed the woff2 lives in his private `tscarlisle-ghub/fonts` repo (not publicly fetchable from this session). Switched the strategy from "rely on Typekit kit ikf0hkb" to "self-host the .woff2 in the Project-Board repo," matching how Whitney and BioRhyme already work.
+
+### What changed
+- **New `@font-face`** added to `cma-board.css` immediately after the Cyan Capitals declaration:
+  ```css
+  @font-face{font-family:"TradeGothicLTStd-BdCn20";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/TradeGothicLTStd-BdCn20.woff2") format("woff2");}
+  ```
+  The CSS expects the file at `fonts/TradeGothicLTStd-BdCn20.woff2` — same relative-path pattern the Whitney and BioRhyme declarations use.
+- `.v5-client` font-family unchanged (still `"TradeGothicLTStd-BdCn20",…` from v1.32) — now it actually has somewhere to resolve.
+- APP_VERSION 1.32 → 1.33, CSS cache-buster `?v=32` → `?v=33`.
+
+### What Scott needs to do
+1. Copy `TradeGothicLTStd-BdCn20.woff2` from the private `tscarlisle-ghub/fonts` repo into local `TSC-BOARD/fonts/`.
+2. Push three files in one commit: `index.html`, `cma-board.css`, `fonts/TradeGothicLTStd-BdCn20.woff2`.
+3. Force-reload Safari with `?v=33`.
+
+If the .woff2 isn't in `fonts/` after the push, the page still doesn't break — it walks the fallback chain (Cyan Capitals → Interstate Bold Compressed → Arial).
+
+### Files touched
+- `index.html` — APP_VERSION + cache-buster.
+- `cma-board.css` — one new `@font-face` line.
+- `fonts/` — needs `TradeGothicLTStd-BdCn20.woff2` (Scott adds).
+
+### Verification
+- `node --check` on extracted inline JS: clean.
+- `grep TradeGothicLTStd-BdCn20 cma-board.css`: 2 hits (the @font-face declaration + the `.v5-client` family stack).

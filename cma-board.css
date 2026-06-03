@@ -15,6 +15,7 @@
 @font-face{font-family:"Whitney";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/Whitney-BookItalic.woff2") format("woff2");}
 @font-face{font-family:"Whitney";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/Whitney-Bold.woff2") format("woff2");}
 @font-face{font-family:"Cyan Capitals";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/Cyan-Capitals.woff2") format("woff2"),url("fonts/CyanCapitals.woff2") format("woff2"),url("fonts/Cyan-Bold-Capitals.woff2") format("woff2");}
+@font-face{font-family:"TradeGothicLTStd-BdCn20";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/TradeGothicLTStd-BdCn20.woff2") format("woff2");}
 
 *{box-sizing:border-box;margin:0;padding:0;}
 
@@ -885,14 +886,14 @@ body{background:var(--paper-0);}
   color:var(--forest-1);
 }
 .v5-client{
-  /* v1.31 — switched to the Cyan Capitals typeface; fallback chain preserves
-     the Interstate Bold Compressed look if the .woff2 hasn't been pushed yet. */
-  font-family:"Cyan Capitals","Cyan","Interstate-BoldCompressed","interstate-compressed","Interstate Compressed",Arial,sans-serif;
-  font-weight:400;
-  font-size:30px;
-  letter-spacing:0.02em;
+  /* v1.32 — Trade Gothic LT Std Bold Condensed No. 20 (Adobe Fonts).
+     Falls back through the Cyan / Interstate stack if Typekit doesn't ship it. */
+  font-family:"TradeGothicLTStd-BdCn20","trade-gothic-next-condensed","trade-gothic","Cyan Capitals","Interstate-BoldCompressed","interstate-compressed",Arial,sans-serif;
+  font-weight:700;
+  font-size:35px;             /* v1.32 — 30px → 35px (+15%) */
+  letter-spacing:0.01em;
   text-transform:uppercase;
-  color:var(--v5-engraved);   /* reverted from #0891b2 in v1.31 — "cyan" was the font, not the color */
+  color:var(--v5-engraved);
   line-height:1;
   margin-bottom:4px;
   white-space:nowrap;         /* keep the name on one line */
@@ -1291,7 +1292,7 @@ body{background:var(--paper-0);}
   .v5-row-grid > :nth-child(5){display:inline-block;float:right;}
   .v5-row-grid > :nth-child(6){grid-area:chev;}
 
-  .v5-client{font-size:18px;letter-spacing:0.05em;line-height:1.18;white-space:normal;overflow:visible;text-overflow:clip;}
+  .v5-client{font-size:21px;letter-spacing:0.03em;line-height:1.18;white-space:normal;overflow:visible;text-overflow:clip;}
   .v5-scope{font-size:16px;}
   .v5-addr,.v5-lead{font-size:13px;}
   .v5-task-line{grid-template-columns:18px auto 1fr;gap:10px;}
