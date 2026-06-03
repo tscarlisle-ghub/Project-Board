@@ -14,6 +14,7 @@
 @font-face{font-family:"Whitney";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/Whitney-Book.woff2") format("woff2");}
 @font-face{font-family:"Whitney";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/Whitney-BookItalic.woff2") format("woff2");}
 @font-face{font-family:"Whitney";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/Whitney-Bold.woff2") format("woff2");}
+@font-face{font-family:"Cyan Capitals";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/Cyan-Capitals.woff2") format("woff2"),url("fonts/CyanCapitals.woff2") format("woff2"),url("fonts/Cyan-Bold-Capitals.woff2") format("woff2");}
 
 *{box-sizing:border-box;margin:0;padding:0;}
 
@@ -884,13 +885,14 @@ body{background:var(--paper-0);}
   color:var(--forest-1);
 }
 .v5-client{
-  font-family:"Interstate-BoldCompressed","interstate-compressed","Interstate Compressed",Arial,sans-serif;
-  font-weight:700;
-  font-stretch:condensed;
+  /* v1.31 — switched to the Cyan Capitals typeface; fallback chain preserves
+     the Interstate Bold Compressed look if the .woff2 hasn't been pushed yet. */
+  font-family:"Cyan Capitals","Cyan","Interstate-BoldCompressed","interstate-compressed","Interstate Compressed",Arial,sans-serif;
+  font-weight:400;
   font-size:30px;
-  letter-spacing:0.01em;
+  letter-spacing:0.02em;
   text-transform:uppercase;
-  color:#0891b2;              /* v1.30 — cyan caps for the client name */
+  color:var(--v5-engraved);   /* reverted from #0891b2 in v1.31 — "cyan" was the font, not the color */
   line-height:1;
   margin-bottom:4px;
   white-space:nowrap;         /* keep the name on one line */

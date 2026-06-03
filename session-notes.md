@@ -793,3 +793,32 @@ Push **both** `index.html` and `cma-board.css` to GitHub in the same commit. For
 - Activity text still auto-synthesized.
 - iPhone Shortcut for voice-add tasks.
 - Per-row billing fee is no longer surfaced on the list; the expanded detail still shows Fee/Billed/Remaining + the progress bar when billing data is matched.
+
+## 2026-06-03 — v1.31: Cyan Capitals (the typeface) for client names
+Clarification from v1.30: "cyan capitals" meant the **Cyan Capitals** typeface (Wilton Foundry), not the color cyan in caps. Wired the font in and reverted the color.
+
+### What changed
+- **`@font-face` added** for `"Cyan Capitals"` in `cma-board.css`, immediately after the Whitney/BioRhyme declarations. The `src:` list tries three filename variants in order so whichever one ends up in `TSC-BOARD/fonts/` resolves: `Cyan-Capitals.woff2`, `CyanCapitals.woff2`, `Cyan-Bold-Capitals.woff2`.
+- **`.v5-client` font-family** changed from `"Interstate-BoldCompressed",…` to `"Cyan Capitals","Cyan",…` with the old Interstate stack kept as fallback. If the .woff2 isn't pushed yet the client name still renders cleanly in Interstate Bold Compressed (so the live site isn't broken in the interim — it'll just upgrade once the font arrives).
+- **Color reverted** from `#0891b2` (cyan blue) back to `var(--v5-engraved)`. Cyan is a classical serif inspired by Trajan — reads best in ink, not a colored hue.
+- **Letter-spacing nudged** 0.01em → 0.02em to match the wider tracking classical capitals carry. Font-weight relaxed 700 → 400 since Cyan Capitals is already a heavy display face.
+- White-space:nowrap + ellipsis (added in v1.30) preserved.
+
+### What Scott needs to do
+1. Download the Cyan Capitals webfont (.woff2) from the Wilton Foundry purchase page on MyFonts / Fontspring / wherever the license lives.
+2. Save it into `TSC-BOARD/fonts/` using any of: `Cyan-Capitals.woff2`, `CyanCapitals.woff2`, `Cyan-Bold-Capitals.woff2`.
+3. Push all three: `index.html`, `cma-board.css`, and the new font in `fonts/`. Force-reload Safari with `?v=31`.
+
+If the .woff2 isn't dropped in yet, the page won't break — it falls through to Interstate Bold Compressed until the font is pushed.
+
+### Files touched
+- `index.html` — APP_VERSION bump, CSS cache-buster bump.
+- `cma-board.css` — added `@font-face` for Cyan Capitals; rewrote `.v5-client` font-family + reverted color.
+- `fonts/` — needs the new `.woff2` (Scott adds).
+
+### Verification
+- Extracted inline `<script>`, `node --check`: clean (no JS changes this round, but checked to be safe).
+- `grep #0891b2 cma-board.css`: 0 hits in `.v5-client`.
+
+### Push
+Push `index.html` + `cma-board.css` + the new `fonts/Cyan-Capitals.woff2` (or whichever variant filename). Reload with `?v=31`.
