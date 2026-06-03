@@ -323,7 +323,7 @@
       "id": 25,
       "name": "Fox",
       "colorIdx": 2,
-      "archived": false,
+      "archived": true,
       "type": "new-construction",
       "tasks": [],
       "staff": "Scott",
