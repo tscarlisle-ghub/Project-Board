@@ -871,3 +871,35 @@ If the .woff2 isn't in `fonts/` after the push, the page still doesn't break —
 ### Verification
 - `node --check` on extracted inline JS: clean.
 - `grep TradeGothicLTStd-BdCn20 cma-board.css`: 2 hits (the @font-face declaration + the `.v5-client` family stack).
+
+## 2026-06-03 — v1.34: scrap TSC-BILLING integration + drop SD/CA stamp
+Scott: take the fee connection out; also take out the SD/DD/CD/CA stamp to the left of the client name.
+
+### Billing integration removed
+- **`BILLING_URLS` constant** deleted.
+- **`billingMap` state** deleted.
+- **`v5NormName`, `loadBilling`, `buildBillingMap`, `v5BillingFor`** — four billing-side functions all removed (~50 lines of JS).
+- **`loadBilling().then(...)` bootstrap call** removed from the init block at the bottom of the file.
+- **`v5ProjectRow`** no longer computes or threads a `billing` variable; it just calls `v5ExpandedDetail(p)` with one arg.
+- **`v5ExpandedDetail`** had its `Fee / Billed / Remaining` blocks + progress bar removed. The expand panel is now just Activity timeline + Add task button + Edit/Archive/Delete actions.
+- **Sidebar "Billing" tool link** retained (just a `<a href>` to the TSC-BILLING site for one-click navigation; no data exchange).
+- CSS rules for `.v5-fee-*` (blocks, bar, label) left in place as dead code for now — they're harmless and easy to bring back if Scott ever wants the integration again. Can prune in a future cleanup pass.
+
+### Phase stamp removed from rows
+- The `<span class="v5-stamp">PROS/SD/DD/CD/CA/Done</span>` was the first cell of every row. Dropped.
+- `v5ComputePhase` is still called by the sidebar count helpers (`Prospects / Active / Done` filters), so the function stayed. Only the rendered stamp went away.
+- **Row grid:** 6 cols → 5 cols. Was `46px 2.8fr 1.6fr 0.5fr 0.75fr 28px`; now `2.8fr 1.6fr 0.5fr 0.75fr 28px`. The freed 46px gets absorbed back into the identity column's flex share.
+- **Header row + totals row** synced to 5 cols, leading "blank" cells removed.
+- **Mobile breakpoints** rebalanced — tablet grid trimmed to 5 cols; phone card layout's grid-areas dropped the `stamp` track (now `identity chev` / `tasks tasks` / `footer footer`), nth-child selectors renumbered.
+
+### Files touched
+- `index.html` — billing constants + functions removed, `v5ProjectRow` + `v5ExpandedDetail` rewritten, header/totals rows updated, APP_VERSION + CSS cache-buster bumped.
+- `cma-board.css` — `.v5-row-grid` / `.v5-totals` grid template (5 cols), mobile breakpoints renumbered.
+
+### Verification
+- Extracted inline `<script>` (~63 KB now, down from ~65 KB), `node --check`: clean.
+- `grep -i billing index.html`: only 2 hits remain (the comment marker + the sidebar tool link href). 0 hits for `billingMap`, `v5BillingFor`, `loadBilling`.
+- `grep v5-stamp index.html`: 0 hits in render code (only the CSS rule definition, left as dead code).
+
+### Push
+Push `index.html` + `cma-board.css`. Force-reload with `?v=34`.
