@@ -203,6 +203,15 @@
           "due": "2026-05-02",
           "createdAt": "2026-04-25T17:16:26.176Z",
           "who": "Maddie"
+        },
+        {
+          "id": 73,
+          "name": "Landscape meeting",
+          "days": 1,
+          "done": false,
+          "createdAt": "2026-06-03T13:04:54.847Z",
+          "due": "2026-06-03",
+          "who": "Maddie"
         }
       ],
       "type": "new-construction",
@@ -771,5 +780,5 @@
       "lead": "TSC"
     }
   ],
-  "nextId": 73
+  "nextId": 74
 }
