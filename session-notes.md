@@ -763,3 +763,33 @@ Then force-reload Safari with `?v=29`.
 - Address field still rendered `—` in the old expanded panel; that whole panel is gone now, so this is moot until we decide to surface address elsewhere.
 - Activity text still auto-synthesized.
 - iPhone Shortcut for voice-add tasks.
+
+## 2026-06-03 — v1.30: strip phase + fee columns, assigned into sidebar, cyan client names
+Scott: take off the phase strip, take off the fee·billed column, drop the "Office" header text on the sidebar (keep its items), put the Assigned filter in the sidebar, and widen the client-name column with cyan caps that fit on one line.
+
+### What changed
+- **Phase strip removed.** `#v5-phase-strip` div gone from the HTML; `renderV5Strips()` retired (replaced with a comment marker).
+- **Assigned strip removed from the top of the list** — moved into the left sidebar as its own group under the existing Office filters.
+- **Sidebar restructured.** "Office" group label removed (the items All projects / Active / Prospects / On hold / Past due / Complete still render, just with no header). A new **Assigned** group sits below them with All / Maddie / Kathleen / Kat — wired to the same `v5SetStaffChip()` action the old chips used, so the staff filter still drives `v5State.staff` and downstream filtering identically.
+- **Fee · Billed column removed** from the row body, header, and totals. The grid template went from 7 cols (`46px 1.7fr 2fr 0.5fr 0.95fr 0.75fr 28px`) to 6 cols (`46px 2.8fr 1.6fr 0.5fr 0.75fr 28px`) — identity claims the freed-up space. `v5HeaderRow()`, `v5ProjectRow()`, `renderV5Totals()` all updated to match.
+- **Client name column widened + cyan caps.** `.v5-client` font dropped 35→30px, color switched from `var(--v5-engraved)` to `#0891b2` (deep cyan), added `white-space:nowrap;overflow:hidden;text-overflow:ellipsis;` so each name sits on one line. With identity at 2.8fr (~48% of the list width) the longest current names ("Callahan Residence & Poolhouse", "Atkins Residence (Tuscaloosa)") fit without truncation. Phone breakpoint relaxes to `white-space:normal` so the card layout can still wrap.
+- **Mobile breakpoints rebalanced.** Tablet grid trimmed to 6 cols. Phone card layout's `nth-child` selectors renumbered (5 = footer, 6 = chev) since the fee column went away. Tablet's "hide Fee · billed" rule removed (no longer needed).
+- **Identity wrapper** gets a `.v5-identity` class with `min-width:0` so ellipsis works inside a CSS grid track.
+
+### Files touched
+- `index.html` — strip removal, `renderV5Sidebar` rewrite (Assigned group added, Office label dropped), `renderV5Strips` deleted, `v5HeaderRow` / `v5ProjectRow` / `renderV5Totals` shortened, APP_VERSION + CSS cache-buster bumped.
+- `cma-board.css` — `.v5-row-grid` + `.v5-totals` grid template (6 cols), `.v5-client` cyan/nowrap, mobile breakpoints updated, `.v5-identity{min-width:0;}` helper added.
+
+### Verification
+- Extracted inline `<script>` (~65 KB), `node --check`: clean.
+- `grep renderV5Strips`: 0 hits in real code (only the comment marker).
+- Sidebar: 6 Office items render with no header, then an "ASSIGNED" group with 4 items (All + 3 staff).
+
+### Push
+Push **both** `index.html` and `cma-board.css` to GitHub in the same commit. Force-reload Safari with `?v=30`.
+
+### Still open (carryovers)
+- `billingKey` override field for unmatched billing names (v1.28 carryover).
+- Activity text still auto-synthesized.
+- iPhone Shortcut for voice-add tasks.
+- Per-row billing fee is no longer surfaced on the list; the expanded detail still shows Fee/Billed/Remaining + the progress bar when billing data is matched.
