@@ -61,8 +61,9 @@
 <!-- Favicon: engraved "PB" on paper with a forest-green underline accent.
      Inline SVG so it picks up the color scheme without an extra file. -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f7f3ea'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='500' text-anchor='middle' fill='%231a1814' letter-spacing='1'>PB</text><rect x='7' y='26' width='18' height='1.6' fill='%232f4b2a'/></svg>">
+<link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
-<link rel="stylesheet" href="cma-board.css?v=28">
+<link rel="stylesheet" href="cma-board.css?v=29">
 </head>
 <body>
 
@@ -235,8 +236,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.28';
-const APP_VERSION_DATE='May 22, 2026 · 10:55 PM';
+const APP_VERSION='1.29';
+const APP_VERSION_DATE='Jun 2, 2026 · 9:35 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -760,7 +761,6 @@ function v5TaskInline(p,t){
     </button>
     <span class="v5-task-date ${dateCls}">${overdue?'Past due':v5Escape(dueText||'—')}</span>
     <span class="v5-task-title${t.done?' done':''}" onclick="event.stopPropagation();openEdit(${p.id},${t.id})">${v5Escape(t.name)}</span>
-    <span class="v5-task-who">${v5Escape(t.who||p.staff||DEFAULT_STAFF)}</span>
   </div>`;
 }
 
@@ -777,12 +777,12 @@ function v5ProjectRow(p){
   const feeHtml=billing&&billing.fee>0
     ? `<div class="v5-fee-stack"><span class="v5-fee-amt">${v5FmtMoney(billing.fee)}</span><span class="v5-fee-billed">${v5FmtMoney(billing.billed)} billed</span></div>`
     : `<div class="v5-fee-stack"><span class="v5-fee-pending">— pending fee</span></div>`;
+  const staffName=p.staff||p.lead||DEFAULT_STAFF;
   return `<div class="v5-row v5-row-grid${expanded?' expanded':''}" data-pid="${p.id}" onclick="v5ToggleExpand(${p.id})">
     <span class="v5-stamp">${phase}</span>
     <div>
       <div class="v5-client">${v5Escape(p.name)}</div>
-      <div class="v5-scope">${v5Escape(TYPE_LABELS[p.type]||'')}</div>
-      <div class="v5-lead">Lead · ${v5Escape(p.lead||'TSC')}</div>
+      <div class="v5-strap">${v5Escape(staffName)}</div>
     </div>
     <div class="v5-tasks-col">${tasksHtml}${moreHtml}</div>
     <span class="v5-cell-num">${open.length}</span>
@@ -829,11 +829,6 @@ function v5ExpandedDetail(p,billing){
       </div>`;
   }
   return `<div class="v5-expand" onclick="event.stopPropagation();">
-    <div class="v5-expand-grid">
-      <div><div class="v5-meta-label">Phase</div><div class="v5-meta-value">${v5Escape(phaseName)}</div></div>
-      <div><div class="v5-meta-label">Lead</div><div class="v5-meta-value v5-meta-value-emph">${v5Escape(leadFull(leadCode))}</div></div>
-      <div><div class="v5-meta-label">Type</div><div class="v5-meta-value">${v5Escape(TYPE_LABELS[p.type]||'Unassigned')}</div></div>
-    </div>
     ${feeSection}
     <div class="v5-activity-label">Activity</div>
     ${actHtml}

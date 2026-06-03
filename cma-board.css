@@ -6,6 +6,15 @@
    with APP_VERSION in index.html, or Safari will serve stale styles.
    ════════════════════════════════════════════════════════════════════════ */
 
+/* ── LOCAL FONT FALLBACKS ──
+   Ride alongside Typekit + tsc-fonts.css in index.html; declared here so
+   they're available even if those sheets fail to load. */
+@font-face{font-family:"BioRhyme Expanded";font-style:normal;font-weight:800;font-display:swap;src:url("fonts/BioRhymeExpanded-ExtraBold.woff2") format("woff2");}
+@font-face{font-family:"Whitney";font-style:normal;font-weight:300;font-display:swap;src:url("fonts/Whitney-Light.woff2") format("woff2");}
+@font-face{font-family:"Whitney";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/Whitney-Book.woff2") format("woff2");}
+@font-face{font-family:"Whitney";font-style:italic;font-weight:400;font-display:swap;src:url("fonts/Whitney-BookItalic.woff2") format("woff2");}
+@font-face{font-family:"Whitney";font-style:normal;font-weight:700;font-display:swap;src:url("fonts/Whitney-Bold.woff2") format("woff2");}
+
 *{box-sizing:border-box;margin:0;padding:0;}
 
 /* ── VARIABLES ── */
@@ -43,6 +52,8 @@
   --v5-engraved:#1a1814;--v5-engraved-rule:#3b352c;
   /* Semantic */
   --v5-alert:#8a2a1f;--v5-alert-tint:#f4e3df;--v5-warn:#8b6a1a;--v5-warn-tint:#f3ead0;--v5-info:#2f4a6b;--v5-info-tint:#dbe4ef;
+  /* Terracotta — brand accent */
+  --cma-accent:#a85c24;--cma-accent-soft:#c47a48;--cma-accent-tint:#f6ece1;
   /* V5 type families (alias core kit faces) */
   --ff-display:"columbia-titling","Trajan Pro 3","Cormorant Garamond","Times New Roman",serif;
   --ff-serif:"miller-text",Charter,"Iowan Old Style",Georgia,serif;
@@ -643,14 +654,16 @@ body{background:var(--paper-0);}
   background:transparent;
   border:none;
   border-left:2px solid transparent;
-  font-family:var(--ff-sans);
+  font-family:"Whitney Condensed","Whitney",var(--ff-sans-cond);
+  font-weight:300;
   font-size:17px;
+  letter-spacing:0.04em;
   color:var(--ink-1);
   cursor:pointer;
   transition:background 0.12s,color 0.12s;
 }
 .v5-sb-item:hover{background:rgba(0,0,0,0.02);color:var(--ink-0);}
-.v5-sb-item.active{background:var(--paper-0);border-left-color:var(--forest-1);color:var(--ink-0);font-weight:600;}
+.v5-sb-item.active{background:var(--paper-0);border-left-color:var(--forest-1);color:var(--ink-0);font-weight:400;}
 .v5-sb-item.alert,.v5-sb-item.alert .v5-sb-count{color:var(--v5-alert);}
 .v5-sb-item .v5-sb-label{flex:1;}
 .v5-sb-count{
@@ -809,8 +822,8 @@ body{background:var(--paper-0);}
 .v5-section.type-unassigned{background:transparent;}
 
 .v5-section-header{
-  font-family:var(--ff-display);
-  font-weight:400;
+  font-family:"BioRhyme Expanded",var(--ff-display);
+  font-weight:800;
   font-size:17px;
   letter-spacing:0.22em;
   text-transform:uppercase;
@@ -869,13 +882,25 @@ body{background:var(--paper-0);}
   color:var(--forest-1);
 }
 .v5-client{
-  font-family:var(--ff-display);
-  font-weight:500;
-  font-size:20px;
-  letter-spacing:0.07em;
+  font-family:"Interstate-BoldCompressed","interstate-compressed","Interstate Compressed",Arial,sans-serif;
+  font-weight:700;
+  font-stretch:condensed;
+  font-size:35px;
+  letter-spacing:0.01em;
   text-transform:uppercase;
   color:var(--v5-engraved);
-  line-height:1.15;
+  line-height:1;
+  margin-bottom:4px;
+}
+/* Staffer strap — sits under the client name. Whitney Book caps, soft terracotta. */
+.v5-strap{
+  font-family:"Whitney",var(--ff-sans);
+  font-weight:400;
+  font-size:13px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--cma-accent-soft);
+  margin-top:4px;
 }
 .v5-scope{
   font-family:var(--ff-serif);
@@ -900,7 +925,7 @@ body{background:var(--paper-0);}
   letter-spacing:0.02em;
 }
 .v5-tasks-col{display:flex;flex-direction:column;gap:5px;min-width:0;}
-.v5-task-line{display:grid;grid-template-columns:20px auto 1fr auto;align-items:baseline;gap:12px;min-width:0;}
+.v5-task-line{display:grid;grid-template-columns:20px auto 1fr;align-items:baseline;gap:12px;min-width:0;}
 .v5-task-line.dimmed{opacity:0.35;}
 .v5-task-chk{
   width:17px;height:17px;
@@ -923,7 +948,8 @@ body{background:var(--paper-0);}
 }
 .v5-task-date.alert{color:var(--v5-alert);}
 .v5-task-title{
-  font-family:var(--ff-sans);
+  font-family:"Whitney",var(--ff-sans);
+  font-weight:300;
   font-size:17px;
   color:var(--ink-0);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -1065,7 +1091,7 @@ body{background:var(--paper-0);}
   padding:4px 0;
 }
 .v5-activity-row .a-date,.v5-activity-row .a-who{font-family:var(--ff-mono);font-size:13px;color:var(--ink-3);}
-.v5-activity-row .a-text{font-family:var(--ff-sans);font-size:14px;color:var(--ink-1);}
+.v5-activity-row .a-text{font-family:"Whitney",var(--ff-sans);font-weight:300;font-size:14px;color:var(--ink-1);}
 .v5-add-task-btn{
   margin-top:12px;
   font-family:var(--ff-sans-cond);
