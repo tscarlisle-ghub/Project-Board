@@ -165,7 +165,7 @@
           "id": 19,
           "name": "build 3d model of exterior",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Kat"
         }
       ],
