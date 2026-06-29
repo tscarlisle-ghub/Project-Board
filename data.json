@@ -459,7 +459,7 @@
           "id": 49,
           "name": "revise kitchen layout",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Scott"
         },
         {
