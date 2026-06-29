@@ -17,7 +17,7 @@
           "id": 4,
           "name": "start interiors",
           "days": 3,
-          "done": false,
+          "done": true,
           "who": "Kathleen"
         },
         {
