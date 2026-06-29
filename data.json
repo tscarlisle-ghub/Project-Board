@@ -24,7 +24,7 @@
           "id": 11,
           "name": "Check with ivy for interior look book",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Kathleen"
         },
         {
