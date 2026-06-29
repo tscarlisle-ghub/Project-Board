@@ -493,7 +493,7 @@
       "id": 34,
       "name": "Casadaban - Lot 18",
       "colorIdx": 4,
-      "archived": false,
+      "archived": true,
       "type": "renovation",
       "tasks": [],
       "staff": "Scott",
