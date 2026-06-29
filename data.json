@@ -208,7 +208,7 @@
           "id": 73,
           "name": "Landscape meeting",
           "days": 1,
-          "done": false,
+          "done": true,
           "createdAt": "2026-06-03T13:04:54.847Z",
           "due": "2026-06-03",
           "who": "Maddie"
