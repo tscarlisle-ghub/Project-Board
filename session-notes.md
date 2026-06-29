@@ -906,20 +906,22 @@ Push `index.html` + `cma-board.css`. Force-reload with `?v=34`.
 
 ---
 
-## 2026-06-29
+## 2026-06-29 (later)
 
-**Fixed cross-platform save failure + added Save button (v1.35).**
+**Implemented the editorial redesign into the live app (v1.35).** Based on the Carlisle Moore "Process" design language Scott supplied, iterated via board-redesign-mockup.html.
 
-**Problem (Scott):** New projects added on one device (e.g. iOS) weren't appearing on others (macOS).
+**Fonts:** added the `wup0iix` Adobe kit (aviano-sans, columbia-titling, urw-antiqua, franklin-gothic + condensed/compressed). Kept ikf0hkb for interstate-condensed (task dates).
 
-**Root cause:** Mutations only triggered a *debounced* save — `scheduleSave()` wrote to localStorage immediately but waited 1.5s before the GitHub PUT. On mobile, backgrounding/locking the app inside that window suspended the timer, so the push never fired. Data looked saved locally but never reached GitHub, so other devices never saw it. (Secondary risk: a device with no PAT entered can only ever save locally.)
+**Approach — low risk:** the V5 engine already grouped by type, sorted by name, and had task checkboxes, so this was mostly a re-theme + row-template rewrite, not a rebuild. Added one inline `<style id="cma-editorial">` after the cma-board.css link that (a) overrides the CSS custom properties (paper/ink/brand/forest/fonts) to the rust-on-cream editorial palette — this re-themes every page at once — and (b) adds the editorial board classes. cma-board.css itself untouched (still ?v=34).
 
-**Changes:**
-- New serialized save manager: `saveNow()` → `runSave()`. Writes localStorage instantly, then pushes to GitHub immediately. `saveInFlight`/`savePending` guards prevent stale-SHA 409 collisions on rapid successive edits; on 409/422 it refreshes the file SHA and retries once.
-- All 10 discrete mutation handlers (add project, edit project, delete, archive, restore, import, add/edit/toggle/delete task) now call `saveNow()` instead of the debounced `scheduleSave()`. The phase-percent slider keeps `scheduleSave()` (debounce avoids hammering the API during drags).
-- Added a visible **Save** button in the tab bar with live state: `Save ●` (orange) = unsaved changes, `Saving…` = in flight, `Saved ✓` (green) = synced. Shows "saved on this device only" if no token.
-- `saveToGitHub()` now clears `dataDirty` on success and returns a boolean.
+**Board changes:**
+- Logo masthead (`Logo_Only.png`) + "T. Scott Carlisle Projects" eyebrow + live counts (`#ed-counts`), added under the nav in `#main-masthead`.
+- Sub-section headers: rust 2px rule + Aviano caps title + "NN Projects · NN Open Tasks".
+- Rewrote `v5ProjectRow(p,idx)`: rust numeral, Aviano name (26px), staff in terracotta, SD/DD/CD/CA phase bars, big open-count numeral; ALL open tasks listed below each row with rust square checkboxes (call existing `markDoneCtx` → saves), interstate-condensed due dates, overdue flagged "· Past due" in rust.
+- `renderV5List` threads a continuous numeral and computes per-group open-task counts; dropped the old column header row and hid `#v5-totals`.
+- Click row to expand → existing add-task / Edit / Archive / Delete (restyled). Fixed the edit-popup selectors (`.ed-prow` / `.ed-name`) since row classes changed; kept legacy `.v5-row`/`.v5-client` aliases on the new elements for safety.
+- Nav tabs restyled to Columbia Titling caps, rust active underline.
 
-**Delivery:** Full `index.html` replacement. `node --check` passed. APP_VERSION → 1.35 (Jun 29, 2026 · 12:45 PM). CSS unchanged (styles added inline), so cma-board.css?v=34 left as-is.
+**Delivery:** full `index.html` replacement; `node --check` passed; APP_VERSION → 1.35 (Jun 29, 2026 · 2:30 PM). Backup of v1.34 kept at /tmp during the session.
 
-**Reminder for Scott:** push `index.html` to GitHub, hard-reload with `?v=35`, and make sure the GitHub PAT is entered in Settings on *every* device (iOS + macOS) — without it that device can't sync.
+**Reminder for Scott:** push `index.html` to GitHub and hard-reload with `?v=35`. I couldn't preview the rendered result here, so expect to fine-tune spacing/sizes once you see it live.

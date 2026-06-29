@@ -63,12 +63,83 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f7f3ea'/><text x='16' y='22' font-family='Georgia,serif' font-size='18' font-weight='500' text-anchor='middle' fill='%231a1814' letter-spacing='1'>PB</text><rect x='7' y='26' width='18' height='1.6' fill='%232f4b2a'/></svg>">
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
+<link rel="stylesheet" href="https://use.typekit.net/wup0iix.css">
 <link rel="stylesheet" href="cma-board.css?v=34">
-<style>
-  /* Save-button state colors (added v1.35) */
-  .v5-tab-action.save-btn.dirty{background:#b9522b;border-color:#b9522b;color:#fff;}
-  .v5-tab-action.save-btn.saving{opacity:.65;}
-  .v5-tab-action.save-btn.saved{color:#2f4b2a;}
+<style id="cma-editorial">
+/* ── Editorial re-theme (v1.35): Carlisle Moore design language ── */
+:root{
+  --paper-0:#FBF6EE;--paper-1:#F1E9DA;--paper-2:#ECE3D0;--paper-3:#E0D4BE;
+  --ink-0:#221E19;--ink-1:#2A2520;--ink-2:#6E5E52;--ink-3:#8E7E72;--ink-4:#B3A595;--ink-5:#DDD2C2;
+  --ink:#2A2520;--ink-mid:#6E5E52;--ink-light:#8E7E72;--ink-faint:#ECE3D0;--page:#FBF6EE;
+  --brand:#A2512D;--brand-light:#B57340;--red:#A2512D;
+  --cma-accent:#A2512D;--cma-accent-soft:#B57340;--cma-accent-tint:#F2E2D2;
+  --forest-0:#5a3a1e;--forest-1:#A2512D;--forest-2:#B57340;--forest-3:#E2BFA7;--forest-4:#F1E9DA;
+  --v5-engraved:#221E19;--v5-engraved-rule:#A2512D;
+  --v5-alert:#9e3520;--v5-alert-tint:#f1ddd2;--v5-info:#6E5E52;--v5-info-tint:#efe6d8;
+  --font-body:"urw-antiqua","Iowan Old Style",Georgia,serif;
+  --ff-serif:"urw-antiqua","Iowan Old Style",Georgia,serif;
+  --ff-display:"columbia-titling","Trajan Pro",serif;
+  --font-display:"aviano-sans","Optima",serif;
+  --font-ui:"franklin-gothic","Franklin Gothic",sans-serif;
+  --ff-sans:"franklin-gothic","Franklin Gothic",sans-serif;
+  --font-condensed:"franklin-gothic-condensed",sans-serif;
+  --ff-sans-cond:"franklin-gothic-condensed",sans-serif;
+  --ff-mono:"interstate-condensed",sans-serif;
+  --titling:"columbia-titling","Trajan Pro",serif;
+  --comp:"franklin-gothic-compressed","franklin-gothic-condensed",sans-serif;
+}
+/* masthead */
+#main-masthead{background:var(--paper-0);border-bottom:1px solid rgba(162,81,45,.32);}
+.ed-masthead{display:flex;justify-content:space-between;align-items:flex-start;padding:20px 40px 16px;}
+.ed-logo{height:68px;width:auto;display:block;}
+.ed-plate{text-align:right;}
+.ed-eyebrow{font-family:var(--titling);font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-3);margin:0;}
+.ed-eyebrow+.ed-eyebrow{margin-top:5px;}
+.ed-eyebrow .ac{color:var(--brand);}
+/* nav tabs */
+.v5-tab{font-family:var(--titling)!important;letter-spacing:.22em;text-transform:uppercase;font-size:11px;}
+.v5-tab.active{border-bottom-color:var(--brand)!important;color:var(--ink-0)!important;}
+/* section headers */
+.v5-section{background:transparent!important;padding:0!important;}
+.v5-section-header{background:transparent!important;border:0;border-top:2px solid var(--brand);margin:34px 18px 0;padding:16px 0 8px;display:flex;justify-content:space-between;align-items:baseline;}
+.v5-section-name{font-family:var(--font-display);font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-size:23px;color:var(--brand);}
+.v5-section-count{font-family:var(--titling);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);}
+.v5-header-row{display:none!important;}
+#v5-totals{display:none!important;}
+/* editorial project rows */
+.ed-prow{border-top:1px solid rgba(42,37,32,.14);padding:18px 18px;}
+.ed-prow:hover{background:var(--paper-1);}
+.ed-rowhead{display:grid;grid-template-columns:54px 1fr 250px 78px;gap:28px;align-items:center;cursor:pointer;}
+.ed-rn{font-family:var(--comp);font-size:34px;color:var(--brand);line-height:1;}
+.ed-name{font-family:var(--font-display);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:26px;color:var(--ink-0);}
+.ed-sub{font-family:var(--titling);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-3);margin-top:6px;}
+.ed-sub .acc{color:var(--brand);}
+.ed-phases{display:flex;gap:10px;}
+.ed-ph{flex:1;}
+.ed-ph .pk{font-family:var(--titling);font-size:10.5px;letter-spacing:.16em;color:var(--ink-3);margin-bottom:5px;}
+.ed-ph .pt{height:3px;background:var(--paper-3);position:relative;}
+.ed-ph .pf{position:absolute;top:0;bottom:0;left:0;background:var(--brand);}
+.ed-open{text-align:center;}
+.ed-open-n{font-family:var(--comp);font-size:30px;color:var(--ink-1);line-height:1;}
+.ed-open-l{font-family:var(--titling);font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);}
+.ed-tasks{margin:14px 0 0;padding-left:82px;max-width:820px;}
+.ed-task{display:grid;grid-template-columns:20px 150px 1fr;gap:16px;align-items:start;padding:8px 0;border-top:1px solid rgba(42,37,32,.07);}
+.ed-task:first-child{border-top:none;}
+.ed-chk{width:16px;height:16px;border:1px solid var(--brand);background:none;cursor:pointer;padding:0;margin-top:3px;position:relative;flex:none;}
+.ed-chk:hover{background:var(--cma-accent-tint);}
+.ed-chk.done{background:var(--brand);}
+.ed-chk.done::after{content:"";position:absolute;left:4px;top:1px;width:5px;height:9px;border:solid var(--paper-0);border-width:0 2px 2px 0;transform:rotate(45deg);}
+.ed-due{font-family:var(--ff-mono);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:3px;}
+.ed-due.over{color:var(--brand);}
+.ed-tname{font-family:var(--ff-serif);font-size:19px;color:var(--ink-1);cursor:pointer;}
+.ed-tname:hover{color:var(--brand);}
+.ed-tname.done{text-decoration:line-through;color:var(--ink-3);}
+.ed-empty{margin:12px 0 0;padding-left:82px;font-family:var(--ff-serif);font-style:italic;font-size:15px;color:var(--ink-3);}
+.ed-prow.expanded{background:var(--paper-1);}
+/* expand panel */
+.v5-expand{background:var(--paper-1)!important;border-top:1px solid rgba(162,81,45,.3)!important;margin-left:82px;}
+.v5-add-task-btn{font-family:var(--titling)!important;letter-spacing:.24em;text-transform:uppercase;color:var(--brand)!important;border-color:var(--brand)!important;}
+.v5-activity-label{font-family:var(--titling)!important;letter-spacing:.3em;color:var(--ink-3)!important;}
 </style>
 </head>
 <body>
@@ -84,12 +155,18 @@
       <span class="v5-tab-spacer"></span>
       <span class="v5-tab-meta" id="last-sync-label"></span>
       <span class="v5-tab-meta sync-status" id="sync-status"></span>
-      <button class="v5-tab-action save-btn" id="save-btn" onclick="saveNow()">Save</button>
       <button class="v5-tab-action" onclick="forceSave()">↕ Sync</button>
       <button class="v5-tab-action" onclick="triggerImport()">↑ Import</button>
       <button class="v5-tab-action" onclick="showSetup()">Settings</button>
     </div>
   </nav>
+  <div class="ed-masthead">
+    <img class="ed-logo" src="Logo_Only.png" alt="T. Scott Carlisle Architects">
+    <div class="ed-plate">
+      <p class="ed-eyebrow">T. Scott Carlisle Projects</p>
+      <p class="ed-eyebrow" id="ed-counts"></p>
+    </div>
+  </div>
 </div>
 
 <!-- ── BOARD (V5) ── -->
@@ -242,7 +319,7 @@
    ────────────────────────────────────────────────────────────────── */
 
 const APP_VERSION='1.35';
-const APP_VERSION_DATE='Jun 29, 2026 · 12:45 PM';
+const APP_VERSION_DATE='Jun 29, 2026 · 2:30 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -365,7 +442,6 @@ let currentPage='board';
    §13 STATE
    ────────────────────────────────────────────────────────────────── */
 let projects=[],ghToken=localStorage.getItem('pb_gh_token')||'',ghFileSha='',saveTimer=null;
-let saveInFlight=false,savePending=false,dataDirty=false;
 
 const SAMPLE_PROJECTS=[
   {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',staff:'Scott',tasks:[
@@ -429,53 +505,22 @@ async function loadFromGitHub(){
   }catch(e){setStatus('Sync failed','err');loadLocal();}
 }
 async function saveToGitHub(){
-  if(!ghToken)return false;
+  if(!ghToken)return;
   setStatus('Saving…','working');
   const body={message:'Update project data',content:btoa(unescape(encodeURIComponent(JSON.stringify({projects,nextId},null,2)))),branch:GH_BRANCH};
   if(ghFileSha)body.sha=ghFileSha;
   try{
     const r=await fetch(GH_API,{method:'PUT',headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(r.status===409||r.status===422){ // stale sha — refresh from GitHub and retry once
-      try{const g=await fetch(GH_API,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});if(g.ok){const gj=await g.json();ghFileSha=gj.sha;}}catch(_){}
-      savePending=true;throw new Error(r.status);
-    }
     if(!r.ok)throw new Error(r.status);
     const j=await r.json();ghFileSha=j.content.sha;
-    dataDirty=false;
     localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
     const _sn=new Date();localStorage.setItem('pb_last_sync',_sn.toISOString());
     setLastSyncLabel(_sn);
-    setStatus('Saved ✓','ok',3000);
-    return true;
-  }catch(e){setStatus('Save failed — tap Save to retry','err',5000);localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));return false;}
+    setStatus('✓','ok',3000);
+  }catch(e){setStatus('Save failed','err');localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));}
 }
-/* Immediate, serialized save: writes local copy instantly, then pushes to GitHub.
-   Serializing via saveInFlight/savePending prevents stale-sha 409 collisions when
-   several changes happen in quick succession. */
-function saveNow(){
-  dataDirty=true;
-  localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
-  updateSaveBtn();
-  if(!ghToken){setStatus('No token — saved on this device only','err',4000);return;}
-  if(saveInFlight){savePending=true;return;}
-  runSave();
-}
-async function runSave(){
-  saveInFlight=true;savePending=false;updateSaveBtn();
-  await saveToGitHub();
-  saveInFlight=false;
-  if(savePending){runSave();}else{updateSaveBtn();}
-}
-function updateSaveBtn(){
-  const b=document.getElementById('save-btn');if(!b)return;
-  b.classList.remove('dirty','saving','saved');
-  if(!ghToken){b.textContent='Save';return;}
-  if(saveInFlight){b.textContent='Saving…';b.classList.add('saving');}
-  else if(dataDirty){b.textContent='Save ●';b.classList.add('dirty');}
-  else{b.textContent='Saved ✓';b.classList.add('saved');}
-}
-function scheduleSave(){dataDirty=true;localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));updateSaveBtn();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveNow();},1500);}
-function forceSave(){saveNow();}
+function scheduleSave(){localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(ghToken)saveToGitHub();},1500);}
+function forceSave(){if(ghToken)saveToGitHub();else setStatus('No token','err',2000);}
 function loadLocal(){
   try{const r=localStorage.getItem('pb_v3');if(r){const d=JSON.parse(r);projects=d.projects||JSON.parse(JSON.stringify(SAMPLE_PROJECTS));nextId=d.nextId||20;}else{projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}}
   catch(e){projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
@@ -503,7 +548,7 @@ function doImport(replace){
   const nextColor=()=>{let t=0;while(usedColors.includes(ci)&&t<PALETTE.length){ci=(ci+1)%PALETTE.length;t++;}const c=ci;usedColors.push(c);ci=(ci+1)%PALETTE.length;return c;};
   if(replace)projects=projects.filter(p=>p.archived);
   parsed.forEach(p=>{projects.push({id:nextId++,name:p.name,colorIdx:nextColor(),archived:false,type:p.type||'',staff:DEFAULT_STAFF,tasks:p.tasks.map(t=>({id:nextId++,name:t.name,days:t.days,done:false,due:t.due,createdAt:new Date().toISOString()}))});});
-  hideImport();saveNow();renderProjects();
+  hideImport();scheduleSave();renderProjects();
 }
 document.addEventListener('DOMContentLoaded',()=>{const ta=document.getElementById('import-text');if(ta)ta.addEventListener('input',updateImportPreview);});
 
@@ -635,6 +680,10 @@ function v5FmtMoney(n){return '$'+Math.round(Number(n)||0).toLocaleString();}
    ════════════════════════════════════════════ */
 function renderProjects(){
   renderV5Sidebar();
+  const _act=projects.filter(p=>!p.archived);
+  const _openT=_act.reduce((s,p)=>s+(p.tasks||[]).filter(t=>!t.done).length,0);
+  const _cc=document.getElementById('ed-counts');
+  if(_cc)_cc.innerHTML=`<span class="ac">${_act.length}</span> active project${_act.length===1?'':'s'} · <span class="ac">${_openT}</span> task${_openT===1?'':'s'} open`;
   renderV5TitleBar();
   renderV5List();
   renderV5Totals();
@@ -725,27 +774,49 @@ function v5TaskInline(p,t){
   </div>`;
 }
 
-function v5ProjectRow(p){
-  /* v1.34: SD/DD/CD/CA phase stamp dropped from the row. v5ComputePhase is
-     still used by the sidebar counts (Prospects / Active / Done filters). */
-  const status=v5ComputeStatus(p);
+function v5ProjectRow(p,idx){
+  /* v1.35 editorial row: numeral · name · staff(rust) · phase bars · open count,
+     with all open tasks listed below (checkbox saves via markDoneCtx). */
+  ensurePhasePercents(p);
+  const pp=p.phasePercents||{};
   const open=(p.tasks||[]).filter(t=>!t.done);
-  const visible=open.slice(0,3);
-  const more=open.length-visible.length;
   const expanded=v5State.expandedId===p.id;
-  const tasksHtml=visible.length?visible.map(t=>v5TaskInline(p,t)).join(''):'<span style="font-family:var(--ff-serif);font-style:italic;font-size:11px;color:var(--ink-3);">No open tasks</span>';
-  const moreHtml=more>0?`<div class="v5-more-tasks">+ ${more} more task${more===1?'':'s'}</div>`:'';
   const staffName=p.staff||p.lead||DEFAULT_STAFF;
-  return `<div class="v5-row v5-row-grid${expanded?' expanded':''}" data-pid="${p.id}" onclick="v5ToggleExpand(${p.id})">
-    <div class="v5-identity">
-      <div class="v5-client">${v5Escape(p.name)}</div>
-      <div class="v5-strap">${v5Escape(staffName)}</div>
+  const typeName=V5_TYPE_NAMES[p.type]||'Unassigned';
+  const phh=['SD','DD','CD','CA'].map(k=>{
+    const v=Math.max(0,Math.min(100,Number(pp[k])||0));
+    return `<div class="ed-ph"><div class="pk">${k}</div><div class="pt"><span class="pf" style="width:${v}%"></span></div></div>`;
+  }).join('');
+  let tasksHtml;
+  if(open.length){
+    const rows=open.map(t=>{
+      const dd=dueDays(t);const overdue=dd!==null&&dd<0;const dObj=dueDate(t);
+      let lbl;
+      if(!dObj)lbl='No due date';
+      else if(overdue)lbl=dObj.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' · Past due';
+      else if(dd===0)lbl='Due today';
+      else lbl='Due '+dObj.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const dimmed=(v5State.staff!=='all'&&(t.who||p.staff||DEFAULT_STAFF)!==v5State.staff)?' style="opacity:.4;"':'';
+      return `<div class="ed-task"${dimmed} onclick="event.stopPropagation();">
+        <button class="ed-chk${t.done?' done':''}" onclick="event.stopPropagation();markDoneCtx(${p.id},${t.id})" aria-label="Mark task complete"></button>
+        <span class="ed-due${overdue?' over':''}">${v5Escape(lbl)}</span>
+        <span class="ed-tname" onclick="event.stopPropagation();openEdit(${p.id},${t.id})">${v5Escape(t.name)}</span>
+      </div>`;
+    }).join('');
+    tasksHtml=`<div class="ed-tasks">${rows}</div>`;
+  }else{
+    tasksHtml='<div class="ed-empty">No open tasks</div>';
+  }
+  return `<div class="ed-prow v5-row${expanded?' expanded':''}" data-pid="${p.id}">
+    <div class="ed-rowhead" onclick="v5ToggleExpand(${p.id})">
+      <span class="ed-rn">${String(idx).padStart(2,'0')}</span>
+      <div class="ed-id"><div class="ed-name v5-client">${v5Escape(p.name)}</div><div class="ed-sub"><span class="acc">${v5Escape(staffName)}</span> · ${v5Escape(typeName)}</div></div>
+      <div class="ed-phases">${phh}</div>
+      <div class="ed-open"><div class="ed-open-n">${open.length}</div><div class="ed-open-l">Open</div></div>
     </div>
-    <div class="v5-tasks-col">${tasksHtml}${moreHtml}</div>
-    <span class="v5-cell-num">${open.length}</span>
-    <span class="v5-status ${status}">${v5StatusWord(status)}</span>
-    <span class="v5-chev">${v5ChevronSvg(expanded)}</span>
-  </div>${expanded?v5ExpandedDetail(p):''}`;
+    ${tasksHtml}
+    ${expanded?v5ExpandedDetail(p):''}
+  </div>`;
 }
 
 function v5ChevronSvg(up){
@@ -839,24 +910,25 @@ const V5_TYPE_NAMES={
 function renderV5List(){
   const el=document.getElementById('v5-list');if(!el)return;
   const rows=v5Filtered();
-  let html=v5HeaderRow();
+  let html='';
   if(!rows.length){
     html+=`<div class="v5-empty">No projects match the current filters.</div>`;
     el.innerHTML=html;return;
   }
-  // bucket by type, preserving the order we want on the page
   const groups={};V5_TYPE_ORDER.forEach(k=>{groups[k]=[];});
   rows.forEach(p=>{
     const k=(p.type&&groups[p.type]!==undefined)?p.type:'';
     groups[k].push(p);
   });
+  let idx=0;
   V5_TYPE_ORDER.forEach(type=>{
     const items=groups[type];
     if(!items.length)return;
     const typeCls=type?`type-${type}`:'type-unassigned';
     const name=V5_TYPE_NAMES[type]||type;
-    html+=`<div class="v5-section-header"><span class="v5-section-name">${v5Escape(name)}</span><span class="v5-section-count">${items.length} ${items.length===1?'project':'projects'}</span></div>`;
-    html+=`<div class="v5-section ${typeCls}">`+items.map(v5ProjectRow).join('')+`</div>`;
+    const opensN=items.reduce((sum,p)=>sum+(p.tasks||[]).filter(t=>!t.done).length,0);
+    html+=`<div class="v5-section-header"><span class="v5-section-name">${v5Escape(name)}</span><span class="v5-section-count">${String(items.length).padStart(2,'0')} Projects · ${String(opensN).padStart(2,'0')} Open Tasks</span></div>`;
+    html+=`<div class="v5-section ${typeCls}">`+items.map(p=>v5ProjectRow(p,++idx)).join('')+`</div>`;
   });
   el.innerHTML=html;
 }
@@ -884,7 +956,7 @@ function submitNewProjectModal(){
   const staff=document.getElementById('v5np-staff').value;
   const lead=(document.getElementById('v5np-lead')||{}).value||'TSC';
   projects.push({id:nextId++,name,colorIdx:0,archived:false,type:type||'',staff:staff||DEFAULT_STAFF,lead,designPercent:0,phasePercents:{SD:0,DD:0,CD:0,CA:0},tasks:[]});
-  closeNewProjectModal();saveNow();renderProjects();
+  closeNewProjectModal();scheduleSave();renderProjects();
 }
 
 /* Edit-project popup launcher from inside an expanded row */
@@ -892,7 +964,7 @@ function submitNewProjectModal(){
    §17 MODALS · EDIT POPUP · CALENDAR  (UI dialogs and pickers)
    ────────────────────────────────────────────────────────────────── */
 function openProjEditFromRow(pid){
-  const row=document.querySelector(`.v5-row[data-pid="${pid}"] .v5-client`);
+  const row=document.querySelector(`.ed-prow[data-pid="${pid}"] .ed-name`);
   if(row)openProjEdit(pid,row);
 }
 
@@ -942,7 +1014,7 @@ function openProjEdit(projId,el){
       <button class="if-btn save" onclick="saveProjEdit(${projId})">Save</button>
       <button class="if-btn cancel" onclick="closeProjEdit()">✕</button>
     </div>`;
-  const parent=el.closest('.v5-row')||el.closest('.arch-entry')||el;
+  const parent=el.closest('.ed-prow')||el.closest('.v5-row')||el.closest('.arch-entry')||el;
   const rect=parent.getBoundingClientRect();
   popup.style.left=(rect.left+window.scrollX)+'px';
   popup.style.top=(rect.top+window.scrollY+rect.height+8)+'px';
@@ -963,10 +1035,10 @@ function saveProjEdit(projId){
   if(_pepColor!==undefined)proj.colorIdx=_pepColor;
   if(_pepLead!==undefined)proj.lead=_pepLead;
   _pepType=_pepStaff=_pepColor=_pepLead=undefined;
-  closeProjEdit();saveNow();renderProjects();
+  closeProjEdit();scheduleSave();renderProjects();
 }
 function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p)p.remove();_pepType=_pepStaff=_pepColor=_pepLead=undefined;}
-document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.v5-client')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
+document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.v5-client')&&!e.target.closest('.ed-name')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
 
 /* ── TASK ACTIONS ── */
 function openInlineAdd(projId){addingToProject=projId;editingTask=null;renderCurrentPage();}
@@ -990,7 +1062,7 @@ function submitInlineTask(projId){
     else who=proj.staff||DEFAULT_STAFF;
   }
   proj.tasks.push({id:nextId++,name,days,done:false,createdAt:now.toISOString(),due:due.toISOString().split('T')[0],who});
-  addingToProject=null;saveNow();renderProjects();
+  addingToProject=null;scheduleSave();renderProjects();
 }
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
@@ -999,15 +1071,15 @@ function saveTaskTime(pId,tId){
   if(t&&dueStr){t.due=dueStr;const now=new Date();t.days=Math.max(1,Math.round((new Date(dueStr+'T12:00:00')-now)/86400000));t.createdAt=now.toISOString();}
   const whoEl=document.getElementById(`ed-who-${tId}`);
   if(t&&whoEl&&whoEl.value)t.who=whoEl.value;
-  editingTask=null;saveNow();renderProjects();
+  editingTask=null;scheduleSave();renderProjects();
 }
-function toggleTaskDone(pId,tId,closeEditor){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;if(closeEditor)editingTask=null;saveNow();renderCurrentPage();}
+function toggleTaskDone(pId,tId,closeEditor){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;if(closeEditor)editingTask=null;scheduleSave();renderCurrentPage();}
 function markDone(pId,tId){toggleTaskDone(pId,tId,true);}
 function markDoneCtx(pId,tId){toggleTaskDone(pId,tId,false);}
-function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(!p)return;const t=p.tasks.find(t=>t.id===tId);if(!t)return;if(!confirm(`Delete task "${t.name}"?`))return;p.tasks=p.tasks.filter(t=>t.id!==tId);saveNow();renderCurrentPage();}
-function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;saveNow();renderProjects();}
-function deleteProject(id){const p=projects.find(p=>p.id===id);if(!p)return;if(!confirm(`Delete "${p.name}" permanently?`))return;projects=projects.filter(p=>p.id!==id);saveNow();renderProjects();}
-function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;saveNow();renderProjects();if(currentPage==='archive')renderArchive();}
+function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(!p)return;const t=p.tasks.find(t=>t.id===tId);if(!t)return;if(!confirm(`Delete task "${t.name}"?`))return;p.tasks=p.tasks.filter(t=>t.id!==tId);scheduleSave();renderCurrentPage();}
+function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
+function deleteProject(id){const p=projects.find(p=>p.id===id);if(!p)return;if(!confirm(`Delete "${p.name}" permanently?`))return;projects=projects.filter(p=>p.id!==id);scheduleSave();renderProjects();}
+function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;scheduleSave();renderProjects();if(currentPage==='archive')renderArchive();}
 
 /* ── CONTEXT MENU ── */
 function showCtxMenu(e,projId,taskId){
@@ -1313,7 +1385,7 @@ if(_ls)setLastSyncLabel(new Date(_ls));
 // writes their text on every render, so no bootstrap write is needed here.
 const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
-if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}updateSaveBtn();
+if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
 
 /* TSC-BILLING fetch removed in v1.34. */
 </script>
