@@ -151,7 +151,7 @@
           "id": 12,
           "name": "Draw new floor plan",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Kat"
         },
         {
