@@ -64,6 +64,12 @@
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
 <link rel="stylesheet" href="cma-board.css?v=34">
+<style>
+  /* Save-button state colors (added v1.35) */
+  .v5-tab-action.save-btn.dirty{background:#b9522b;border-color:#b9522b;color:#fff;}
+  .v5-tab-action.save-btn.saving{opacity:.65;}
+  .v5-tab-action.save-btn.saved{color:#2f4b2a;}
+</style>
 </head>
 <body>
 
@@ -78,6 +84,7 @@
       <span class="v5-tab-spacer"></span>
       <span class="v5-tab-meta" id="last-sync-label"></span>
       <span class="v5-tab-meta sync-status" id="sync-status"></span>
+      <button class="v5-tab-action save-btn" id="save-btn" onclick="saveNow()">Save</button>
       <button class="v5-tab-action" onclick="forceSave()">↕ Sync</button>
       <button class="v5-tab-action" onclick="triggerImport()">↑ Import</button>
       <button class="v5-tab-action" onclick="showSetup()">Settings</button>
@@ -234,8 +241,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.34';
-const APP_VERSION_DATE='Jun 3, 2026 · 4:15 PM';
+const APP_VERSION='1.35';
+const APP_VERSION_DATE='Jun 29, 2026 · 12:45 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -358,6 +365,7 @@ let currentPage='board';
    §13 STATE
    ────────────────────────────────────────────────────────────────── */
 let projects=[],ghToken=localStorage.getItem('pb_gh_token')||'',ghFileSha='',saveTimer=null;
+let saveInFlight=false,savePending=false,dataDirty=false;
 
 const SAMPLE_PROJECTS=[
   {id:1,name:'Young Residence',colorIdx:0,archived:false,type:'renovation',staff:'Scott',tasks:[
@@ -421,22 +429,53 @@ async function loadFromGitHub(){
   }catch(e){setStatus('Sync failed','err');loadLocal();}
 }
 async function saveToGitHub(){
-  if(!ghToken)return;
+  if(!ghToken)return false;
   setStatus('Saving…','working');
   const body={message:'Update project data',content:btoa(unescape(encodeURIComponent(JSON.stringify({projects,nextId},null,2)))),branch:GH_BRANCH};
   if(ghFileSha)body.sha=ghFileSha;
   try{
     const r=await fetch(GH_API,{method:'PUT',headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.status===409||r.status===422){ // stale sha — refresh from GitHub and retry once
+      try{const g=await fetch(GH_API,{headers:{Authorization:`token ${ghToken}`,Accept:'application/vnd.github.v3+json'}});if(g.ok){const gj=await g.json();ghFileSha=gj.sha;}}catch(_){}
+      savePending=true;throw new Error(r.status);
+    }
     if(!r.ok)throw new Error(r.status);
     const j=await r.json();ghFileSha=j.content.sha;
+    dataDirty=false;
     localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
     const _sn=new Date();localStorage.setItem('pb_last_sync',_sn.toISOString());
     setLastSyncLabel(_sn);
-    setStatus('✓','ok',3000);
-  }catch(e){setStatus('Save failed','err');localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));}
+    setStatus('Saved ✓','ok',3000);
+    return true;
+  }catch(e){setStatus('Save failed — tap Save to retry','err',5000);localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));return false;}
 }
-function scheduleSave(){localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));clearTimeout(saveTimer);saveTimer=setTimeout(()=>{if(ghToken)saveToGitHub();},1500);}
-function forceSave(){if(ghToken)saveToGitHub();else setStatus('No token','err',2000);}
+/* Immediate, serialized save: writes local copy instantly, then pushes to GitHub.
+   Serializing via saveInFlight/savePending prevents stale-sha 409 collisions when
+   several changes happen in quick succession. */
+function saveNow(){
+  dataDirty=true;
+  localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));
+  updateSaveBtn();
+  if(!ghToken){setStatus('No token — saved on this device only','err',4000);return;}
+  if(saveInFlight){savePending=true;return;}
+  runSave();
+}
+async function runSave(){
+  saveInFlight=true;savePending=false;updateSaveBtn();
+  await saveToGitHub();
+  saveInFlight=false;
+  if(savePending){runSave();}else{updateSaveBtn();}
+}
+function updateSaveBtn(){
+  const b=document.getElementById('save-btn');if(!b)return;
+  b.classList.remove('dirty','saving','saved');
+  if(!ghToken){b.textContent='Save';return;}
+  if(saveInFlight){b.textContent='Saving…';b.classList.add('saving');}
+  else if(dataDirty){b.textContent='Save ●';b.classList.add('dirty');}
+  else{b.textContent='Saved ✓';b.classList.add('saved');}
+}
+function scheduleSave(){dataDirty=true;localStorage.setItem('pb_v3',JSON.stringify({projects,nextId}));updateSaveBtn();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveNow();},1500);}
+function forceSave(){saveNow();}
 function loadLocal(){
   try{const r=localStorage.getItem('pb_v3');if(r){const d=JSON.parse(r);projects=d.projects||JSON.parse(JSON.stringify(SAMPLE_PROJECTS));nextId=d.nextId||20;}else{projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}}
   catch(e){projects=JSON.parse(JSON.stringify(SAMPLE_PROJECTS));}
@@ -464,7 +503,7 @@ function doImport(replace){
   const nextColor=()=>{let t=0;while(usedColors.includes(ci)&&t<PALETTE.length){ci=(ci+1)%PALETTE.length;t++;}const c=ci;usedColors.push(c);ci=(ci+1)%PALETTE.length;return c;};
   if(replace)projects=projects.filter(p=>p.archived);
   parsed.forEach(p=>{projects.push({id:nextId++,name:p.name,colorIdx:nextColor(),archived:false,type:p.type||'',staff:DEFAULT_STAFF,tasks:p.tasks.map(t=>({id:nextId++,name:t.name,days:t.days,done:false,due:t.due,createdAt:new Date().toISOString()}))});});
-  hideImport();scheduleSave();renderProjects();
+  hideImport();saveNow();renderProjects();
 }
 document.addEventListener('DOMContentLoaded',()=>{const ta=document.getElementById('import-text');if(ta)ta.addEventListener('input',updateImportPreview);});
 
@@ -845,7 +884,7 @@ function submitNewProjectModal(){
   const staff=document.getElementById('v5np-staff').value;
   const lead=(document.getElementById('v5np-lead')||{}).value||'TSC';
   projects.push({id:nextId++,name,colorIdx:0,archived:false,type:type||'',staff:staff||DEFAULT_STAFF,lead,designPercent:0,phasePercents:{SD:0,DD:0,CD:0,CA:0},tasks:[]});
-  closeNewProjectModal();scheduleSave();renderProjects();
+  closeNewProjectModal();saveNow();renderProjects();
 }
 
 /* Edit-project popup launcher from inside an expanded row */
@@ -924,7 +963,7 @@ function saveProjEdit(projId){
   if(_pepColor!==undefined)proj.colorIdx=_pepColor;
   if(_pepLead!==undefined)proj.lead=_pepLead;
   _pepType=_pepStaff=_pepColor=_pepLead=undefined;
-  closeProjEdit();scheduleSave();renderProjects();
+  closeProjEdit();saveNow();renderProjects();
 }
 function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p)p.remove();_pepType=_pepStaff=_pepColor=_pepLead=undefined;}
 document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.v5-client')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
@@ -951,7 +990,7 @@ function submitInlineTask(projId){
     else who=proj.staff||DEFAULT_STAFF;
   }
   proj.tasks.push({id:nextId++,name,days,done:false,createdAt:now.toISOString(),due:due.toISOString().split('T')[0],who});
-  addingToProject=null;scheduleSave();renderProjects();
+  addingToProject=null;saveNow();renderProjects();
 }
 function saveTaskTime(pId,tId){
   const el=document.getElementById(`ed-${tId}`);if(!el)return;
@@ -960,15 +999,15 @@ function saveTaskTime(pId,tId){
   if(t&&dueStr){t.due=dueStr;const now=new Date();t.days=Math.max(1,Math.round((new Date(dueStr+'T12:00:00')-now)/86400000));t.createdAt=now.toISOString();}
   const whoEl=document.getElementById(`ed-who-${tId}`);
   if(t&&whoEl&&whoEl.value)t.who=whoEl.value;
-  editingTask=null;scheduleSave();renderProjects();
+  editingTask=null;saveNow();renderProjects();
 }
-function toggleTaskDone(pId,tId,closeEditor){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;if(closeEditor)editingTask=null;scheduleSave();renderCurrentPage();}
+function toggleTaskDone(pId,tId,closeEditor){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;if(closeEditor)editingTask=null;saveNow();renderCurrentPage();}
 function markDone(pId,tId){toggleTaskDone(pId,tId,true);}
 function markDoneCtx(pId,tId){toggleTaskDone(pId,tId,false);}
-function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(!p)return;const t=p.tasks.find(t=>t.id===tId);if(!t)return;if(!confirm(`Delete task "${t.name}"?`))return;p.tasks=p.tasks.filter(t=>t.id!==tId);scheduleSave();renderCurrentPage();}
-function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;scheduleSave();renderProjects();}
-function deleteProject(id){const p=projects.find(p=>p.id===id);if(!p)return;if(!confirm(`Delete "${p.name}" permanently?`))return;projects=projects.filter(p=>p.id!==id);scheduleSave();renderProjects();}
-function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;scheduleSave();renderProjects();if(currentPage==='archive')renderArchive();}
+function deleteTask(pId,tId){const p=projects.find(p=>p.id===pId);if(!p)return;const t=p.tasks.find(t=>t.id===tId);if(!t)return;if(!confirm(`Delete task "${t.name}"?`))return;p.tasks=p.tasks.filter(t=>t.id!==tId);saveNow();renderCurrentPage();}
+function archiveProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=true;saveNow();renderProjects();}
+function deleteProject(id){const p=projects.find(p=>p.id===id);if(!p)return;if(!confirm(`Delete "${p.name}" permanently?`))return;projects=projects.filter(p=>p.id!==id);saveNow();renderProjects();}
+function restoreProject(id){const p=projects.find(p=>p.id===id);if(p)p.archived=false;saveNow();renderProjects();if(currentPage==='archive')renderArchive();}
 
 /* ── CONTEXT MENU ── */
 function showCtxMenu(e,projId,taskId){
@@ -1274,7 +1313,7 @@ if(_ls)setLastSyncLabel(new Date(_ls));
 // writes their text on every render, so no bootstrap write is needed here.
 const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
-if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
+if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}updateSaveBtn();
 
 /* TSC-BILLING fetch removed in v1.34. */
 </script>

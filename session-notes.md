@@ -903,3 +903,23 @@ Scott: take the fee connection out; also take out the SD/DD/CD/CA stamp to the l
 
 ### Push
 Push `index.html` + `cma-board.css`. Force-reload with `?v=34`.
+
+---
+
+## 2026-06-29
+
+**Fixed cross-platform save failure + added Save button (v1.35).**
+
+**Problem (Scott):** New projects added on one device (e.g. iOS) weren't appearing on others (macOS).
+
+**Root cause:** Mutations only triggered a *debounced* save — `scheduleSave()` wrote to localStorage immediately but waited 1.5s before the GitHub PUT. On mobile, backgrounding/locking the app inside that window suspended the timer, so the push never fired. Data looked saved locally but never reached GitHub, so other devices never saw it. (Secondary risk: a device with no PAT entered can only ever save locally.)
+
+**Changes:**
+- New serialized save manager: `saveNow()` → `runSave()`. Writes localStorage instantly, then pushes to GitHub immediately. `saveInFlight`/`savePending` guards prevent stale-SHA 409 collisions on rapid successive edits; on 409/422 it refreshes the file SHA and retries once.
+- All 10 discrete mutation handlers (add project, edit project, delete, archive, restore, import, add/edit/toggle/delete task) now call `saveNow()` instead of the debounced `scheduleSave()`. The phase-percent slider keeps `scheduleSave()` (debounce avoids hammering the API during drags).
+- Added a visible **Save** button in the tab bar with live state: `Save ●` (orange) = unsaved changes, `Saving…` = in flight, `Saved ✓` (green) = synced. Shows "saved on this device only" if no token.
+- `saveToGitHub()` now clears `dataDirty` on success and returns a boolean.
+
+**Delivery:** Full `index.html` replacement. `node --check` passed. APP_VERSION → 1.35 (Jun 29, 2026 · 12:45 PM). CSS unchanged (styles added inline), so cma-board.css?v=34 left as-is.
+
+**Reminder for Scott:** push `index.html` to GitHub, hard-reload with `?v=35`, and make sure the GitHub PAT is entered in Settings on *every* device (iOS + macOS) — without it that device can't sync.
