@@ -925,3 +925,13 @@ Push `index.html` + `cma-board.css`. Force-reload with `?v=34`.
 **Delivery:** full `index.html` replacement; `node --check` passed; APP_VERSION → 1.35 (Jun 29, 2026 · 2:30 PM). Backup of v1.34 kept at /tmp during the session.
 
 **Reminder for Scott:** push `index.html` to GitHub and hard-reload with `?v=35`. I couldn't preview the rendered result here, so expect to fine-tune spacing/sizes once you see it live.
+
+---
+
+## 2026-06-29 (v1.37)
+
+**Two-column board.** Reworked the board rows into compact cards laid out two-up within each type sub-section (`.v5-section.grid2`, `grid-template-columns:1fr 1fr`). `v5ProjectRow` now renders a card: numeral + name + open-count head, staff (rust) sub, SD/DD/CD/CA phase bars, then open tasks with rust checkboxes. Restyled the ed-* classes accordingly (smaller numerals/names/task text, left-aligned stacks). Click a card to expand for add-task / edit / archive / delete. Added `@media(max-width:1000px)` to collapse back to one column. Masthead/theme unchanged from v1.36. node --check passed. APP_VERSION → 1.37. Push + reload ?v=37.
+
+## 2026-06-29 (v1.38)
+
+**Mobile.** Added `@media(max-width:600px)` to the editorial style: masthead stacks (logo over title/counts, left-aligned, sticky), smaller section/name/numeral/task sizes, tighter task grid + padding, single-column cards (already collapsed at 1000px). CSS-only; node --check still OK. APP_VERSION 1.38. Push + reload ?v=38.
