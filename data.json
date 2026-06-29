@@ -468,6 +468,15 @@
           "days": 3,
           "done": true,
           "who": "Scott"
+        },
+        {
+          "id": 75,
+          "name": "Sections",
+          "days": 1,
+          "done": false,
+          "createdAt": "2026-06-29T13:10:29.677Z",
+          "due": "2026-06-29",
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -797,5 +806,5 @@
       "tasks": []
     }
   ],
-  "nextId": 75
+  "nextId": 76
 }
