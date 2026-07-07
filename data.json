@@ -794,7 +794,17 @@
         "CD": 0,
         "CA": 0
       },
-      "tasks": [],
+      "tasks": [
+        {
+          "id": 77,
+          "name": "Variance",
+          "days": 1,
+          "done": false,
+          "createdAt": "2026-07-07T16:07:14.259Z",
+          "due": "2026-07-07",
+          "who": "Scott"
+        }
+      ],
       "lead": "TSC"
     },
     {
@@ -815,5 +825,5 @@
       "tasks": []
     }
   ],
-  "nextId": 77
+  "nextId": 78
 }
