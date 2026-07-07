@@ -803,6 +803,15 @@
           "createdAt": "2026-07-07T16:07:14.259Z",
           "due": "2026-07-07",
           "who": "Scott"
+        },
+        {
+          "id": 78,
+          "name": "Pricing set",
+          "days": 1,
+          "done": false,
+          "createdAt": "2026-07-07T16:14:59.467Z",
+          "due": "2026-07-07",
+          "who": "Scott"
         }
       ],
       "lead": "TSC"
@@ -825,5 +834,5 @@
       "tasks": []
     }
   ],
-  "nextId": 78
+  "nextId": 79
 }
