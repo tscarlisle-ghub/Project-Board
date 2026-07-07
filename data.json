@@ -611,7 +611,7 @@
       "id": 40,
       "name": "Weil Poolhouse",
       "colorIdx": 10,
-      "archived": false,
+      "archived": true,
       "type": "in-construction",
       "tasks": [],
       "staff": "Scott",
