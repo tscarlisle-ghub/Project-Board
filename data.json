@@ -482,7 +482,7 @@
           "id": 75,
           "name": "Sections",
           "days": 1,
-          "done": false,
+          "done": true,
           "createdAt": "2026-06-29T13:10:29.677Z",
           "due": "2026-06-29",
           "who": "Scott"
