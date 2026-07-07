@@ -593,7 +593,7 @@
           "id": 61,
           "name": "review brick",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Scott"
         }
       ],
