@@ -58,7 +58,7 @@
           "id": 6,
           "name": "Interior redo",
           "days": 7,
-          "done": false,
+          "done": true,
           "who": "Kat"
         },
         {
