@@ -832,7 +832,24 @@
         "CA": 0
       },
       "tasks": []
+    },
+    {
+      "id": 79,
+      "name": "Grantier",
+      "colorIdx": 0,
+      "archived": false,
+      "type": "new-construction",
+      "staff": "Maddie",
+      "lead": "TSC",
+      "designPercent": 0,
+      "phasePercents": {
+        "SD": 0,
+        "DD": 0,
+        "CD": 0,
+        "CA": 0
+      },
+      "tasks": []
     }
   ],
-  "nextId": 79
+  "nextId": 80
 }
