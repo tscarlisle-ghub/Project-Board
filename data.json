@@ -488,6 +488,15 @@
           "createdAt": "2026-07-14T14:57:59.216Z",
           "due": "2026-07-24",
           "who": "Scott"
+        },
+        {
+          "id": 85,
+          "name": "Setup project meeting",
+          "days": 2,
+          "done": false,
+          "createdAt": "2026-07-14T15:19:26.320Z",
+          "due": "2026-07-16",
+          "who": "Scott"
         }
       ],
       "staff": "Scott",
@@ -899,5 +908,5 @@
       ]
     }
   ],
-  "nextId": 85
+  "nextId": 86
 }
