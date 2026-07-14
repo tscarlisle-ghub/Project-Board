@@ -776,6 +776,15 @@
           "createdAt": "2026-05-18T13:50:55.244Z",
           "due": "2026-05-18",
           "who": "Scott"
+        },
+        {
+          "id": 81,
+          "name": "Schematic Design",
+          "days": 24,
+          "done": false,
+          "createdAt": "2026-07-14T14:32:01.703Z",
+          "due": "2026-08-07",
+          "who": "Maddie"
         }
       ],
       "lead": "TSC"
@@ -861,5 +870,5 @@
       ]
     }
   ],
-  "nextId": 81
+  "nextId": 82
 }
