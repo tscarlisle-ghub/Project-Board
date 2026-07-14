@@ -564,7 +564,7 @@
           "id": 63,
           "name": "check with Callahan's on Barn",
           "days": 1,
-          "done": false,
+          "done": true,
           "who": "Scott"
         }
       ],
