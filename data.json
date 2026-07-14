@@ -35,6 +35,15 @@
           "createdAt": "2026-05-23T03:40:02.316Z",
           "due": "2026-05-23",
           "who": "Kathleen"
+        },
+        {
+          "id": 86,
+          "name": "Fireplace Section",
+          "days": 3,
+          "done": false,
+          "createdAt": "2026-07-14T15:19:49.620Z",
+          "due": "2026-07-17",
+          "who": "Kathleen"
         }
       ],
       "type": "new-construction",
@@ -908,5 +917,5 @@
       ]
     }
   ],
-  "nextId": 86
+  "nextId": 87
 }
