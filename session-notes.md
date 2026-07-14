@@ -935,3 +935,31 @@ Push `index.html` + `cma-board.css`. Force-reload with `?v=34`.
 ## 2026-06-29 (v1.38)
 
 **Mobile.** Added `@media(max-width:600px)` to the editorial style: masthead stacks (logo over title/counts, left-aligned, sticky), smaller section/name/numeral/task sizes, tighter task grid + padding, single-column cards (already collapsed at 1000px). CSS-only; node --check still OK. APP_VERSION 1.38. Push + reload ?v=38.
+
+## 2026-07-14 (v1.39)
+
+**Reopen completed tasks.** The board only rendered open tasks (`filter(t=>!t.done)`), so once a task was checked off it vanished with no way back — the only "Reopen" paths were buried in the context menu / inline editor, neither reachable for a done task. Added a **Completed** section inside `v5ExpandedDetail`: expanding a project now lists its done tasks below Activity, each with a filled checkbox and struck-through name. Tapping either calls `markDoneCtx`, flipping `done` back to false and making the task live again. Label reads "Completed · N — tap to make live again". Touch-friendly for iPad.
+
+**Left-column margin.** Loosened the two-column grid's left gutter: `.v5-section.grid2` padding `0 18px` → `0 22px 0 40px`, and `.v5-section-header` margin `34px 18px 0` → `34px 22px 0 40px`. Mobile (<600px) overrides unchanged.
+
+node --check on extracted inline script: OK. APP_VERSION → 1.39, CSS `cma-board.css?v=35` (lock-step). Push both files, force-reload.
+
+## 2026-07-14 (v1.40)
+
+**Deleted the sidebar.** Removed the `<aside class="v5-sidebar">` element; `.v5-main` (flex:1) now fills the shell full-width. `renderV5Sidebar()` is retained but no longer called (call site commented out in `renderProjects`). Note what went with it: the status filters (Active/Past due/Complete), the Assigned staff filters (Maddie/Kathleen/Kat), and the Tools links (Billing/Cost/Questionnaire). Board now shows all projects grouped by type. Version + date still available via the Settings modal (`#modal-version`, written at init) — no longer duplicated in a sidebar footer.
+
+**Left-edge alignment.** Unified the left edge so the search bar, section headers ("NEW CONSTRUCTION"), and row numerals share one vertical line at 40px: added inline `.v5-titlebar{padding-left:40px;}` (was 24px from external CSS); section header margin-left and grid padding-left already at 40px from v1.39. Added a mobile override `.v5-titlebar{padding-left:16px;}` inside the <600px block so the search bar isn't over-indented on phone/iPad portrait.
+
+node --check on extracted inline script: OK. APP_VERSION → 1.40, CSS `cma-board.css?v=36`. Push both files, force-reload.
+
+## 2026-07-14 (v1.41)
+
+**Expanded view.** Removed the Activity timeline from `v5ExpandedDetail` (dropped the acts computation + the "Activity" heading/rows). The expanded panel now goes straight to the Completed list, + Add task, and the Edit/Archive/Delete actions.
+
+**Calendar popup.** Now Monday-first: DOW header reordered to Mo–Su and the day grid offset uses `(getDay()+6)%7`. Saturday/Sunday columns get a slight tone via a `weekend` class assigned by column index (cols 5,6), with inline CSS `.cal-day.weekend:not(.selected):not(.today)…`; weekend DOW labels take the brand accent. Selected/today still win.
+
+**Gantt.** (1) Per-task bars: each pending dated task now draws its own bar at its due-date x-position, toned by task index via `ganttShade()` (progressive lighten of the project's type color) — replaces the single project-length bar. Hover title shows task name + due date. Projects with no dated tasks show a small "no dated tasks" marker. (2) Date labels switched to a real sans-serif (`var(--ff-sans)`) for both the month row and the week-date row. (3) Month tone: alternating months get a subtle tint (`MONTH_TINT`) as body bands + tinted header cells, with a stronger solid border at each month boundary.
+
+**Board.** Client names (`.ed-name`) up 20% → 26px desktop / 22px mobile. Removed open-task counts everywhere on the board: the per-row "Open" number (`.ed-open` span dropped from `v5ProjectRow`), the masthead "· N tasks open" tail (now just "N active projects"), and the section-header "· NN Open Tasks" tail (now just "NN Projects"). `.ed-open*` CSS left in place but unused.
+
+node --check on extracted inline script: OK. APP_VERSION → 1.41, CSS `cma-board.css?v=37`. Push both files, force-reload.

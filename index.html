@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
 <link rel="stylesheet" href="https://use.typekit.net/wup0iix.css">
-<link rel="stylesheet" href="cma-board.css?v=34">
+<link rel="stylesheet" href="cma-board.css?v=37">
 <style id="cma-editorial">
 /* ── Editorial re-theme (v1.35): Carlisle Moore design language ── */
 :root{
@@ -99,20 +99,22 @@
 /* nav tabs */
 .v5-tab{font-family:var(--titling)!important;letter-spacing:.22em;text-transform:uppercase;font-size:11px;}
 .v5-tab.active{border-bottom-color:var(--brand)!important;color:var(--ink-0)!important;}
+/* v1.40: sidebar removed — align search bar left edge with section headers + numerals */
+.v5-titlebar{padding-left:40px;}
 /* section headers */
 .v5-section{background:transparent!important;padding:0!important;}
-.v5-section-header{background:transparent!important;border:0;border-top:2px solid var(--brand);margin:34px 18px 0;padding:16px 0 8px;display:flex;justify-content:space-between;align-items:baseline;}
+.v5-section-header{background:transparent!important;border:0;border-top:2px solid var(--brand);margin:34px 22px 0 40px;padding:16px 0 8px;display:flex;justify-content:space-between;align-items:baseline;}
 .v5-section-name{font-family:var(--font-display);font-weight:700;letter-spacing:.07em;text-transform:uppercase;font-size:23px;color:var(--brand);}
 .v5-section-count{font-family:var(--titling);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);}
 .v5-header-row{display:none!important;}
 #v5-totals{display:none!important;}
 /* editorial project rows */
-.v5-section.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;align-items:start;padding:0 18px;}
+.v5-section.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 48px;align-items:start;padding:0 22px 0 40px;}
 .ed-prow{border-top:1px solid rgba(42,37,32,.14);padding:16px 0;}
 .ed-prow:hover{background:var(--paper-1);}
 .ed-rowhead{display:flex;align-items:baseline;gap:14px;cursor:pointer;}
 .ed-rn{font-family:var(--comp);font-size:28px;color:var(--brand);line-height:1;}
-.ed-name{font-family:var(--font-display);font-weight:700;letter-spacing:.03em;text-transform:uppercase;font-size:22px;color:var(--ink-0);flex:1;}
+.ed-name{font-family:var(--font-display);font-weight:700;letter-spacing:.03em;text-transform:uppercase;font-size:26px;color:var(--ink-0);flex:1;}
 .ed-sub{font-family:var(--titling);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);margin-top:6px;padding-left:42px;}
 .ed-sub .acc{color:var(--brand);}
 .ed-phases{display:flex;gap:9px;margin-top:14px;padding-left:42px;}
@@ -142,6 +144,10 @@
 .v5-expand{background:var(--paper-1)!important;border-top:1px solid rgba(162,81,45,.3)!important;margin-left:42px;}
 .v5-add-task-btn{font-family:var(--titling)!important;letter-spacing:.24em;text-transform:uppercase;color:var(--brand)!important;border-color:var(--brand)!important;}
 .v5-activity-label{font-family:var(--titling)!important;letter-spacing:.3em;color:var(--ink-3)!important;}
+/* v1.41: calendar weekend tone (Mon-first grid; cols 5,6 = Sat/Sun) */
+.cal-day.weekend:not(.selected):not(.today):not(.other-month){background:rgba(162,81,45,.09);}
+.cal-day.weekend.other-month{background:rgba(162,81,45,.045);}
+.cal-dow span:nth-child(6),.cal-dow span:nth-child(7){color:var(--brand);}
 @media(max-width:1000px){.v5-section.grid2{grid-template-columns:1fr;gap:0;}}
 @media(max-width:600px){
   #main-masthead{position:sticky;top:0;z-index:198;}
@@ -149,13 +155,14 @@
   .ed-logo{height:46px;}
   .ed-plate{text-align:left;}
   .ed-eyebrow{letter-spacing:.2em;font-size:9.5px;}
+  .v5-titlebar{padding-left:16px;}
   .v5-section.grid2{padding:0 14px;}
   .v5-section-header{margin:24px 14px 0;padding:12px 0 7px;}
   .v5-section-name{font-size:18px;letter-spacing:.05em;}
   .ed-prow{padding:14px 0;}
   .ed-rowhead{gap:11px;}
   .ed-rn{font-size:22px;}
-  .ed-name{font-size:18px;}
+  .ed-name{font-size:22px;}
   .ed-open-n{font-size:20px;}
   .ed-sub,.ed-phases,.ed-tasks,.ed-empty{padding-left:33px;}
   .ed-phases{gap:7px;}
@@ -196,7 +203,6 @@
 <!-- ── BOARD (V5) ── -->
 <div id="board-page">
   <div class="v5-shell">
-    <aside class="v5-sidebar" id="v5-sidebar"></aside>
     <div class="v5-main">
       <div class="v5-titlebar">
         <span class="v5-search-wrap">
@@ -342,8 +348,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.38';
-const APP_VERSION_DATE='Jun 29, 2026 · 4:05 PM';
+const APP_VERSION='1.41';
+const APP_VERSION_DATE='Jul 14, 2026 - 4:05 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -703,11 +709,11 @@ function v5FmtMoney(n){return '$'+Math.round(Number(n)||0).toLocaleString();}
    This is the new renderProjects().
    ════════════════════════════════════════════ */
 function renderProjects(){
-  renderV5Sidebar();
+  /* sidebar removed in v1.40 — renderV5Sidebar retained but no longer called */
   const _act=projects.filter(p=>!p.archived);
   const _openT=_act.reduce((s,p)=>s+(p.tasks||[]).filter(t=>!t.done).length,0);
   const _cc=document.getElementById('ed-counts');
-  if(_cc)_cc.innerHTML=`<span class="ac">${_act.length}</span> active project${_act.length===1?'':'s'} · <span class="ac">${_openT}</span> task${_openT===1?'':'s'} open`;
+  if(_cc)_cc.innerHTML=`<span class="ac">${_act.length}</span> active project${_act.length===1?'':'s'}`;
   renderV5TitleBar();
   renderV5List();
   renderV5Totals();
@@ -835,7 +841,6 @@ function v5ProjectRow(p,idx){
     <div class="ed-rowhead" onclick="v5ToggleExpand(${p.id})">
       <span class="ed-rn">${String(idx).padStart(2,'0')}</span>
       <span class="ed-name v5-client">${v5Escape(p.name)}</span>
-      <span class="ed-open"><span class="ed-open-n">${open.length}</span><span class="ed-open-l">Open</span></span>
     </div>
     <div class="ed-sub"><span class="acc">${v5Escape(staffName)}</span> · ${v5Escape(typeName)}</div>
     <div class="ed-phases">${phh}</div>
@@ -853,19 +858,25 @@ function v5ChevronSvg(up){
 function v5ExpandedDetail(p){
   /* Activity timeline — synthesize from tasks (done first, then by createdAt).
      Fee blocks removed in v1.34 along with the TSC-BILLING integration. */
-  const acts=[];
-  (p.tasks||[]).forEach(t=>{
-    if(t.done){acts.push({who:t.who||p.staff||DEFAULT_STAFF,date:t.createdAt?new Date(t.createdAt):null,text:`Completed · ${t.name}`});}
-    else if(t.createdAt){acts.push({who:t.who||p.staff||DEFAULT_STAFF,date:new Date(t.createdAt),text:`Added · ${t.name}`});}
-  });
-  acts.sort((a,b)=>(b.date?b.date.getTime():0)-(a.date?a.date.getTime():0));
-  const actHtml=acts.slice(0,5).map(a=>{
-    const dateStr=a.date?a.date.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
-    return `<div class="v5-activity-row"><span class="a-date">${v5Escape(dateStr)}</span><span class="a-who">${v5Escape(a.who)}</span><span class="a-text">${v5Escape(a.text)}</span></div>`;
-  }).join('')||'<div style="font-family:var(--ff-serif);font-style:italic;font-size:12px;color:var(--ink-3);">No activity yet.</div>';
+  /* Completed tasks — listed here with a filled checkbox so a done task can be
+     made live again (tap the box or the name -> markDoneCtx flips done back to false). */
+  const doneTasks=(p.tasks||[]).filter(t=>t.done);
+  let doneHtml='';
+  if(doneTasks.length){
+    const doneRows=doneTasks.map(t=>{
+      const dObj=dueDate(t);
+      const lbl=dObj?dObj.toLocaleDateString('en-US',{month:'short',day:'numeric'}):'Done';
+      return `<div class="ed-task" onclick="event.stopPropagation();">
+        <button class="ed-chk done" onclick="event.stopPropagation();markDoneCtx(${p.id},${t.id})" aria-label="Reopen task" title="Make live again"></button>
+        <span class="ed-due">${v5Escape(lbl)}</span>
+        <span class="ed-tname done" onclick="event.stopPropagation();markDoneCtx(${p.id},${t.id})" title="Make live again">${v5Escape(t.name)}</span>
+      </div>`;
+    }).join('');
+    doneHtml=`<div class="v5-activity-label" style="margin-top:20px;">Completed \u00b7 ${doneTasks.length} <span style="text-transform:none;letter-spacing:0;font-style:italic;color:var(--ink-3);">\u2014 tap to make live again</span></div>
+      <div class="ed-tasks" style="padding-left:0;">${doneRows}</div>`;
+  }
   return `<div class="v5-expand" onclick="event.stopPropagation();">
-    <div class="v5-activity-label">Activity</div>
-    ${actHtml}
+    ${doneHtml}
     <button class="v5-add-task-btn" onclick="event.stopPropagation();openInlineAdd(${p.id})">+ Add task</button>
     <div class="v5-expand-actions">
       <button class="v5-tab-action" onclick="event.stopPropagation();openProjEditFromRow(${p.id})">Edit project</button>
@@ -952,7 +963,7 @@ function renderV5List(){
     const typeCls=type?`type-${type}`:'type-unassigned';
     const name=V5_TYPE_NAMES[type]||type;
     const opensN=items.reduce((sum,p)=>sum+(p.tasks||[]).filter(t=>!t.done).length,0);
-    html+=`<div class="v5-section-header"><span class="v5-section-name">${v5Escape(name)}</span><span class="v5-section-count">${String(items.length).padStart(2,'0')} Projects · ${String(opensN).padStart(2,'0')} Open Tasks</span></div>`;
+    html+=`<div class="v5-section-header"><span class="v5-section-name">${v5Escape(name)}</span><span class="v5-section-count">${String(items.length).padStart(2,'0')} Projects</span></div>`;
     html+=`<div class="v5-section ${typeCls} grid2">`+items.map(p=>v5ProjectRow(p,++idx)).join('')+`</div>`;
   });
   el.innerHTML=html;
@@ -1175,6 +1186,8 @@ function renderGantt(){
   const weeks=[];
   for(let i=0;i<WEEKS;i++){const d=new Date(monday);d.setDate(d.getDate()+i*7);weeks.push(d);}
   const GANTT_COLORS={'new-construction':'#4a8a6a','renovation':'#b89830','in-construction':'#3a6888','prospect':'#9a6840','':'#7a8880'};
+  const MONTH_TINT='rgba(120,90,60,0.06)';
+  const ganttShade=(hex,i)=>{const amt=Math.min(0.5,i*0.14);const[r,g,b]=hexRgb(hex);const mix=c=>Math.round(c+(255-c)*amt);return `rgb(${mix(r)},${mix(g)},${mix(b)})`;};
   const groups={};BOARD_PHASES.forEach(k=>{groups[k]=[];});
   allActive.forEach(p=>{p.type=p.type||'';const k=groups[p.type]!==undefined?p.type:'';groups[k].push(p);});
   let html='<colgroup><col style="width:180px;min-width:140px;">';
@@ -1185,28 +1198,41 @@ function renderGantt(){
   let prev=-1,sc=0,mb=[];
   weeks.forEach((d,i)=>{const m=d.getMonth();if(m!==prev){if(prev!==-1)mb.push({m:prev,y:d.getFullYear(),s:sc});prev=m;sc=1;}else sc++;if(i===WEEKS-1)mb.push({m,y:d.getFullYear(),s:sc});});
   const mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  mb.forEach(x=>html+=`<th colspan="${x.s}" style="font-family:'ff-meta-web-pro',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink-light);text-align:left;padding:6px 6px 3px;border-bottom:1px solid var(--rule);border-left:1px solid var(--ink-faint);background:var(--page);">${mn[x.m]} ${x.y}</th>`);
+  const weekBlock=[];mb.forEach((x,bi)=>{for(let k=0;k<x.s;k++)weekBlock.push(bi);});
+  mb.forEach((x,bi)=>{const bg=bi%2===1?MONTH_TINT:'var(--page)';html+=`<th colspan="${x.s}" style="font-family:var(--ff-sans),sans-serif;font-weight:700;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);text-align:left;padding:6px 6px 3px;border-bottom:1px solid var(--rule);border-left:1px solid var(--ink-3);background:${bg};">${mn[x.m]} ${x.y}</th>`;});
   html+='</tr>';
   // Week dates
   html+='<tr style="background:var(--page);"><th style="border-bottom:2px solid var(--rule);background:var(--page);"></th>';
-  weeks.forEach((d,i)=>{const tc=i===Math.floor(todayOffset);html+=`<th style="font-family:var(--font-sans);font-weight:${tc?'700':'300'};font-size:11px;color:${tc?'var(--red)':'var(--ink-light)'};padding:2px 4px 8px;text-align:left;border-left:1px dotted var(--ink-faint);border-bottom:2px solid var(--rule);background:var(--page);white-space:nowrap;">${d.getMonth()+1}/${d.getDate()}</th>`;});
+  weeks.forEach((d,i)=>{const tc=i===Math.floor(todayOffset);const bg=weekBlock[i]%2===1?MONTH_TINT:'var(--page)';const ms=i>0&&weekBlock[i]!==weekBlock[i-1];html+=`<th style="font-family:var(--ff-sans),sans-serif;font-weight:${tc?'700':'400'};font-size:11px;letter-spacing:0.03em;color:${tc?'var(--red)':'var(--ink-light)'};padding:2px 4px 8px;text-align:left;border-left:1px ${ms?'solid var(--ink-3)':'dotted var(--ink-faint)'};border-bottom:2px solid var(--rule);background:${bg};white-space:nowrap;">${d.getMonth()+1}/${d.getDate()}</th>`;});
   html+='</tr></thead><tbody>';
   let hasAny=false;
   BOARD_PHASES.forEach(phase=>{
     const projs=groups[phase];if(!projs||!projs.length)return;hasAny=true;
     html+=`<tr><td colspan="${WEEKS+1}" style="font-family:'ff-meta-web-pro-condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-light);padding:18px 0 6px;border-bottom:1px solid var(--rule);">${PHASE_LABELS[phase]||phase}</td></tr>`;
+    const totalCellW=WEEKS*CELL_W;
+    const todayX=Math.min(todayOffset*CELL_W,totalCellW);
+    const weekLineStyle=`repeating-linear-gradient(to right,transparent 0px,transparent ${CELL_W-1}px,var(--ink-faint) ${CELL_W-1}px,var(--ink-faint) ${CELL_W}px)`;
+    let bandsHtml='',_acc=0;
+    mb.forEach((x,bi)=>{const w=x.s*CELL_W;if(bi%2===1)bandsHtml+=`<div style="position:absolute;top:0;bottom:0;left:${_acc}px;width:${w}px;background:${MONTH_TINT};z-index:0;"></div>`;_acc+=w;});
     projs.forEach(proj=>{
-      const barColor=GANTT_COLORS[proj.type||'']||GANTT_COLORS[''];
-      const pendingTasks=proj.tasks.filter(t=>!t.done&&dueDate(t));
-      let barW=CELL_W*0.3;
-      if(pendingTasks.length){const maxDue=new Date(Math.max(...pendingTasks.map(t=>dueDate(t).getTime())));const daysToMax=Math.max(0,(maxDue-today)/86400000);barW=Math.min(Math.max(daysToMax/7*CELL_W,CELL_W*0.3),WEEKS*CELL_W);}
-      const totalCellW=WEEKS*CELL_W;
-      const todayX=Math.min(todayOffset*CELL_W,totalCellW);
-      const weekLineStyle=`repeating-linear-gradient(to right,transparent 0px,transparent ${CELL_W-1}px,var(--ink-faint) ${CELL_W-1}px,var(--ink-faint) ${CELL_W}px)`;
+      const baseColor=GANTT_COLORS[proj.type||'']||GANTT_COLORS[''];
+      const pendingTasks=proj.tasks.filter(t=>!t.done&&dueDate(t)).sort((a,b)=>dueDate(a)-dueDate(b));
+      let barsHtml='';
+      pendingTasks.forEach((t,ti)=>{
+        const due=dueDate(t);
+        const wOff=(due-monday)/(86400000*7);
+        const bw=Math.max(CELL_W*0.62,14);
+        let x=Math.min(Math.max(wOff*CELL_W-bw/2,1),totalCellW-bw-1);
+        const col=ganttShade(baseColor,ti);
+        const nm=v5Escape(t.name)+' (due '+due.toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';
+        barsHtml+=`<div title="${nm}" style="position:absolute;top:7px;left:${x}px;width:${bw}px;height:${ROW_H-14}px;background:${col};border:1px solid rgba(0,0,0,0.10);border-radius:2px;z-index:2;"></div>`;
+      });
+      if(!pendingTasks.length)barsHtml=`<div style="position:absolute;top:10px;left:3px;font-family:var(--ff-sans),sans-serif;font-size:10px;color:var(--ink-4);z-index:2;">no dated tasks</div>`;
       html+=`<tr style="border-bottom:1px solid var(--ink-faint);">
         <td style="font-family:var(--font-compressed);font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);padding:0 14px 0 0;height:${ROW_H}px;white-space:nowrap;vertical-align:middle;border-right:1px solid var(--rule);">${proj.name}</td>
         <td colspan="${WEEKS}" style="position:relative;height:${ROW_H}px;padding:0;background-image:${weekLineStyle};background-size:${CELL_W}px 100%;">
-          <div style="position:absolute;top:8px;left:0;width:${barW}px;height:${ROW_H-16}px;background:${barColor};border-radius:1px;opacity:0.85;"></div>
+          ${bandsHtml}
+          ${barsHtml}
           <div style="position:absolute;top:0;bottom:0;left:${todayX}px;width:1px;background:var(--red);opacity:0.7;z-index:3;"></div>
         </td>
       </tr>`;
@@ -1357,19 +1383,20 @@ function renderCalendar(){
   const {month,year,selected}=calState;
   const mNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
   const today=new Date();today.setHours(0,0,0,0);
-  const firstDay=new Date(year,month,1).getDay();
+  const firstDay=(new Date(year,month,1).getDay()+6)%7; // Monday-first: 0=Mon … 6=Sun
   const dim=new Date(year,month+1,0).getDate();
   const dip=new Date(year,month,0).getDate();
-  let days='';
-  for(let i=firstDay-1;i>=0;i--)days+=`<button class="cal-day other-month past" disabled>${dip-i}</button>`;
+  let days='',col=0;
+  const wknd=()=>col%7>=5?' weekend':''; // columns 5,6 = Sat,Sun
+  for(let i=firstDay-1;i>=0;i--){days+=`<button class="cal-day other-month past${wknd()}" disabled>${dip-i}</button>`;col++;}
   for(let d=1;d<=dim;d++){
     const ds=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dt=new Date(year,month,d);
     const isT=dt.getTime()===today.getTime(),isSel=ds===selected,isP=dt<today;
-    days+=`<button class="cal-day${isT?' today':''}${isSel?' selected':''}${isP?' past':''}" data-date="${isP?'':ds}"${isP?' disabled':''}>${d}</button>`;
+    days+=`<button class="cal-day${isT?' today':''}${isSel?' selected':''}${isP?' past':''}${wknd()}" data-date="${isP?'':ds}"${isP?' disabled':''}>${d}</button>`;col++;
   }
   const rem=(7-((firstDay+dim)%7))%7;
-  for(let d=1;d<=rem;d++)days+=`<button class="cal-day other-month past" disabled>${d}</button>`;
+  for(let d=1;d<=rem;d++){days+=`<button class="cal-day other-month past${wknd()}" disabled>${d}</button>`;col++;}
   const selFmt=selected?new Date(selected+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):'Select a date';
   popup.innerHTML=`
     <div class="cal-header">
@@ -1377,7 +1404,7 @@ function renderCalendar(){
       <div class="cal-month-label">${mNames[month]} ${year}</div>
       <button class="cal-nav" id="cal-next">›</button>
     </div>
-    <div class="cal-dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+    <div class="cal-dow"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>
     <div class="cal-days" id="cal-days-grid">${days}</div>
     <div class="cal-selected-display">${selFmt}</div>
     <div class="cal-actions">
