@@ -887,7 +887,17 @@
         "CD": 0,
         "CA": 0
       },
-      "tasks": []
+      "tasks": [
+        {
+          "id": 87,
+          "name": "Schematic Design",
+          "days": 17,
+          "done": false,
+          "createdAt": "2026-07-14T15:30:34.049Z",
+          "due": "2026-07-31",
+          "who": "Scott"
+        }
+      ]
     },
     {
       "id": 79,
@@ -917,5 +927,5 @@
       ]
     }
   ],
-  "nextId": 87
+  "nextId": 88
 }
