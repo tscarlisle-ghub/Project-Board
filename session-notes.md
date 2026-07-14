@@ -979,3 +979,21 @@ _(Mockup update, not the live app: `board-editorial-mockup.html` — roster now 
 ## 2026-07-14 (v1.44)
 
 **Gantt — back to one continuous bar.** Reverted the v1.41 per-task marker bars to a single continuous bar per project, split into one tonal segment per pending task (sorted by due date). Segment i runs from the previous boundary to task i's due-date x-position; each is shaded by `ganttShade(baseColor, i)` with a 1.5px paper divider between tasks, so the bar reads continuous but tonally stepped per task. Overdue tasks still get a min-width segment (minSeg) so every task shows. Month bands, week gridlines, sans dates, and the today line unchanged. APP_VERSION → 1.44, CSS `cma-board.css?v=40` (lock-step). Push index.html, force-reload.
+
+## 2026-07-14 (v1.45) — EDITORIAL MIGRATION (live)
+
+Took the Editorial mockups live in the app. All JS logic preserved (GitHub sync, task CRUD, inline add/edit, date picker, phase-% editing via the project-edit popup).
+
+**Masthead / chrome.** Plate now shows a serif-italic H1 "The Project Board" (`.ed-h1`) over the active-count line. Added a **Calendar** tab to the tabbar (`nav-calendar` → `showPage('calendar')`).
+
+**Rotating quote.** New `.ed-quote` line on the board page, populated by `setBoardQuote()` from `CMA_QUOTES` (14 architecture quotes) — randomizes on load and every time the Board is shown.
+
+**Roster rows.** Client name switched to serif-italic rust 30px (`.ed-name`). Removed the row numeral (`ed-rn`) and the SD/DD/CD/CA phase bars from each card. Tasks under the name unchanged. Two-column type grouping unchanged.
+
+**Phases → expanded.** `v5ExpandedDetail` now renders a "Design progress" block with the SD/DD/CD/CA bars + % (read-only) at the top; editing still happens in the project-edit popup sliders. Satisfies "keep phase bars only in the expanded view."
+
+**Calendar page (new).** `renderCalendarPage()` + `calPageState`/`calPageShift`/`calPageToday`. Month grid, Monday-first, weekends toned, today ringed; each open task with a due date shows on its day (rust, or alert if overdue), click jumps to the task editor on the Board. Wired into `PAGES`, `showPage`, and `renderCurrentPage`.
+
+Gantt left as-is (already editorial: month tone, sans dates, continuous per-task tonal bar). Note: the live "Board" is the client roster; the phase-pipeline "Board" mockup was NOT added as a separate view (would duplicate the roster) — can add as its own tab on request.
+
+node --check on extracted inline script: OK. APP_VERSION → 1.45, CSS `cma-board.css?v=41`. Push index.html + cma-board.css, force-reload.

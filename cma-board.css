@@ -345,14 +345,14 @@ body{font-family:var(--font-body);font-size:20px;line-height:1.5;}
 }
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
 .cal-day{
-  font-family:"warnock-pro",serif;font-weight:400;font-size:15px;
+  font-family:"warnock-pro",serif;font-weight:600;font-size:15px;
   text-align:center;padding:7px 2px;border-radius:3px;
-  cursor:pointer;border:none;background:none;color:var(--ink);width:100%;
+  cursor:pointer;border:none;background:none;color:#241f1a;width:100%;
 }
 .cal-day:hover:not(.past){background:var(--page);}
 .cal-day.today{font-weight:700;color:var(--red);}
 .cal-day.selected{background:var(--brand);color:#fafad2!important;}
-.cal-day.other-month,.cal-day.past{color:var(--ink-faint);cursor:default;}
+.cal-day.other-month,.cal-day.past{color:#B3A595;font-weight:400;cursor:default;}
 .cal-selected-display{
   font-family:var(--font-body);font-size:13px;
   color:var(--ink-mid);margin-top:12px;text-align:center;

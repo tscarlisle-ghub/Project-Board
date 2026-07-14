@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
 <link rel="stylesheet" href="https://use.typekit.net/wup0iix.css">
-<link rel="stylesheet" href="cma-board.css?v=40">
+<link rel="stylesheet" href="cma-board.css?v=41">
 <style id="cma-editorial">
 /* ── Editorial re-theme (v1.35): Carlisle Moore design language ── */
 :root{
@@ -114,7 +114,7 @@
 .ed-prow:hover{background:var(--paper-1);}
 .ed-rowhead{display:flex;align-items:baseline;gap:14px;cursor:pointer;}
 .ed-rn{font-family:var(--comp);font-size:28px;color:var(--brand);line-height:1;}
-.ed-name{font-family:var(--font-display);font-weight:700;letter-spacing:.03em;text-transform:uppercase;font-size:26px;color:var(--ink-0);flex:1;}
+.ed-name{font-family:var(--ff-serif);font-style:italic;font-weight:400;letter-spacing:0;text-transform:none;font-size:30px;color:var(--brand);line-height:1.04;flex:1;}
 .ed-sub{font-family:var(--titling);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);margin-top:6px;padding-left:42px;}
 .ed-sub .acc{color:var(--brand);}
 .ed-phases{display:flex;gap:9px;margin-top:14px;padding-left:42px;}
@@ -171,6 +171,28 @@
   .ed-due{font-size:10px;letter-spacing:.05em;}
   .v5-expand{margin-left:0;}
 }
+/* ── v1.45 Editorial live migration ── */
+.ed-h1{font-family:var(--ff-serif);font-style:italic;font-weight:400;font-size:34px;color:var(--ink-0);line-height:1;margin:0 0 7px;letter-spacing:-.01em;}
+.ed-quote{font-family:var(--ff-serif);font-style:italic;font-size:20px;color:var(--ink-1);line-height:1.35;max-width:840px;padding:14px 40px 2px;}
+.ed-quote .by{display:block;font-family:var(--titling);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--brand);margin-top:9px;font-style:normal;}
+.exp-phases{padding-left:0!important;margin:8px 0 6px!important;}
+.cal-page-top{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--ink-0);padding-bottom:12px;}
+.cal-page-mon{font-family:var(--ff-serif);font-style:italic;font-size:30px;color:var(--ink-0);}
+.cal-page-mon b{font-weight:400;color:var(--brand);}
+.cal-page-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid rgba(162,81,45,.32);}
+.calpg-dowc{font-family:var(--titling);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);padding:10px 8px;}
+.calpg-dowc.wend{color:var(--brand);}
+.cal-page-grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.calpg-day{min-height:112px;border-right:1px solid rgba(42,37,32,.12);border-bottom:1px solid rgba(42,37,32,.12);padding:7px 8px 9px;}
+.calpg-day:nth-child(7n){border-right:none;}
+.calpg-day.empty{background:var(--paper-1);}
+.calpg-day.wend{background:rgba(162,81,45,.05);}
+.calpg-date{font-family:var(--ff-mono);font-size:13px;color:var(--ink-2);}
+.calpg-day.today{outline:2px solid var(--brand);outline-offset:-2px;}
+.calpg-day.today .calpg-date{color:var(--brand);font-weight:700;}
+.calpg-ev{display:flex;gap:6px;align-items:flex-start;margin-top:6px;font-family:var(--ff-serif);font-style:italic;font-size:12px;color:var(--ink-1);line-height:1.25;cursor:pointer;}
+.calpg-ev:hover{color:var(--brand);}
+.calpg-dot{width:6px;height:6px;border-radius:50%;flex:none;margin-top:5px;}
 </style>
 </head>
 <body>
@@ -181,6 +203,7 @@
     <div class="v5-tabbar-inner">
       <button class="v5-tab active" id="nav-board" onclick="showPage('board')">Board</button>
       <button class="v5-tab" id="nav-gantt" onclick="showPage('gantt')">Gantt</button>
+      <button class="v5-tab" id="nav-calendar" onclick="showPage('calendar')">Calendar</button>
       <button class="v5-tab" id="nav-archive" onclick="showPage('archive')">Archive</button>
       <button class="v5-tab" id="nav-summary" onclick="showPage('summary')">Due</button>
       <span class="v5-tab-spacer"></span>
@@ -194,7 +217,7 @@
   <div class="ed-masthead">
     <img class="ed-logo" src="Logo_Only.png" alt="T. Scott Carlisle Architects">
     <div class="ed-plate">
-      <p class="ed-eyebrow">T. Scott Carlisle Projects</p>
+      <h1 class="ed-h1">The Project Board</h1>
       <p class="ed-eyebrow" id="ed-counts"></p>
     </div>
   </div>
@@ -212,6 +235,7 @@
         <span class="v5-title-spacer"></span>
         <button class="v5-newproj-btn" onclick="openNewProjectModal()">+ NEW PROJECT</button>
       </div>
+      <div class="ed-quote" id="cma-quote"></div>
       <div class="v5-list" id="v5-list"></div>
       <div class="v5-totals" id="v5-totals"></div>
     </div>
@@ -290,6 +314,22 @@
   </div>
 </div>
 
+<!-- ── CALENDAR PAGE ── -->
+<div id="calendar-page" style="display:none;">
+  <div style="max-width:1180px;margin:0 auto;padding:22px 40px 80px;">
+    <div class="cal-page-top">
+      <div class="cal-page-mon" id="calpg-month"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="v5-tab-action" onclick="calPageShift(-1)">‹ Prev</button>
+        <button class="v5-tab-action" onclick="calPageToday()">Today</button>
+        <button class="v5-tab-action" onclick="calPageShift(1)">Next ›</button>
+      </div>
+    </div>
+    <div class="cal-page-dow" id="calpg-dow"></div>
+    <div class="cal-page-grid" id="calpg-grid"></div>
+  </div>
+</div>
+
 <!-- ── CONTEXT MENU ── -->
 <div class="ctx-menu" id="ctx-menu" style="display:none;"></div>
 
@@ -348,8 +388,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.44';
-const APP_VERSION_DATE='Jul 14, 2026 - 5:40 PM';
+const APP_VERSION='1.45';
+const APP_VERSION_DATE='Jul 14, 2026 - 6:30 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -583,7 +623,7 @@ function doImport(replace){
 document.addEventListener('DOMContentLoaded',()=>{const ta=document.getElementById('import-text');if(ta)ta.addEventListener('input',updateImportPreview);});
 
 /* ── PAGE NAVIGATION ── */
-const PAGES=['board','gantt','archive','summary'];
+const PAGES=['board','gantt','archive','summary','calendar'];
 /* ──────────────────────────────────────────────────────────────────
    §15 PAGE NAVIGATION  (showPage + staff filter)
    ────────────────────────────────────────────────────────────────── */
@@ -597,6 +637,8 @@ function showPage(page){
   if(page==='archive')renderArchive();
   else if(page==='gantt')renderGantt();
   else if(page==='summary')renderSummary();
+  else if(page==='calendar')renderCalendarPage();
+  else if(page==='board')setBoardQuote();
 }
 
 /* V5 — legacy staff filter shim. The actual filter state lives in v5State.staff;
@@ -610,6 +652,7 @@ function renderCurrentPage(){
   if(currentPage==='summary')renderSummary();
   else if(currentPage==='archive')renderArchive();
   else if(currentPage==='gantt')renderGantt();
+  else if(currentPage==='calendar')renderCalendarPage();
   else renderProjects();
 }
 
@@ -839,11 +882,9 @@ function v5ProjectRow(p,idx){
   }
   return `<div class="ed-prow v5-row${expanded?' expanded':''}" data-pid="${p.id}">
     <div class="ed-rowhead" onclick="v5ToggleExpand(${p.id})">
-      <span class="ed-rn">${String(idx).padStart(2,'0')}</span>
       <span class="ed-name v5-client">${v5Escape(p.name)}</span>
     </div>
     <div class="ed-sub"><span class="acc">${v5Escape(staffName)}</span> · ${v5Escape(typeName)}</div>
-    <div class="ed-phases">${phh}</div>
     ${tasksHtml}
     ${expanded?v5ExpandedDetail(p):''}
   </div>`;
@@ -860,6 +901,10 @@ function v5ExpandedDetail(p){
      Fee blocks removed in v1.34 along with the TSC-BILLING integration. */
   /* Completed tasks — listed here with a filled checkbox so a done task can be
      made live again (tap the box or the name -> markDoneCtx flips done back to false). */
+  ensurePhasePercents(p);
+  const _pp=p.phasePercents||{};
+  const _phaseBars=['SD','DD','CD','CA'].map(k=>{const v=Math.max(0,Math.min(100,Number(_pp[k])||0));return `<div class="ed-ph"><div class="pk">${k} <span style="color:var(--ink-3);">${v}%</span></div><div class="pt"><span class="pf" style="width:${v}%"></span></div></div>`;}).join('');
+  const phaseHtml=`<div class="v5-activity-label">Design progress</div><div class="ed-phases exp-phases">${_phaseBars}</div>`;
   const doneTasks=(p.tasks||[]).filter(t=>t.done);
   let doneHtml='';
   if(doneTasks.length){
@@ -876,6 +921,7 @@ function v5ExpandedDetail(p){
       <div class="ed-tasks" style="padding-left:0;">${doneRows}</div>`;
   }
   return `<div class="v5-expand" onclick="event.stopPropagation();">
+    ${phaseHtml}
     ${doneHtml}
     <button class="v5-add-task-btn" onclick="event.stopPropagation();openInlineAdd(${p.id})">+ Add task</button>
     <div class="v5-expand-actions">
@@ -1442,6 +1488,51 @@ document.addEventListener('keydown',e=>{
 /* ╔══════════════════════════════════════════════════════════════════╗
    ║  §20 INIT — bootstrap the app                                    ║
    ╚══════════════════════════════════════════════════════════════════╝ */
+/* ── §CAL Calendar page + rotating architectural quote (v1.45) ── */
+const CMA_QUOTES=[
+  ["We shape our buildings; thereafter they shape us.","Winston Churchill"],
+  ["Less is more.","Ludwig Mies van der Rohe"],
+  ["God is in the details.","Ludwig Mies van der Rohe"],
+  ["Form follows function.","Louis Sullivan"],
+  ["A house is a machine for living in.","Le Corbusier"],
+  ["Architecture is the learned game, correct and magnificent, of forms assembled in the light.","Le Corbusier"],
+  ["Space and light and order. Those are the things that men need just as much as they need bread or a place to sleep.","Le Corbusier"],
+  ["Architecture should speak of its time and place, but yearn for timelessness.","Frank Gehry"],
+  ["Form and function should be one, joined in a spiritual union.","Frank Lloyd Wright"],
+  ["The mother art is architecture. Without an architecture of our own we have no soul of our own civilization.","Frank Lloyd Wright"],
+  ["Architecture is the thoughtful making of space.","Louis Kahn"],
+  ["The sun never knew how great it was until it hit the side of a building.","Louis Kahn"],
+  ["The details are not the details. They make the design.","Charles Eames"],
+  ["Less is a bore.","Robert Venturi"]
+];
+function setBoardQuote(){const el=document.getElementById('cma-quote');if(!el)return;const q=CMA_QUOTES[Math.floor(Math.random()*CMA_QUOTES.length)];el.innerHTML='\u201c'+v5Escape(q[0])+'\u201d<span class="by">'+v5Escape(q[1])+'</span>';}
+let calPageState={month:new Date().getMonth(),year:new Date().getFullYear()};
+function calPageShift(d){let m=calPageState.month+d,y=calPageState.year;if(m<0){m=11;y--;}if(m>11){m=0;y++;}calPageState={month:m,year:y};renderCalendarPage();}
+function calPageToday(){const n=new Date();calPageState={month:n.getMonth(),year:n.getFullYear()};renderCalendarPage();}
+function renderCalendarPage(){
+  const grid=document.getElementById('calpg-grid');if(!grid)return;
+  const month=calPageState.month,year=calPageState.year;
+  const mN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const ml=document.getElementById('calpg-month');if(ml)ml.innerHTML=mN[month]+' <b>'+year+'</b>';
+  const dowEl=document.getElementById('calpg-dow');
+  if(dowEl)dowEl.innerHTML=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(function(n,i){return '<div class="calpg-dowc'+(i>=5?' wend':'')+'">'+n+'</div>';}).join('');
+  const ev={};
+  projects.filter(function(p){return !p.archived;}).forEach(function(p){(p.tasks||[]).forEach(function(t){if(t.done)return;const d=dueDate(t);if(!d)return;if(d.getMonth()===month&&d.getFullYear()===year){const day=d.getDate();(ev[day]=ev[day]||[]).push({name:t.name,proj:p.name,over:(dueDays(t)||0)<0,pid:p.id,tid:t.id});}});});
+  const firstDay=(new Date(year,month,1).getDay()+6)%7;
+  const dim=new Date(year,month+1,0).getDate();
+  const today=new Date();today.setHours(0,0,0,0);
+  let html='',col=0;
+  const wknd=function(){return col%7>=5?' wend':'';};
+  for(let i=0;i<firstDay;i++){html+='<div class="calpg-day empty'+wknd()+'"></div>';col++;}
+  for(let d=1;d<=dim;d++){
+    const isT=(new Date(year,month,d).getTime()===today.getTime());
+    let evs='';(ev[d]||[]).forEach(function(e){const c=e.over?'var(--v5-alert)':'var(--brand)';evs+='<div class="calpg-ev" onclick="openEdit('+e.pid+','+e.tid+');showPage(\'board\')"><span class="calpg-dot" style="background:'+c+'"></span><span>'+v5Escape(e.proj)+' \u00b7 '+v5Escape(e.name)+'</span></div>';});
+    html+='<div class="calpg-day'+(isT?' today':'')+wknd()+'"><span class="calpg-date">'+d+'</span>'+evs+'</div>';col++;
+  }
+  while(col%7!==0){html+='<div class="calpg-day empty'+wknd()+'"></div>';col++;}
+  grid.innerHTML=html;
+}
+
 const _ls=localStorage.getItem('pb_last_sync');
 if(_ls)setLastSyncLabel(new Date(_ls));
 // today-date and version-label live in the sidebar footer now; renderV5Sidebar
@@ -1449,6 +1540,7 @@ if(_ls)setLastSyncLabel(new Date(_ls));
 const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
+setBoardQuote();
 
 /* TSC-BILLING fetch removed in v1.34. */
 </script>
