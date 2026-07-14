@@ -848,8 +848,18 @@
         "CD": 0,
         "CA": 0
       },
-      "tasks": []
+      "tasks": [
+        {
+          "id": 80,
+          "name": "Construction drawings",
+          "days": 16,
+          "done": false,
+          "createdAt": "2026-07-14T14:00:50.606Z",
+          "due": "2026-07-30",
+          "who": "Maddie"
+        }
+      ]
     }
   ],
-  "nextId": 80
+  "nextId": 81
 }
