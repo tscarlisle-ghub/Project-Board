@@ -71,9 +71,11 @@
         {
           "id": 62,
           "name": "Finish construction drawings for permit",
-          "days": 7,
+          "days": 17,
           "done": false,
-          "who": "Kat"
+          "who": "Kat",
+          "due": "2026-07-31",
+          "createdAt": "2026-07-14T14:57:17.628Z"
         }
       ],
       "type": "new-construction",
