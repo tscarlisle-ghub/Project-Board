@@ -418,8 +418,8 @@
       "designPercent": 0,
       "phasePercents": {
         "SD": 100,
-        "DD": 85,
-        "CD": 40,
+        "DD": 90,
+        "CD": 95,
         "CA": 0
       },
       "lead": "TSC"
