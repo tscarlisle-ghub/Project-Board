@@ -803,6 +803,15 @@
           "createdAt": "2026-07-14T14:35:02.202Z",
           "due": "2026-09-30",
           "who": "Scott"
+        },
+        {
+          "id": 84,
+          "name": "Construction Drawings",
+          "days": 108,
+          "done": false,
+          "createdAt": "2026-07-14T14:36:12.138Z",
+          "due": "2026-10-30",
+          "who": "Scott"
         }
       ],
       "lead": "TSC"
@@ -888,5 +897,5 @@
       ]
     }
   ],
-  "nextId": 84
+  "nextId": 85
 }
