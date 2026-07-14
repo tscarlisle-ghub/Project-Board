@@ -267,7 +267,7 @@
           "id": 76,
           "name": "Septic",
           "days": 1,
-          "done": false,
+          "done": true,
           "createdAt": "2026-07-07T16:06:49.559Z",
           "due": "2026-07-07",
           "who": "Scott"
