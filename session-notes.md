@@ -963,3 +963,19 @@ node --check on extracted inline script: OK. APP_VERSION → 1.40, CSS `cma-boar
 **Board.** Client names (`.ed-name`) up 20% → 26px desktop / 22px mobile. Removed open-task counts everywhere on the board: the per-row "Open" number (`.ed-open` span dropped from `v5ProjectRow`), the masthead "· N tasks open" tail (now just "N active projects"), and the section-header "· NN Open Tasks" tail (now just "NN Projects"). `.ed-open*` CSS left in place but unused.
 
 node --check on extracted inline script: OK. APP_VERSION → 1.41, CSS `cma-board.css?v=37`. Push both files, force-reload.
+
+## 2026-07-14 (v1.42)
+
+**Calendar date legibility.** The popup day numbers were `--ink` at 400-weight warnock — read washed out. Darkened selectable `.cal-day` to `#241f1a` at 600-weight; lifted muted past/other-month days off the near-white `--ink-faint` to `#B3A595` (400-weight) so they stay secondary but legible. CSS-only change in cma-board.css. APP_VERSION → 1.42, CSS `cma-board.css?v=38`. Push both files, force-reload.
+
+_(Aside, not part of the app: built `board-editorial-mockup.html` — a standalone concept of the board rebuilt in the uploaded "CMA Editorial" house style, brand marks inlined. Lives in TSC-BOARD but is not wired into the live site.)_
+
+## 2026-07-14 (v1.43)
+
+**Editable task name.** The inline task editor only exposed due date + assignee. Added a text input (`ed-name-<id>`) prefilled with the task name; `saveTaskTime` now reads it and writes `t.name` (trimmed, ignored if blank) alongside the existing due/assignee save. Reachable by clicking a task name on the board to open its editor. JS-only. APP_VERSION → 1.43, CSS `cma-board.css?v=39` (lock-step, no CSS change). Push index.html, force-reload.
+
+_(Mockup update, not the live app: `board-editorial-mockup.html` — roster now grouped by project type (New Construction / Renovation / In Construction / Prospect), a 12-week calendar sparkline under each client, and one client (Davis) shown expanded into a billing-free client file with a larger milestone timeline.)_
+
+## 2026-07-14 (v1.44)
+
+**Gantt — back to one continuous bar.** Reverted the v1.41 per-task marker bars to a single continuous bar per project, split into one tonal segment per pending task (sorted by due date). Segment i runs from the previous boundary to task i's due-date x-position; each is shaded by `ganttShade(baseColor, i)` with a 1.5px paper divider between tasks, so the bar reads continuous but tonally stepped per task. Overdue tasks still get a min-width segment (minSeg) so every task shows. Month bands, week gridlines, sans dates, and the today line unchanged. APP_VERSION → 1.44, CSS `cma-board.css?v=40` (lock-step). Push index.html, force-reload.

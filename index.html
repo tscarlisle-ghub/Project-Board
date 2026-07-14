@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
 <link rel="stylesheet" href="https://use.typekit.net/wup0iix.css">
-<link rel="stylesheet" href="cma-board.css?v=37">
+<link rel="stylesheet" href="cma-board.css?v=40">
 <style id="cma-editorial">
 /* ── Editorial re-theme (v1.35): Carlisle Moore design language ── */
 :root{
@@ -348,8 +348,8 @@
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.41';
-const APP_VERSION_DATE='Jul 14, 2026 - 4:05 PM';
+const APP_VERSION='1.44';
+const APP_VERSION_DATE='Jul 14, 2026 - 5:40 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -915,7 +915,8 @@ function v5InlineAddOrEdit(p){
     const fmtd=new Date(existingDue+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
     const staffOpts=STAFF_MEMBERS.map(s=>`<option value="${s}"${(t.who||p.staff||DEFAULT_STAFF)===s?' selected':''}>${s}</option>`).join('');
     return `<div class="inline-form" style="margin-top:14px;" onclick="event.stopPropagation();">
-      <div class="inline-form-label" style="font-size:14px;">Edit: <strong>${v5Escape(t.name)}</strong></div>
+      <div class="inline-form-label" style="font-size:13px;">Edit task name</div>
+      <input type="text" id="ed-name-${t.id}" value="${v5Escape(t.name)}" onclick="event.stopPropagation();" style="margin:6px 0 4px;" />
       <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:8px;">
         <button class="cal-trigger-tf" id="ed-${t.id}" data-date="${existingDue}" onclick="event.stopPropagation();openCalForEl(this)">${fmtd}</button>
         <label style="font-family:var(--ff-sans-cond);font-weight:600;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3);">Assign:</label>
@@ -1107,6 +1108,8 @@ function saveTaskTime(pId,tId){
   if(t&&dueStr){t.due=dueStr;const now=new Date();t.days=Math.max(1,Math.round((new Date(dueStr+'T12:00:00')-now)/86400000));t.createdAt=now.toISOString();}
   const whoEl=document.getElementById(`ed-who-${tId}`);
   if(t&&whoEl&&whoEl.value)t.who=whoEl.value;
+  const nameEl=document.getElementById(`ed-name-${tId}`);
+  if(t&&nameEl&&nameEl.value.trim())t.name=nameEl.value.trim();
   editingTask=null;scheduleSave();renderProjects();
 }
 function toggleTaskDone(pId,tId,closeEditor){const p=projects.find(p=>p.id===pId),t=p&&p.tasks.find(t=>t.id===tId);if(t)t.done=!t.done;if(closeEditor)editingTask=null;scheduleSave();renderCurrentPage();}
@@ -1218,16 +1221,24 @@ function renderGantt(){
       const baseColor=GANTT_COLORS[proj.type||'']||GANTT_COLORS[''];
       const pendingTasks=proj.tasks.filter(t=>!t.done&&dueDate(t)).sort((a,b)=>dueDate(a)-dueDate(b));
       let barsHtml='';
-      pendingTasks.forEach((t,ti)=>{
-        const due=dueDate(t);
-        const wOff=(due-monday)/(86400000*7);
-        const bw=Math.max(CELL_W*0.62,14);
-        let x=Math.min(Math.max(wOff*CELL_W-bw/2,1),totalCellW-bw-1);
-        const col=ganttShade(baseColor,ti);
-        const nm=v5Escape(t.name)+' (due '+due.toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';
-        barsHtml+=`<div title="${nm}" style="position:absolute;top:7px;left:${x}px;width:${bw}px;height:${ROW_H-14}px;background:${col};border:1px solid rgba(0,0,0,0.10);border-radius:2px;z-index:2;"></div>`;
-      });
-      if(!pendingTasks.length)barsHtml=`<div style="position:absolute;top:10px;left:3px;font-family:var(--ff-sans),sans-serif;font-size:10px;color:var(--ink-4);z-index:2;">no dated tasks</div>`;
+      if(pendingTasks.length){
+        // One continuous bar from the chart start to the latest due date, split
+        // into a tonal segment per task (segment i runs up to task i's due date).
+        const minSeg=Math.max(CELL_W*0.5,16);
+        let prev=0,segs='';
+        pendingTasks.forEach((t,ti)=>{
+          const due=dueDate(t);
+          const wOff=(due-monday)/(86400000*7);
+          const b=Math.min(Math.max(wOff*CELL_W,prev+minSeg),totalCellW);
+          const col=ganttShade(baseColor,ti);
+          const nm=v5Escape(t.name)+' (due '+due.toLocaleDateString('en-US',{month:'short',day:'numeric'})+')';
+          segs+=`<div title="${nm}" style="position:absolute;top:8px;left:${prev}px;width:${Math.max(b-prev,0)}px;height:${ROW_H-16}px;background:${col};border-right:1.5px solid var(--page);z-index:2;"></div>`;
+          prev=b;
+        });
+        barsHtml=segs;
+      }else{
+        barsHtml=`<div style="position:absolute;top:10px;left:3px;font-family:var(--ff-sans),sans-serif;font-size:10px;color:var(--ink-4);z-index:2;">no dated tasks</div>`;
+      }
       html+=`<tr style="border-bottom:1px solid var(--ink-faint);">
         <td style="font-family:var(--font-compressed);font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink);padding:0 14px 0 0;height:${ROW_H}px;white-space:nowrap;vertical-align:middle;border-right:1px solid var(--rule);">${proj.name}</td>
         <td colspan="${WEEKS}" style="position:relative;height:${ROW_H}px;padding:0;background-image:${weekLineStyle};background-size:${CELL_W}px 100%;">
