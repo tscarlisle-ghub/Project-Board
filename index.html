@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="https://tscarlisle-ghub.github.io/fonts/tsc-fonts.css">
 <link rel="stylesheet" href="https://use.typekit.net/ikf0hkb.css">
 <link rel="stylesheet" href="https://use.typekit.net/wup0iix.css">
-<link rel="stylesheet" href="cma-board.css?v=44">
+<link rel="stylesheet" href="cma-board.css?v=46">
 <style id="cma-editorial">
 /* ── Editorial re-theme (v1.35): Carlisle Moore design language ── */
 :root{
@@ -230,7 +230,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);}
 .ccard{border-top:1px solid var(--hairline);padding:22px 0 24px;}
 .ccard.exp{grid-column:1/-1;background:var(--paper-edge);border-left:2px solid var(--rust);padding:26px 30px 24px;box-shadow:0 14px 44px rgba(20,17,13,.10);}
 .cc-top{display:flex;align-items:flex-start;gap:13px;cursor:pointer;}
-.cname{font-family:var(--serif);font-style:italic;font-weight:400;font-size:32px;color:var(--rust);line-height:1.03;flex:1;}
+.cname{font-family:var(--serif)!important;font-style:italic!important;font-weight:400!important;font-size:32px;color:var(--accent,var(--rust));line-height:1.05;flex:1;text-transform:none!important;white-space:normal!important;letter-spacing:0!important;}
 .cstat{font-family:var(--titling);font-size:9px;letter-spacing:.16em;text-transform:uppercase;text-align:right;margin-top:9px;white-space:nowrap;}
 .csub{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-mute);margin-top:6px;padding-left:0;}
 .rtasks{margin:14px 0 0;padding-left:0;display:flex;flex-direction:column;gap:7px;}
@@ -437,8 +437,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);}
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.48';
-const APP_VERSION_DATE='Jul 14, 2026 - 8:20 PM';
+const APP_VERSION='1.50';
+const APP_VERSION_DATE='Jul 14, 2026 - 8:55 PM';
 // ──────────────────────────────────────────────────────────────
 // IMPORTANT: when bumping APP_VERSION, also bump the ?v= number
 // in the <link rel="stylesheet" href="cma-board.css?v=NN"> tag
@@ -925,7 +925,7 @@ function v5ProjectRow(p){
   }else{
     tasksHtml='<div class="csub" style="margin-top:14px;">No open tasks</div>';
   }
-  return `<div class="ccard${expanded?' exp':''} v5-row" data-pid="${p.id}"><div class="cc-top" onclick="v5ToggleExpand(${p.id})"><span class="cname v5-client">${v5Escape(v5Title(p.name))}</span><span class="cstat" style="color:${scol};">${v5StatusWord(status)}</span></div><div class="csub">${v5Escape(typeName)} \u00b7 Lead ${v5Escape(staffName)}</div>${tasksHtml}${v5Spark(p)}${expanded?v5ExpandedDetail(p):''}</div>`;
+  return `<div class="ccard${expanded?' exp':''} v5-row" data-pid="${p.id}"><div class="cc-top" onclick="v5ToggleExpand(${p.id})"><span class="cname">${v5Escape(v5Title(p.name))}</span><span class="cstat" style="color:${scol};">${v5StatusWord(status)}</span></div><div class="csub">${v5Escape(typeName)} \u00b7 Lead ${v5Escape(staffName)}</div>${tasksHtml}${v5Spark(p)}${expanded?v5ExpandedDetail(p):''}</div>`;
 }
 
 function v5ChevronSvg(up){
@@ -1028,6 +1028,7 @@ const V5_TYPE_NAMES={
   '':'Unassigned'
 };
 
+const V5_TYPE_ACCENT={'new-construction':'#A2512D','renovation':'#9C6B2E','in-construction':'#7E4A34','prospect':'#8A7A6B','':'#6E5E52'};
 function renderV5List(){
   const el=document.getElementById('v5-list');if(!el)return;
   const rows=v5Filtered();
@@ -1048,8 +1049,9 @@ function renderV5List(){
     const typeCls=type?`type-${type}`:'type-unassigned';
     const name=V5_TYPE_NAMES[type]||type;
     const opensN=items.reduce((sum,p)=>sum+(p.tasks||[]).filter(t=>!t.done).length,0);
-    html+=`<div class="sec-hd"><span class="sec-nm">${v5Escape(name)}</span><span class="sec-ct">${String(items.length).padStart(2,'0')} ${items.length===1?'Project':'Projects'}</span></div>`;
-    html+=`<div class="croster">`+items.map(p=>v5ProjectRow(p)).join('')+`</div>`;
+    const accent=V5_TYPE_ACCENT[type]||V5_TYPE_ACCENT[''];
+    html+=`<div class="sec-hd" style="border-top-color:${accent};"><span class="sec-nm" style="color:${accent};">${v5Escape(name)}</span><span class="sec-ct">${String(items.length).padStart(2,'0')} ${items.length===1?'Project':'Projects'}</span></div>`;
+    html+=`<div class="croster" style="--accent:${accent};">`+items.map(p=>v5ProjectRow(p)).join('')+`</div>`;
   });
   el.innerHTML=html;
 }
@@ -1085,7 +1087,7 @@ function submitNewProjectModal(){
    §17 MODALS · EDIT POPUP · CALENDAR  (UI dialogs and pickers)
    ────────────────────────────────────────────────────────────────── */
 function openProjEditFromRow(pid){
-  const row=document.querySelector(`.ed-prow[data-pid="${pid}"] .ed-name`);
+  const row=document.querySelector(`.ccard[data-pid="${pid}"] .cname`)||document.querySelector(`.v5-row[data-pid="${pid}"] .cname`);
   if(row)openProjEdit(pid,row);
 }
 
@@ -1159,7 +1161,7 @@ function saveProjEdit(projId){
   closeProjEdit();scheduleSave();renderProjects();
 }
 function closeProjEdit(){const p=document.getElementById('proj-edit-popup');if(p)p.remove();_pepType=_pepStaff=_pepColor=_pepLead=undefined;}
-document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.v5-client')&&!e.target.closest('.ed-name')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
+document.addEventListener('click',e=>{const p=document.getElementById('proj-edit-popup');if(p&&!p.contains(e.target)&&!e.target.closest('.project-name')&&!e.target.closest('.cname')&&!e.target.closest('.ed-name')&&!e.target.closest('.v5-tab-action'))closeProjEdit();});
 
 /* ── TASK ACTIONS ── */
 function openInlineAdd(projId){addingToProject=projId;editingTask=null;renderCurrentPage();}
