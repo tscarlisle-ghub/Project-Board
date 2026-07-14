@@ -134,10 +134,10 @@
         {
           "id": 65,
           "name": "Engineering",
-          "days": 7,
+          "days": 2,
           "done": false,
-          "createdAt": "2026-04-24T17:57:43.511Z",
-          "due": "2026-05-01",
+          "createdAt": "2026-07-14T15:29:32.409Z",
+          "due": "2026-07-16",
           "who": "Maddie"
         }
       ],
