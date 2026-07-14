@@ -1174,7 +1174,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);}
     <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:20px;gap:24px;">
       <div>
         <img src="logo-wordmark.png" alt="Carlisle Moore Architects" style="width:184px;height:auto;display:block;margin-bottom:16px;" />
-        <h1 style="margin:2px 0 0;font-family:var(--serif);font-style:italic;font-weight:400;font-size:46px;line-height:1;letter-spacing:-.01em;color:var(--ink);">The Project Board</h1>
+        <h1 style="margin:2px 0 0;font-family:var(--serif);font-style:italic;font-weight:400;font-size:46px;line-height:1;letter-spacing:-.01em;color:var(--ink);" id="board-title">The Project Board</h1>
         <p id="ed-counts" style="font-family:var(--titling);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-mute);margin:10px 0 0;"></p>
       </div>
       <div style="text-align:right;font-family:var(--titling);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-mute);line-height:2;white-space:nowrap;">
@@ -1356,8 +1356,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);}
    tweak is in one block at the top.
    ────────────────────────────────────────────────────────────────── */
 
-const APP_VERSION='1.53';
-const APP_VERSION_DATE='Jul 14, 2026 - 10:40 PM';
+const APP_VERSION='1.57';
+const APP_VERSION_DATE='Jul 14, 2026 - 11:50 PM';
 
 const GH_USER='tscarlisle-ghub',GH_REPO='Project-Board',GH_FILE='data.json',GH_BRANCH='main';
 const GH_API=`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
@@ -1793,7 +1793,7 @@ const V5_TYPE_NAMES={
   '':'Unassigned'
 };
 
-const V5_TYPE_ACCENT={'new-construction':'#A2512D','renovation':'#9C6B2E','in-construction':'#7E4A34','prospect':'#8A7A6B','':'#6E5E52'};
+const V5_TYPE_ACCENT={'new-construction':'#A2512D','renovation':'#4F7A4A','in-construction':'#3F6B87','prospect':'#7E5570','':'#6E5E52'};
 function renderV5List(){
   const el=document.getElementById('v5-list');if(!el)return;
   const rows=v5Filtered();
@@ -2031,7 +2031,8 @@ function renderGantt(){
   let rows='',any=false;
   BOARD_PHASES.forEach(type=>{
     const items=groups[type];if(!items||!items.length)return;any=true;
-    rows+=`<div class="gsec" style="width:${LABEL+TRACK}px;"><span class="gsec-nm">${v5Escape(PHASE_LABELS[type]||type)}</span><span class="gsec-ct">${String(items.length).padStart(2,'0')} ${items.length===1?'Project':'Projects'}</span></div>`;
+    const gacc=V5_TYPE_ACCENT[type]||V5_TYPE_ACCENT[''];
+    rows+=`<div class="gsec" style="width:${LABEL+TRACK}px;border-top-color:${gacc};"><span class="gsec-nm" style="color:${gacc};">${v5Escape(PHASE_LABELS[type]||type)}</span><span class="gsec-ct">${String(items.length).padStart(2,'0')} ${items.length===1?'Project':'Projects'}</span></div>`;
     items.forEach(proj=>{
       ensurePhasePercents(proj);const pp=proj.phasePercents||{};
       const pend=(proj.tasks||[]).filter(t=>!t.done&&dueDate(t)).sort((a,b)=>dueDate(a)-dueDate(b));
@@ -2047,7 +2048,7 @@ function renderGantt(){
       });
       let dia='';if(nextW!==null){dia=`<div title="Next milestone" style="position:absolute;left:${nextW*CELL}px;top:${BAR_TOP+BAR_H/2-4}px;width:9px;height:9px;background:var(--rust);transform:translate(-50%,0) rotate(45deg);z-index:3;border:1px solid var(--paper);"></div>`;}
       const status=v5ComputeStatus(proj);const lead=proj.lead||proj.staff||DEFAULT_STAFF;
-      rows+=`<div class="grow"><div class="glabel"><span class="gname">${v5Escape(v5Title(proj.name))}</span><span class="gmeta">${v5Escape(lead)} \u00b7 <span style="color:${SCOL[status]||'var(--forest)'};">${v5StatusWord(status)}</span></span></div><div class="gtrack" style="width:${TRACK}px;">${bars}${dia}</div></div>`;
+      rows+=`<div class="grow"><div class="glabel"><span class="gname" style="color:${gacc};">${v5Escape(v5Title(proj.name))}</span><span class="gmeta">${v5Escape(lead)} \u00b7 <span style="color:${SCOL[status]||'var(--forest)'};">${v5StatusWord(status)}</span></span></div><div class="gtrack" style="width:${TRACK}px;">${bars}${dia}</div></div>`;
     });
   });
   if(!any)rows='<div style="padding:40px 0;font-family:var(--serif);font-style:italic;color:var(--ink-mute);">No active projects.</div>';
@@ -2246,24 +2247,46 @@ document.addEventListener('keydown',e=>{
    ╚══════════════════════════════════════════════════════════════════╝ */
 /* ── §CAL Calendar page + rotating architectural quote (v1.45) ── */
 const CMA_QUOTES=[
-  ["A great building must begin with the unmeasurable, pass through measurable means when it is being designed, and in the end be unmeasured.","Louis Kahn"],
-  ["You say to a brick, \u2018What do you want, brick?\u2019 And the brick says, \u2018I like an arch.\u2019","Louis Kahn"],
-  ["The sun never knew how great it was until it hit the side of a building.","Louis Kahn"],
-  ["Architecture is the thoughtful making of spaces.","Louis Kahn"],
+  ["Music is liquid architecture; architecture is frozen music.","Johann Wolfgang von Goethe"],
+  ["When we build, let us think that we build for ever.","John Ruskin"],
+  ["No architecture is so haughty as that which is simple.","John Ruskin"],
+  ["We require from buildings two kinds of good: the doing of their practical duty well, and that they be graceful and pleasing in doing it.","John Ruskin"],
+  ["Architecture is the alphabet of giants; it is the largest set of symbols ever made to meet the eyes of men.","G. K. Chesterton"],
+  ["All architecture is great architecture after sunset.","G. K. Chesterton"],
+  ["The house shelters daydreaming, the house protects the dreamer, the house allows one to dream in peace.","Gaston Bachelard"],
+  ["The house is our corner of the world; it is our first universe, a real cosmos in every sense of the word.","Gaston Bachelard"],
+  ["Well building hath three conditions: firmness, commodity, and delight.","Sir Henry Wotton"],
+  ["Houses are built to live in, and not to look on; let use be preferred before uniformity.","Francis Bacon"],
+  ["There is no excellent beauty that hath not some strangeness in the proportion.","Francis Bacon"],
+  ["All are architects of Fate, working in these walls of Time.","Henry Wadsworth Longfellow"],
+  ["In the elder days of art, builders wrought with greatest care each minute and unseen part; for the gods see everywhere.","Henry Wadsworth Longfellow"],
+  ["Build today, then, strong and sure, with a firm and ample base.","Henry Wadsworth Longfellow"],
+  ["Great edifices, like great mountains, are the work of centuries.","Victor Hugo"],
+  ["Architecture has recorded the great ideas of the human race; every human thought has its page in that vast book.","Victor Hugo"],
+  ["A Gothic cathedral is a blossoming in stone subdued by the insatiable demand of harmony in man.","Ralph Waldo Emerson"],
+  ["Beauty is that reasoned harmony of all the parts, so that nothing may be added, taken away, or altered, but for the worse.","Leon Battista Alberti"],
+  ["Beauty will result from the fair correspondence of the whole to the parts, of the parts to one another, and of these to the whole.","Andrea Palladio"],
+  ["Noble simplicity and quiet grandeur.","Johann Joachim Winckelmann"],
+  ["The architect should be equipped with knowledge of many branches of study and varied kinds of learning.","Vitruvius"],
+  ["Light, God's eldest daughter, is a principal beauty in a building.","Thomas Fuller"],
+  ["Architecture, of all the arts, is the one which acts the most slowly, but the most surely, upon the soul.","Ernest Dimnet"],
+  ["While stands the Coliseum, Rome shall stand; when falls the Coliseum, Rome shall fall; and when Rome falls, the world.","Lord Byron"],
+  ["A thing of beauty is a joy for ever.","John Keats"],
+  ["Beauty is truth, truth beauty; that is all ye know on earth, and all ye need to know.","John Keats"],
+  ["What of architectural beauty I now see, I know has gradually grown from within outward, out of the character of the indweller.","Henry David Thoreau"],
+  ["Cities, like dreams, are made of desires and fears, even if the thread of their discourse is secret.","Italo Calvino"],
+  ["It is architecture's task to render vivid to us who we might ideally be.","Alain de Botton"],
+  ["You touch my heart, you do me good, I am happy and I say: this is beautiful. That is architecture.","Le Corbusier"],
   ["Architecture is the masterly, correct and magnificent play of masses brought together in light.","Le Corbusier"],
-  ["Space and light and order. Those are the things that men need just as much as they need bread or a place to sleep.","Le Corbusier"],
-  ["Any work of architecture that does not express serenity is a mistake.","Luis Barrag\u00e1n"],
-  ["I don\u2019t divide architecture, landscape and gardening; to me they are one.","Luis Barrag\u00e1n"],
-  ["Form and function should be one, joined in a spiritual union.","Frank Lloyd Wright"],
-  ["A doctor can bury his mistakes, but an architect can only advise his client to plant vines.","Frank Lloyd Wright"],
+  ["A great building must begin with the unmeasurable, pass through measurable means when it is being designed, and in the end be unmeasured.","Louis Kahn"],
+  ["The sun never knew how great it was until it hit the side of a building.","Louis Kahn"],
+  ["A room is not a room without natural light.","Louis Kahn"],
   ["Study nature, love nature, stay close to nature. It will never fail you.","Frank Lloyd Wright"],
-  ["Always design a thing by considering it in its larger context \u2014 a chair in a room, a room in a house, a house in an environment.","Eliel Saarinen"],
-  ["The door handle is the handshake of the building.","Juhani Pallasmaa"],
-  ["We should work for simple, good, undecorated things.","Alvar Aalto"],
-  ["The details are not the details. They make the design.","Charles Eames"],
+  ["The physician can bury his mistakes, but the architect can only advise his client to plant vines.","Frank Lloyd Wright"],
+  ["Any work of architecture that does not express serenity is a mistake.","Luis Barragan"],
   ["Architecture is the will of an epoch translated into space.","Ludwig Mies van der Rohe"],
-  ["God is in the details.","Ludwig Mies van der Rohe"],
-  ["Less is a bore.","Robert Venturi"]
+  ["The details are not the details. They make the design.","Charles Eames"],
+  ["A building has integrity, just like a man, and just as seldom.","Ayn Rand"]
 ];
 function setBoardQuote(){const el=document.getElementById('cma-quote');if(!el)return;const q=CMA_QUOTES[Math.floor(Math.random()*CMA_QUOTES.length)];el.innerHTML='\u201c'+v5Escape(q[0])+'\u201d<span class="by">'+v5Escape(q[1])+'</span>';}
 let calPageState={month:new Date().getMonth(),year:new Date().getFullYear()};
@@ -2299,6 +2322,7 @@ const _mv=document.getElementById('modal-version');
 if(_mv)_mv.textContent='Version '+APP_VERSION+' · '+APP_VERSION_DATE;
 if(ghToken)loadFromGitHub();else{showSetup();loadLocal();}
 setBoardQuote();
+(function(){const t=document.getElementById('board-title');if(t)t.textContent='The Project Board for '+new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});})();
 
 /* TSC-BILLING fetch removed in v1.34. */
 </script>
