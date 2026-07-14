@@ -357,9 +357,9 @@
     {
       "id": 26,
       "name": "Taylor, Chris and Paget",
-      "colorIdx": 3,
+      "colorIdx": 9,
       "archived": false,
-      "type": "new-construction",
+      "type": "in-construction",
       "tasks": [
         {
           "id": 64,
