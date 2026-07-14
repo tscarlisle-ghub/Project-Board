@@ -843,10 +843,10 @@
         {
           "id": 78,
           "name": "Pricing set",
-          "days": 1,
+          "days": 3,
           "done": false,
-          "createdAt": "2026-07-07T16:14:59.467Z",
-          "due": "2026-07-07",
+          "createdAt": "2026-07-14T14:41:26.309Z",
+          "due": "2026-07-17",
           "who": "Scott"
         }
       ],
