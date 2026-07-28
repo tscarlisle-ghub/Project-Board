@@ -900,7 +900,7 @@
           "id": 78,
           "name": "Pricing set",
           "days": 3,
-          "done": false,
+          "done": true,
           "createdAt": "2026-07-14T14:41:26.309Z",
           "due": "2026-07-17",
           "who": "Scott"
