@@ -448,6 +448,15 @@
           "days": 1,
           "done": true,
           "who": "Kathleen"
+        },
+        {
+          "id": 96,
+          "name": "Revise kitchen renderings",
+          "days": 2,
+          "done": false,
+          "createdAt": "2026-07-28T14:42:34.196Z",
+          "due": "2026-07-30",
+          "who": "Kathleen"
         }
       ],
       "staff": "Kathleen",
@@ -999,5 +1008,5 @@
       ]
     }
   ],
-  "nextId": 96
+  "nextId": 97
 }
