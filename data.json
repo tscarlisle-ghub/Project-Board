@@ -421,7 +421,7 @@
       "phasePercents": {
         "SD": 100,
         "DD": 100,
-        "CD": 60,
+        "CD": 95,
         "CA": 0
       },
       "lead": "TSC"
